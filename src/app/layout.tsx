@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import Background from "@/components/background";
 import Footer from "@/components/footer";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const font = Geist({
@@ -28,9 +29,12 @@ export default function RootLayout({
       >
         <Navbar />
         <Background />
-        <main className="flex flex-col p-2 h-full max-w-7xl items-center">
-          {children}
-        </main>
+        <Toaster />
+        <div className="w-full h-full flex flex-col items-center">
+          <main className="flex flex-col p-2 h-full max-w-7xl items-center">
+            {children}
+          </main>
+        </div>
         <Footer />
       </body>
     </html>
