@@ -28,7 +28,9 @@ export default function RootLayout({
       >
         <Navbar />
         <Background />
-        <main className="p-2 h-full w-full">{children}</main>
+        <main className="flex flex-col p-2 h-full max-w-7xl items-center">
+          {children}
+        </main>
         <Footer />
       </body>
     </html>

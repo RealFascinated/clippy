@@ -8,8 +8,17 @@ export const env = createEnv({
   },
 
   server: {
-    MONGO_CONNECTION_STRING: z.string(),
+    DATABASE_URL: z.string(),
     BETTER_AUTH_SECRET: z.string(),
+
+    STORAGE_PROVIDER: z.enum(["S3"]),
+
+    STORAGE_S3_ENDPOINT: z.string(),
+    STORAGE_S3_PORT: z.number(),
+    STORAGE_S3_USE_SSL: z.boolean(),
+    STORAGE_S3_ACCESS_KEY: z.string(),
+    STORAGE_S3_SECRET_KEY: z.string(),
+    STORAGE_S3_BUCKET: z.string(),
   },
 
   /**
@@ -20,12 +29,21 @@ export const env = createEnv({
     NEXT_PUBLIC_WEBSITE_NAME: process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "Clippy",
     NEXT_PUBLIC_WEBSITE_URL: process.env.NEXT_PUBLIC_WEBSITE_URL,
 
-    // Mongo
-    MONGO_CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING,
+    // Postgres
+    DATABASE_URL: process.env.DATABASE_URL,
 
     // Better Auth
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     BETTER_AUTH_URL: process.env.NEXT_PUBLIC_WEBSITE_URL,
+
+    // File Storage
+    STORAGE_PROVIDER: process.env.STORAGE_PROVIDER,
+    STORAGE_S3_ENDPOINT: process.env.STORAGE_S3_ENDPOINT,
+    STORAGE_S3_PORT: Number(process.env.STORAGE_S3_PORT),
+    STORAGE_S3_USE_SSL: process.env.STORAGE_S3_USE_SSL === "true",
+    STORAGE_S3_ACCESS_KEY: process.env.STORAGE_S3_ACCESS_KEY,
+    STORAGE_S3_SECRET_KEY: process.env.STORAGE_S3_SECRET_KEY,
+    STORAGE_S3_BUCKET: process.env.STORAGE_S3_BUCKET,
   },
 
   /**

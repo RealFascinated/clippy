@@ -45,8 +45,8 @@ function NavButton({ name, icon, href }: Item) {
 
 export default function Navbar() {
   return (
-    <div className="flex h-15 justify-center items-center bg-card/70 w-full backdrop-blur-md border border-border px-4">
-      <div className="flex max-w-7xl items-center h-full w-full justify-between">
+    <div className="flex h-15 justify-center items-center bg-card/70 backdrop-blur-md border border-border">
+      <div className="flex max-w-7xl items-center h-full w-full justify-between px-4">
         <div className="flex gap-10 items-center">
           {/* Website */}
           <Link
