@@ -1,9 +1,10 @@
 import { env } from "@/lib/env";
+import NotSignedIn from "@/providers/auth/not-signed-in";
+import SignedIn from "@/providers/auth/signed-in";
 import { BedIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
-import { Button } from "./ui/button";
 
 type Item = {
   name: string;
@@ -79,7 +80,12 @@ export default function Navbar() {
         </div>
 
         {/* Auth / Dashboard */}
-        <NavButton name="Register" className="h-8" href="/auth/register" />
+        <NotSignedIn>
+          <NavButton name="Login" className="h-8" href="/auth/login" />
+        </NotSignedIn>
+        <SignedIn>
+          <NavButton name="Dashboard" className="h-8" href="/user/dashboard" />
+        </SignedIn>
       </div>
     </div>
   );

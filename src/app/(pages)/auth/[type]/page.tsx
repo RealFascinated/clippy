@@ -1,3 +1,4 @@
+import AccountLogin from "@/components/auth/account-login";
 import CreateAccount from "@/components/auth/create-account";
 import { AuthType } from "@/type/auth-type";
 
@@ -13,7 +14,7 @@ export default async function AuthPage({ params }: AuthPageProps) {
   return (
     <main className="w-full flex justify-center items-center h-full">
       <div>
-        {type == "login" && <p>hi</p>}
+        {type == "login" && <AccountLogin />}
         {type == "register" && <CreateAccount />}
       </div>
     </main>

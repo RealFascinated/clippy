@@ -19,39 +19,26 @@ import {
 import { Input } from "../ui/input";
 
 const registerSchema = z.object({
-  username: z.string().min(3, {
-    message: "Your username must be atleast 4 characters.",
-  }),
-  email: z.string().email({
-    message: "You need to enter a valid email.",
-  }),
-  password: z.string().min(8, {
-    message: "Your password must be atleast 8 characters.",
-  }),
+  email: z.string().email(),
+  password: z.string(),
 });
 
-export default function CreateAccount() {
+export default function AccountLogin() {
   const router = useRouter();
   const [error, setError] = useState<string | undefined>();
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      username: "",
       email: "",
       password: "",
     },
   });
 
-  function onSubmit({
-    username,
-    email,
-    password,
-  }: z.infer<typeof registerSchema>) {
-    authClient.signUp.email(
+  function onSubmit({ email, password }: z.infer<typeof registerSchema>) {
+    authClient.signIn.email(
       {
-        name: username,
-        email,
+        email: email,
         password,
       },
       {
@@ -70,9 +57,9 @@ export default function CreateAccount() {
     <Card className="min-w-[400px] min-h-fit">
       <CardContent className="h-full w-full flex flex-col gap-6 items-center justify-center px-8 py-6">
         <div className="flex flex-col items-center text-center gap-1">
-          <span className="font-bold text-xl">Create an account</span>
+          <span className="font-bold text-xl">Sign In</span>
           <span className="text-muted-foreground">
-            Enter your email below to create your account
+            Enter your email below to sign in to your account
           </span>
         </div>
 
@@ -84,20 +71,6 @@ export default function CreateAccount() {
             className="flex flex-col gap-6 w-full"
           >
             <div className="flex flex-col gap-2 w-full">
-              {/* Username */}
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder="username" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               {/* Email */}
               <FormField
                 control={form.control}
@@ -132,13 +105,12 @@ export default function CreateAccount() {
             </div>
 
             {/* Auth Buttons */}
-            <div className="flex flex-col w-full gap-4">
-              <Button>Register</Button>
-              <Link
-                href="/auth/login"
-                className="text-muted-foreground text-center hover:opacity-80 transition-all transform-gpu"
-              >
-                <span>Already have an account</span>
+            <div className="flex flex-col w-full gap-2">
+              <Button>Sign In</Button>
+              <Link href="/auth/register">
+                <Button type="button" variant="secondary" className="w-full">
+                  Register
+                </Button>
               </Link>
             </div>
           </form>

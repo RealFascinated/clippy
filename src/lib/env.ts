@@ -4,10 +4,12 @@ import { z } from "zod";
 export const env = createEnv({
   client: {
     NEXT_PUBLIC_WEBSITE_NAME: z.string(),
+    NEXT_PUBLIC_WEBSITE_URL: z.string(),
   },
 
   server: {
     MONGO_CONNECTION_STRING: z.string(),
+    BETTER_AUTH_SECRET: z.string(),
   },
 
   /**
@@ -16,9 +18,14 @@ export const env = createEnv({
   runtimeEnv: {
     // Website
     NEXT_PUBLIC_WEBSITE_NAME: process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "Clippy",
+    NEXT_PUBLIC_WEBSITE_URL: process.env.NEXT_PUBLIC_WEBSITE_URL,
 
     // Mongo
     MONGO_CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING,
+
+    // Better Auth
+    BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
+    BETTER_AUTH_URL: process.env.NEXT_PUBLIC_WEBSITE_URL,
   },
 
   /**
