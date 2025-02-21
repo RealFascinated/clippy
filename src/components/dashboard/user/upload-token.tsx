@@ -66,7 +66,7 @@ export default function UploadToken({ uploadToken }: UploadTokenProps) {
               open={resetTokenConfirmOpen}
               onOpenChange={setResetTokenConfirmOpen}
             >
-              <DialogTrigger>
+              <DialogTrigger asChild>
                 <Button className="w-fit" variant="destructive">
                   Reset
                 </Button>
