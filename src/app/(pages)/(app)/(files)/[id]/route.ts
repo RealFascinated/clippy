@@ -69,7 +69,7 @@ export async function GET(
       return notFound;
     }
 
-    // Convert stream to Response
+    // Convert stream to Response with Cloudflare-specific headers
     const response = new Response(stream as any, {
       status: 206,
       headers: {
@@ -77,6 +77,12 @@ export async function GET(
         "Accept-Ranges": "bytes",
         "Content-Length": chunkSize.toString(),
         "Content-Type": mimeType,
+        "Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+        // Cloudflare-specific header to prevent caching of range requests
+        "CF-Cache-Status": "DYNAMIC",
       },
     });
 
@@ -98,6 +104,9 @@ export async function GET(
   // Add specific headers based on file type
   if (isVideo) {
     headers.set("Accept-Ranges", "bytes");
+    // For initial video request, allow caching but ensure range requests work
+    headers.set("Cache-Control", "public, max-age=31536000");
+    headers.set("CF-Cache-Status", "HIT");
   } else if (isImage) {
     headers.set("Cache-Control", "public, max-age=3600"); // Cache for 1 hour
   } else {
@@ -105,6 +114,8 @@ export async function GET(
       "Content-Disposition",
       `attachment; filename="${getFileFullName(file)}"`
     );
+    // Prevent caching for downloads
+    headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
   }
 
   // Return streamed response
