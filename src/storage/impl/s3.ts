@@ -1,5 +1,5 @@
 import { env } from "@/lib/env";
-import { readableToBuffer } from "@/lib/utils";
+import { readableToBuffer } from "@/lib/utils/stream";
 import * as Minio from "minio";
 import Storage from "../storage";
 

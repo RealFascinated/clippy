@@ -1,5 +1,5 @@
 import { FileType } from "../db/schemas/file";
-import { getFileExtension } from "../utils";
+import { getFileExtension } from "./utils";
 
 /**
  * Gets the full name of a file, example: example.png

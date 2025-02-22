@@ -1,5 +1,4 @@
 import UserFiles from "@/components/dashboard/user/files/files";
-import UserStatistic from "@/components/dashboard/user/statistic/statistic";
 import UserStatistics from "@/components/dashboard/user/statistic/statistics";
 import WelcomeBanner from "@/components/dashboard/user/welcome-banner";
 import { auth } from "@/lib/auth";

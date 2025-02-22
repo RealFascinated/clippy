@@ -1,6 +1,6 @@
 import { authError } from "@/lib/api-utils";
 import { auth } from "@/lib/auth";
-import { randomString } from "@/lib/utils";
+import { randomString } from "@/lib/utils/utils";
 import { ApiErrorResponse, ApiSuccessResponse } from "@/type/api/responses";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";

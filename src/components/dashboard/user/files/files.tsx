@@ -12,9 +12,8 @@ export default function UserFiles() {
     refetch,
   } = useQuery<RecentFilesResponse>({
     queryKey: ["userFiles"],
-    queryFn: async () =>
-      (await request.get<RecentFilesResponse>("/api/user/files"))!,
-    placeholderData: (data) => data,
+    queryFn: async () => (await request.get<RecentFilesResponse>("/api/user/files"))!,
+    placeholderData: data => data,
   });
 
   if (!files || isLoading) {
@@ -37,9 +36,7 @@ export default function UserFiles() {
           ))}
         </div>
       ) : (
-        <span className="text-muted-foreground">
-          You do not have any files uploaded
-        </span>
+        <span className="text-muted-foreground">You do not have any files uploaded</span>
       )}
     </div>
   );

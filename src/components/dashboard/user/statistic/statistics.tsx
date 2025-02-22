@@ -1,20 +1,12 @@
 "use client";
 
 import request from "@/lib/request";
-import { formatBytes } from "@/lib/utils";
+import { formatBytes } from "@/lib/utils/utils";
 import { UserStatisticsResponse } from "@/type/api/user/statistics-response";
 import { useQuery } from "@tanstack/react-query";
+import { ClockIcon, EyeIcon, FileIcon, ServerIcon } from "lucide-react";
 import { ReactElement } from "react";
 import UserStatistic from "./statistic";
-import {
-  AlbumIcon,
-  ClockIcon,
-  EyeIcon,
-  FileIcon,
-  ImageIcon,
-  ServerIcon,
-  ViewIcon,
-} from "lucide-react";
 
 type Format = "number" | "bytes";
 type Statistic = {
@@ -73,13 +65,11 @@ function format(value: unknown, format: Format) {
 }
 
 export default function UserStatistics() {
-  const { data: statisticsResponse, isLoading } =
-    useQuery<UserStatisticsResponse>({
-      queryKey: ["statistics"],
-      queryFn: async () =>
-        (await request.get<UserStatisticsResponse>("/api/user/statistics"))!,
-      placeholderData: (data) => data,
-    });
+  const { data: statisticsResponse, isLoading } = useQuery<UserStatisticsResponse>({
+    queryKey: ["statistics"],
+    queryFn: async () => (await request.get<UserStatisticsResponse>("/api/user/statistics"))!,
+    placeholderData: data => data,
+  });
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full justify-between gap-4 items-center">

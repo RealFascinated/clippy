@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { ReactNode } from "react";
 
 type CodeProps = {
@@ -22,10 +22,7 @@ export function CodeBlock({ children, className, codeClassName }: CodeProps) {
 export function InlineCodeBlock({ children, className }: CodeProps) {
   return (
     <code
-      className={cn(
-        "bg-secondary px-1 py-0.5 border rounded-md w-fit text-primary",
-        className
-      )}
+      className={cn("bg-secondary px-1 py-0.5 border rounded-md w-fit text-primary", className)}
     >
       {children}
     </code>

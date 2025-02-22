@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/dialog";
 import { FileType } from "@/lib/db/schemas/file";
 import request from "@/lib/request";
-import { formatBytes, getFileExtension } from "@/lib/utils";
 import { getFileFullName } from "@/lib/utils/file";
+import { formatBytes } from "@/lib/utils/utils";
 import { TrashIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -71,18 +71,13 @@ export default function UserFile({ file, refetch }: UserFileProps) {
             <DialogHeader>
               <DialogTitle>Are you absolutely sure?</DialogTitle>
               <DialogDescription>
-                This will delete the file{" "}
-                <InlineCodeBlock>{getFileFullName(file)}</InlineCodeBlock>, this
-                action cannot be undone.
+                This will delete the file <InlineCodeBlock>{getFileFullName(file)}</InlineCodeBlock>
+                , this action cannot be undone.
               </DialogDescription>
             </DialogHeader>
 
             <DialogFooter>
-              <Button
-                className="w-fit"
-                variant="destructive"
-                onClick={() => deleteFile(file)}
-              >
+              <Button className="w-fit" variant="destructive" onClick={() => deleteFile(file)}>
                 Delete
               </Button>
             </DialogFooter>

@@ -23,18 +23,11 @@ const DEFAULT_OPTIONS: RequestOptions = {
 class Request {
   private static pendingRequests = new Map<string, Promise<unknown>>();
 
-  private static getCacheKey(
-    url: string,
-    method: string,
-    options?: RequestOptions
-  ): string {
+  private static getCacheKey(url: string, method: string, options?: RequestOptions): string {
     return JSON.stringify({ url, method, options });
   }
 
-  private static buildUrl(
-    baseUrl: string,
-    searchParams?: Record<string, unknown>
-  ): string {
+  private static buildUrl(baseUrl: string, searchParams?: Record<string, unknown>): string {
     if (!searchParams) return baseUrl;
 
     const params = new URLSearchParams(
@@ -100,11 +93,7 @@ class Request {
       return pendingRequest as Promise<T | undefined>;
     }
 
-    const requestPromise = this.executeRequest<T>(
-      finalUrl,
-      method,
-      finalOptions
-    );
+    const requestPromise = this.executeRequest<T>(finalUrl, method, finalOptions);
     this.pendingRequests.set(cacheKey, requestPromise);
 
     try {
@@ -117,17 +106,11 @@ class Request {
     }
   }
 
-  static async get<T>(
-    url: string,
-    options?: RequestOptions
-  ): Promise<T | undefined> {
+  static async get<T>(url: string, options?: RequestOptions): Promise<T | undefined> {
     return this.send<T>(url, "GET", options);
   }
 
-  static async post<T>(
-    url: string,
-    options?: RequestOptions
-  ): Promise<T | undefined> {
+  static async post<T>(url: string, options?: RequestOptions): Promise<T | undefined> {
     return this.send<T>(url, "POST", options);
   }
 }

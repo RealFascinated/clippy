@@ -5,7 +5,6 @@ import { BedIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
-import { SidebarTrigger } from "./ui/sidebar";
 import SidebarToggle from "./dashboard/sidebar/sidebar-toggle";
 
 type Item = {
@@ -35,10 +34,7 @@ const items: Item[] = [
 
 function NavButton({ name, icon, href }: Item) {
   return (
-    <Link
-      href={href}
-      className="flex gap-2 hover:opacity-80 transition-all transform-gpu"
-    >
+    <Link href={href} className="flex gap-2 hover:opacity-80 transition-all transform-gpu">
       {icon}
       {name}
     </Link>

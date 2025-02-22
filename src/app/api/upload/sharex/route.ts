@@ -2,7 +2,7 @@ import { db } from "@/lib/db/drizzle";
 import { fileTable } from "@/lib/db/schemas/file";
 import { env } from "@/lib/env";
 import { getUserByUploadToken } from "@/lib/helpers/user";
-import { getFileExtension, randomString } from "@/lib/utils";
+import { getFileExtension, randomString } from "@/lib/utils/utils";
 import { storage } from "@/storage/create-storage";
 import { NextResponse } from "next/server";
 
@@ -58,35 +58,23 @@ export async function POST(
     const formData = await request.formData();
     const uploadToken: string | undefined = formData.get("token")?.toString();
     if (!uploadToken) {
-      return NextResponse.json(
-        { message: "No upload token was provided" },
-        { status: 401 }
-      );
+      return NextResponse.json({ message: "No upload token was provided" }, { status: 401 });
     }
     const user = await getUserByUploadToken(uploadToken);
     if (!user) {
-      return NextResponse.json(
-        { message: "Unknown upload token" },
-        { status: 401 }
-      );
+      return NextResponse.json({ message: "Unknown upload token" }, { status: 401 });
     }
 
     const files = formData.getAll("sharex");
 
     // Validate if files exist
     if (!files.length) {
-      return NextResponse.json(
-        { message: "No files were uploaded" },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: "No files were uploaded" }, { status: 400 });
     }
 
     // Validate file types
-    if (!files.every((file) => file instanceof File)) {
-      return NextResponse.json(
-        { message: "Invalid file format" },
-        { status: 400 }
-      );
+    if (!files.every(file => file instanceof File)) {
+      return NextResponse.json({ message: "Invalid file format" }, { status: 400 });
     }
 
     const file = await processFile(files[0]);
@@ -126,8 +114,7 @@ export async function POST(
 
     return NextResponse.json(
       {
-        message:
-          "Failed to upload your file, please contact an admin if this keeps occuring",
+        message: "Failed to upload your file, please contact an admin if this keeps occuring",
       },
       { status: 500 }
     );

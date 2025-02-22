@@ -1,31 +1,8 @@
-import { clsx, type ClassValue } from "clsx"
-import internal from "stream";
+import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-/**
- * Gets the full buffer from the stream.
- *
- * @param readable the readable stream
- * @returns a buffer from the stream
- */
-export async function readableToBuffer(
-  readable: internal.Readable
-): Promise<Buffer> {
-  if (!readable || typeof readable.on !== "function") {
-    throw new TypeError("Input must be a Readable stream");
-  }
-
-  return new Promise<Buffer>((resolve, reject) => {
-    const chunks: Buffer[] = [];
-
-    readable.on("data", (chunk: Buffer) => chunks.push(chunk));
-    readable.on("end", () => resolve(Buffer.concat(chunks)));
-    readable.on("error", reject);
-  });
 }
 
 /**
@@ -43,8 +20,7 @@ export function randomString(length: number): string {
   }
 
   // Define the character set for the random string
-  const charset =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
   // Create a Uint8Array to store random values
   const randomBytes = new Uint8Array(length);
@@ -72,7 +48,6 @@ export function getFileExtension(mime: string) {
   return mime.split("/")[1];
 }
 
-
 /**
  * Formats file bytes to human readable format.
  *
@@ -88,5 +63,5 @@ export function formatBytes(bytes: number): string {
 
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 }

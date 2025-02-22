@@ -25,8 +25,7 @@ export async function GET(
   } catch (err) {
     return NextResponse.json(
       {
-        message:
-          "An error occured when removing this file, please contact an admin",
+        message: "An error occured when removing this file, please contact an admin",
       },
       { status: 500 }
     );

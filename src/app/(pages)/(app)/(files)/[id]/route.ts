@@ -1,8 +1,8 @@
+import { getFileById, updateFile } from "@/lib/helpers/file";
 import { storage } from "@/storage/create-storage";
 import { ApiErrorResponse } from "@/type/api/responses";
-import { NextRequest, NextResponse } from "next/server";
 import { isbot } from "isbot";
-import { getFileById, updateFile } from "@/lib/helpers/file";
+import { NextRequest, NextResponse } from "next/server";
 
 const notFound = NextResponse.json(
   {

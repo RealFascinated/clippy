@@ -1,5 +1,3 @@
-import { Calendar, Cog, Home, Inbox, Search, Settings } from "lucide-react";
-
 import {
   Sidebar,
   SidebarContent,
@@ -10,8 +8,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ReactElement, FC } from "react";
+import { Cog, Home } from "lucide-react";
 import Link from "next/link";
+import { FC } from "react";
 
 type Item = {
   title: string;
@@ -54,9 +53,7 @@ export default function AppSidebar() {
         {groups.map((group, index) => {
           return (
             <SidebarGroup key={index}>
-              {group.title && (
-                <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
-              )}
+              {group.title && <SidebarGroupLabel>{group.title}</SidebarGroupLabel>}
               <SidebarGroupContent>
                 <SidebarMenu>
                   {group.items.map((item, index) => (

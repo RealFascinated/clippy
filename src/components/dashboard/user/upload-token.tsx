@@ -1,10 +1,6 @@
 "use client";
 
-import Request from "@/lib/request";
-import { useRouter } from "next/navigation";
-import { Button } from "../../ui/button";
-import { Card, CardContent, CardTitle } from "../../ui/card";
-import { toast } from "sonner";
+import { CodeBlock } from "@/components/ui/code-block";
 import {
   Dialog,
   DialogContent,
@@ -14,8 +10,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import Request from "@/lib/request";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { CodeBlock } from "@/components/ui/code-block";
+import { toast } from "sonner";
+import { Button } from "../../ui/button";
+import { Card, CardContent, CardTitle } from "../../ui/card";
 
 type UploadTokenProps = {
   uploadToken?: string | null;
@@ -23,8 +23,7 @@ type UploadTokenProps = {
 
 export default function UploadToken({ uploadToken }: UploadTokenProps) {
   const router = useRouter();
-  const [resetTokenConfirmOpen, setResetTokenConfirmOpen] =
-    useState<boolean>(false);
+  const [resetTokenConfirmOpen, setResetTokenConfirmOpen] = useState<boolean>(false);
 
   async function resetToken() {
     await Request.post("/api/user/reset-upload-token");
@@ -62,10 +61,7 @@ export default function UploadToken({ uploadToken }: UploadTokenProps) {
           {/* Buttons */}
           <div className="flex gap-2">
             {/* Reset Upload Token */}
-            <Dialog
-              open={resetTokenConfirmOpen}
-              onOpenChange={setResetTokenConfirmOpen}
-            >
+            <Dialog open={resetTokenConfirmOpen} onOpenChange={setResetTokenConfirmOpen}>
               <DialogTrigger asChild>
                 <Button className="w-fit" variant="destructive">
                   Reset
@@ -75,17 +71,13 @@ export default function UploadToken({ uploadToken }: UploadTokenProps) {
                 <DialogHeader>
                   <DialogTitle>Are you absolutely sure?</DialogTitle>
                   <DialogDescription>
-                    This action cannot be undone. You will need to update your
-                    upload token on ShareX.
+                    This action cannot be undone. You will need to update your upload token on
+                    ShareX.
                   </DialogDescription>
                 </DialogHeader>
 
                 <DialogFooter>
-                  <Button
-                    className="w-fit"
-                    variant="destructive"
-                    onClick={() => resetToken()}
-                  >
+                  <Button className="w-fit" variant="destructive" onClick={() => resetToken()}>
                     Reset
                   </Button>
                 </DialogFooter>

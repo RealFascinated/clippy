@@ -9,13 +9,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 
 const registerSchema = z.object({
@@ -46,7 +40,7 @@ export default function AccountLogin() {
           router.push("/user/dashboard");
           router.refresh();
         },
-        onError: (error) => {
+        onError: error => {
           setError(error.error.message);
         },
       }
@@ -66,10 +60,7 @@ export default function AccountLogin() {
         {error && <div className="text-red-400">{error}</div>}
 
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-6 w-full"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6 w-full">
             <div className="flex flex-col gap-2 w-full">
               {/* Email */}
               <FormField
@@ -92,11 +83,7 @@ export default function AccountLogin() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
-                        placeholder="password"
-                        type="password"
-                        {...field}
-                      />
+                      <Input placeholder="password" type="password" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
