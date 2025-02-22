@@ -1,4 +1,4 @@
-FROM oven/bun:1.2.2-alpine AS base
+FROM oven/bun:1.2.2-debian AS base
 
 
 # Install dependencies
