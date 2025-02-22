@@ -104,9 +104,6 @@ export async function GET(
   // Add specific headers based on file type
   if (isVideo) {
     headers.set("Accept-Ranges", "bytes");
-    // For initial video request, allow caching but ensure range requests work
-    headers.set("Cache-Control", "public, max-age=31536000");
-    headers.set("CF-Cache-Status", "HIT");
   } else if (isImage) {
     headers.set("Cache-Control", "public, max-age=3600"); // Cache for 1 hour
   } else {
