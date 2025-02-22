@@ -19,9 +19,9 @@ RUN bun run build
 FROM base AS runner
 WORKDIR /usr/src/app
 
-# Install Python 3
+# Install Depends
 RUN apt-get update && \
-    apt-get install -y python3 && \
+    apt-get install -y python3 make && \
     apt-get clean
 
 RUN addgroup --system --gid 1007 nextjs
