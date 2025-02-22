@@ -22,11 +22,12 @@ WORKDIR /usr/src/app
 COPY . .
 COPY --from=depends /usr/src/app/node_modules ./node_modules
 
+RUN bun run build
+
 ENV NODE_ENV=production
 
 ENV HOSTNAME="0.0.0.0"
 EXPOSE 3000
 ENV PORT=3000
 
-USER nextjs
 CMD ["bun", "run", "start"]
