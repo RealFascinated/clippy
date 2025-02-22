@@ -1,5 +1,3 @@
-import { env } from "@/lib/env";
-import S3Storage from "./impl/s3";
 import internal from "stream";
 
 export default abstract class Storage {
@@ -27,6 +25,12 @@ export default abstract class Storage {
    * @returns the file, or null if not found
    */
   abstract getFileStream(name: string): Promise<internal.Readable | null>;
+
+  abstract getFileStreamRange(
+    name: string,
+    start: number,
+    end: number
+  ): Promise<internal.Readable | null>;
 
   /**
    * Deleted a file from the storage.

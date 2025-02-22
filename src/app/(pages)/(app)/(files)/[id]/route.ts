@@ -6,16 +6,6 @@ import { isbot } from "isbot";
 import { NextRequest, NextResponse } from "next/server";
 import { Readable } from "stream";
 
-const notFound = NextResponse.json(
-  {
-    message: "File not found",
-  },
-  {
-    status: 404,
-  }
-);
-
-// Helper function to convert Node.js Readable stream to Web ReadableStream
 function readableToWebReadableStream(readable: Readable): ReadableStream {
   return new ReadableStream({
     start(controller) {
@@ -36,32 +26,61 @@ export async function GET(
 
   const file = await getFileById(id);
   if (!file) {
-    return notFound;
+    return NextResponse.json({ message: "File not found" }, { status: 404 });
   }
 
-  // Use getFileStream to handle the file stream
-  const fileStream: Readable | null = await storage.getFileStream(id);
+  // Handle range requests
+  const range = request.headers.get("range");
+  if (range) {
+    // Parse range header
+    const parts = range.replace(/bytes=/, "").split("-");
+    const start = parseInt(parts[0], 10);
+    const end = parts[1] ? parseInt(parts[1], 10) : file.size - 1;
+    const chunkSize = end - start + 1;
 
+    // Get partial content stream
+    const fileStream = await storage.getFileStreamRange(id, start, end); // You'll need to add this method
+
+    if (!fileStream) {
+      return NextResponse.json({ message: "File not found" }, { status: 404 });
+    }
+
+    // Convert to web readable stream
+    const webReadableStream = readableToWebReadableStream(fileStream);
+
+    // Create response with partial content
+    const response = new NextResponse(webReadableStream, {
+      status: 206,
+      headers: {
+        "Content-Range": `bytes ${start}-${end}/${file.size}`,
+        "Accept-Ranges": "bytes",
+        "Content-Length": chunkSize.toString(),
+        "Content-Type": file.mimeType,
+        "Content-Disposition": `inline; filename="${getFileFullName(file)}"`,
+        "Cache-Control": "max-age=3600, public",
+      },
+    });
+
+    return response;
+  }
+
+  // Handle non-range requests as before
+  const fileStream = await storage.getFileStream(id);
   if (!fileStream) {
-    return notFound;
+    return NextResponse.json({ message: "File not found" }, { status: 404 });
   }
 
   if (!isbot(request.headers.get("User-Agent")) && incrementViews) {
     file.views++;
-    await updateFile(file.id, {
-      views: file.views,
-    });
+    await updateFile(file.id, { views: file.views });
   }
 
-  // Convert Node.js Readable stream to Web ReadableStream
   const webReadableStream = readableToWebReadableStream(fileStream);
-
-  // Create a NextResponse from the Web ReadableStream
   const response = new NextResponse(webReadableStream);
 
-  // Cache for 1 hour on browsers
   response.headers.set("Cache-Control", "max-age=3600, public");
   response.headers.set("Content-Type", file.mimeType);
+  response.headers.set("Accept-Ranges", "bytes");
   response.headers.set(
     "Content-Disposition",
     `inline; filename="${getFileFullName(file)}"`
