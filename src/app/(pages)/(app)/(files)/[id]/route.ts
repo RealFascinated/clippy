@@ -99,7 +99,7 @@ export async function GET(
   if (isVideo) {
     headers.set("Accept-Ranges", "bytes");
   } else if (isImage) {
-    headers.set("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
+    headers.set("Cache-Control", "public, max-age=3600"); // Cache for 1 hour
   } else {
     headers.set(
       "Content-Disposition",
@@ -111,24 +111,4 @@ export async function GET(
   return new Response(stream as any, {
     headers,
   });
-
-  // const file = await getFileById(id);
-  // let fileBytes = null;
-  // if (!file || !(fileBytes = await storage.getFile(id))) {
-  //   return notFound;
-  // }
-
-  // if (!isbot(request.headers.get("User-Agent")) && incrementViews) {
-  //   file.views++;
-  //   await updateFile(file.id, {
-  //     views: file.views,
-  //   });
-  // }
-
-  // const response = new NextResponse(fileBytes);
-  // // Cache for 1 hour on browsers
-  // response.headers.set("Cache-Control", "max-age=3600, public");
-  // response.headers.set("Content-Type", file.mimeType);
-
-  // return response;
 }
