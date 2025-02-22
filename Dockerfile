@@ -1,12 +1,10 @@
 FROM oven/bun:1.2.2-debian AS base
 
-
 # Install dependencies
 FROM base AS depends
 WORKDIR /usr/src/app
 COPY package.json* bun.lock* ./
 RUN bun install --frozen-lockfile --quiet
-
 
 # Build the app
 FROM base AS builder
@@ -17,10 +15,14 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN bun run build
 
-
 # Run the app
 FROM base AS runner
 WORKDIR /usr/src/app
+
+# Install Python 3
+RUN apt-get update && \
+    apt-get install -y python3 && \
+    apt-get clean
 
 RUN addgroup --system --gid 1007 nextjs
 RUN adduser --system --uid 1007 nextjs
