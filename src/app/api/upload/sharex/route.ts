@@ -42,7 +42,7 @@ async function processFile(file: File): Promise<FileData> {
     name: file.name,
     type: file.type,
     size: file.size,
-    // @ts-ignore - shut up
+    // @ts-ignore
     content: await file.bytes(),
   };
 }

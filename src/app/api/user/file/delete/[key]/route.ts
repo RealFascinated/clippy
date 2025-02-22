@@ -22,10 +22,11 @@ export async function GET(
       );
     }
     await removeFile(file.id);
-  } catch (err) {
+  } catch {
     return NextResponse.json(
       {
-        message: "An error occured when removing this file, please contact an admin",
+        message:
+          "An error occured when removing this file, please contact an admin",
       },
       { status: 500 }
     );

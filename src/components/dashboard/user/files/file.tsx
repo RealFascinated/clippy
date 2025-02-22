@@ -41,7 +41,7 @@ export default function UserFile({ file, refetch }: UserFileProps) {
       });
       await refetch();
       toast(`Successfully deleted ${getFileFullName(file)}!`);
-    } catch (err) {
+    } catch {
       toast(`Failed to delete ${getFileFullName(file)}`);
     }
     setDeleteConfirm(false);

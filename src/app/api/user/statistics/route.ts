@@ -18,7 +18,7 @@ export async function GET(
   }
 
   const images = await getUserFiles(session.user.id);
-  let statistics: UserStatisticsResponse = {
+  const statistics: UserStatisticsResponse = {
     totalUploads: 0,
     uploadsToday: 0,
     storageUsed: 0,

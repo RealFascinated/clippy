@@ -23,7 +23,7 @@ export async function POST(
       },
       headers: requestHeaders,
     });
-  } catch (err) {
+  } catch {
     return NextResponse.json(
       { message: "An error occured when resetting the upload token" },
       { status: 500 }
