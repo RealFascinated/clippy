@@ -4,12 +4,12 @@ import { Toaster } from "@/components/ui/sonner";
 import { env } from "@/lib/env";
 import AppProvider from "@/providers/app-provider";
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { type NextFont } from "next/dist/compiled/@next/font";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const font = Geist({
-  variable: "--font-geist",
-  subsets: ["latin"],
+const font: NextFont = localFont({
+  src: "../font/Satoshi.ttf",
 });
 
 export const metadata: Metadata = {
@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${font.variable} antialiased`}>
+      <body className={`${font.className} antialiased`}>
         <Toaster />
         <Background />
         <AppProvider>
