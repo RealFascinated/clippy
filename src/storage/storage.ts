@@ -1,3 +1,7 @@
+import { env } from "@/lib/env";
+import S3Storage from "./impl/s3";
+import internal from "stream";
+
 export default abstract class Storage {
   /**
    * Saves a file to the storage.
@@ -15,6 +19,14 @@ export default abstract class Storage {
    * @returns the file, or null if not found
    */
   abstract getFile(name: string): Promise<Buffer | null>;
+
+  /**
+   * Gets a file stream from the storage.
+   *
+   * @param name the name of the file to get
+   * @returns the file, or null if not found
+   */
+  abstract getFileStream(name: string): Promise<internal.Readable | null>;
 
   /**
    * Deleted a file from the storage.

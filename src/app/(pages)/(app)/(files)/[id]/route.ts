@@ -37,6 +37,7 @@ export async function GET(
   const response = new NextResponse(fileBytes);
   // Cache for 1 hour on browsers
   response.headers.set("Cache-Control", "max-age=3600, public");
+  response.headers.set("Content-Type", file.mimeType);
 
   return response;
 }
