@@ -4,87 +4,131 @@ import { storage } from "@/storage/create-storage";
 import { ApiErrorResponse } from "@/type/api/responses";
 import { isbot } from "isbot";
 import { NextRequest, NextResponse } from "next/server";
-import { Readable } from "stream";
 
-function readableToWebReadableStream(readable: Readable): ReadableStream {
-  return new ReadableStream({
-    start(controller) {
-      readable.on("data", (chunk) => controller.enqueue(chunk));
-      readable.on("end", () => controller.close());
-      readable.on("error", (err) => controller.error(err));
-    },
-  });
+const notFound = NextResponse.json(
+  {
+    message: "File not found",
+  },
+  {
+    status: 404,
+  }
+);
+
+/**
+ * Parses the range header
+ * 
+ * @param rangeHeader the range header
+ * @param fileSize the size of the file
+ * @returns the start and end of the bytes to get
+ */
+function parseRange(rangeHeader: string, fileSize: number) {
+  const [start, end] = rangeHeader.replace(/bytes=/, "").split("-");
+  return {
+    start: parseInt(start, 10),
+    end: end ? parseInt(end, 10) : fileSize - 1,
+  };
 }
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-): Promise<NextResponse<unknown | ApiErrorResponse>> {
+): Promise<NextResponse<ApiErrorResponse> | Response> {
   const { id } = await params;
   const searchParams = request.nextUrl.searchParams;
   const incrementViews = searchParams.get("incrementviews") === "true" || true;
 
   const file = await getFileById(id);
   if (!file) {
-    return NextResponse.json({ message: "File not found" }, { status: 404 });
+    return notFound;
   }
 
-  // Handle range requests
-  const range = request.headers.get("range");
-  if (range) {
-    // Parse range header
-    const parts = range.replace(/bytes=/, "").split("-");
-    const start = parseInt(parts[0], 10);
-    const end = parts[1] ? parseInt(parts[1], 10) : file.size - 1;
+  // Increment view count
+  if (!isbot(request.headers.get("User-Agent")) && incrementViews) {
+    file.views++;
+    await updateFile(file.id, {
+      views: file.views,
+    });
+  }
+
+  const fileSize = file.size;
+  const mimeType = file.mimeType || "application/octet-stream";
+  const isVideo = mimeType.startsWith("video/");
+  const isImage = mimeType.startsWith("image/");
+  const rangeHeader = request.headers.get("range");
+
+  // Handle video streaming with range support
+  if (isVideo && rangeHeader) {
+    const { start, end } = parseRange(rangeHeader, fileSize);
     const chunkSize = end - start + 1;
-
-    // Get partial content stream
-    const fileStream = await storage.getFileStreamRange(id, start, end); // You'll need to add this method
-
-    if (!fileStream) {
-      return NextResponse.json({ message: "File not found" }, { status: 404 });
+    const stream = await storage.getFileStreamRange(
+      file.storageName,
+      start,
+      end
+    );
+    if (!stream) {
+      return notFound;
     }
 
-    // Convert to web readable stream
-    const webReadableStream = readableToWebReadableStream(fileStream);
-
-    // Create response with partial content
-    const response = new NextResponse(webReadableStream, {
+    // Convert stream to Response
+    const response = new Response(stream as any, {
       status: 206,
       headers: {
-        "Content-Range": `bytes ${start}-${end}/${file.size}`,
+        "Content-Range": `bytes ${start}-${end}/${fileSize}`,
         "Accept-Ranges": "bytes",
         "Content-Length": chunkSize.toString(),
-        "Content-Type": file.mimeType,
-        "Content-Disposition": `inline; filename="${getFileFullName(file)}"`,
-        "Cache-Control": "max-age=3600, public",
+        "Content-Type": mimeType,
       },
     });
 
     return response;
   }
 
-  // Handle non-range requests as before
-  const fileStream = await storage.getFileStream(id);
-  if (!fileStream) {
-    return NextResponse.json({ message: "File not found" }, { status: 404 });
+  // Get full object stream
+  const stream = await storage.getFileStream(file.storageName);
+  if (!stream) {
+    return notFound;
   }
 
-  if (!isbot(request.headers.get("User-Agent")) && incrementViews) {
-    file.views++;
-    await updateFile(file.id, { views: file.views });
+  // Set common headers
+  const headers = new Headers({
+    "Content-Length": fileSize.toString(),
+    "Content-Type": mimeType,
+  });
+
+  // Add specific headers based on file type
+  if (isVideo) {
+    headers.set("Accept-Ranges", "bytes");
+  } else if (isImage) {
+    headers.set("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
+  } else {
+    headers.set(
+      "Content-Disposition",
+      `attachment; filename="${getFileFullName(file)}"`
+    );
   }
 
-  const webReadableStream = readableToWebReadableStream(fileStream);
-  const response = new NextResponse(webReadableStream);
+  // Return streamed response
+  return new Response(stream as any, {
+    headers,
+  });
 
-  response.headers.set("Cache-Control", "max-age=3600, public");
-  response.headers.set("Content-Type", file.mimeType);
-  response.headers.set("Accept-Ranges", "bytes");
-  response.headers.set(
-    "Content-Disposition",
-    `inline; filename="${getFileFullName(file)}"`
-  );
+  // const file = await getFileById(id);
+  // let fileBytes = null;
+  // if (!file || !(fileBytes = await storage.getFile(id))) {
+  //   return notFound;
+  // }
 
-  return response;
+  // if (!isbot(request.headers.get("User-Agent")) && incrementViews) {
+  //   file.views++;
+  //   await updateFile(file.id, {
+  //     views: file.views,
+  //   });
+  // }
+
+  // const response = new NextResponse(fileBytes);
+  // // Cache for 1 hour on browsers
+  // response.headers.set("Cache-Control", "max-age=3600, public");
+  // response.headers.set("Content-Type", file.mimeType);
+
+  // return response;
 }
