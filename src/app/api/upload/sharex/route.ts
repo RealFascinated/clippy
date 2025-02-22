@@ -42,6 +42,7 @@ async function processFile(file: File): Promise<FileData> {
     name: file.name,
     type: file.type,
     size: file.size,
+    // @ts-ignore - shut up
     content: await file.bytes(),
   };
 }
@@ -89,8 +90,10 @@ export async function POST(
     }
 
     const file = await processFile(files[0]);
+    const mimeType = file.type;
+
     const id = randomString(8);
-    const name = `${id}.${getFileExtension(file.type)}`;
+    const name = `${id}.${getFileExtension(mimeType)}`;
 
     const deleteKey = randomString(32);
 

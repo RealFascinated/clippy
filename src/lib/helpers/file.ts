@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
-import { fileTable } from "../db/schemas/file";
+import { fileTable, FileType } from "../db/schemas/file";
 import { db } from "../db/drizzle";
+import { getFileExtension } from "../utils";
 
 /**
  * Gets the file from the database
@@ -9,6 +10,9 @@ import { db } from "../db/drizzle";
  * @returns the file, or undefined if not found
  */
 export async function getFileById(id: string) {
+  if (id.includes(".")) {
+    id = id.split(".")[0];
+  }
   return (await db.select().from(fileTable).where(eq(fileTable.id, id)))[0];
 }
 
@@ -31,4 +35,14 @@ export async function getFileByDeleteKey(deleteKey: string) {
  */
 export async function removeFile(id: string) {
   return await db.delete(fileTable).where(eq(fileTable.id, id));
+}
+
+/**
+ * Updates a file in the database
+ *
+ * @param id the file's id
+ * @param values the values to update
+ */
+export async function updateFile(id: string, values: Record<string, unknown>) {
+  await db.update(fileTable).set(values).where(eq(fileTable.id, id));
 }

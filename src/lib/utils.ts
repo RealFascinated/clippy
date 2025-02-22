@@ -71,3 +71,22 @@ export function randomString(length: number): string {
 export function getFileExtension(mime: string) {
   return mime.split("/")[1];
 }
+
+
+/**
+ * Formats file bytes to human readable format.
+ *
+ * @param bytes - The number of bytes to format.
+ * @returns A string representing the formatted size.
+ */
+export function formatBytes(bytes: number): string {
+  if (bytes === 0) return "0 Bytes";
+
+  const k = 1024;
+  const dm = 2; // decimal places
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}

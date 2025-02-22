@@ -4,7 +4,6 @@ import Request from "@/lib/request";
 import { useRouter } from "next/navigation";
 import { Button } from "../../ui/button";
 import { Card, CardContent, CardTitle } from "../../ui/card";
-import CodeBlock from "@/components/ui/code-block";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -16,6 +15,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { CodeBlock } from "@/components/ui/code-block";
 
 type UploadTokenProps = {
   uploadToken?: string | null;
@@ -54,7 +54,7 @@ export default function UploadToken({ uploadToken }: UploadTokenProps) {
           </span>
           <CodeBlock
             className="group"
-            codeClassName="blur-sm group-hover:blur-none transition-all transform-gpu"
+            codeClassName="blur-xs group-hover:blur-none transition-all transform-gpu"
           >
             <span>{uploadToken}</span>
           </CodeBlock>

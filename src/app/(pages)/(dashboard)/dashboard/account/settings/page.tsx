@@ -14,8 +14,6 @@ export default async function Dashboard() {
 
   return (
     <div className="flex flex-col gap-2 w-full items-center">
-      <span>Welcome, {session.user.name}!</span>
-
       <UploadToken uploadToken={session.user.uploadToken} />
     </div>
   );

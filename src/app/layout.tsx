@@ -1,11 +1,13 @@
+import Background from "@/components/background";
+import AppSidebar from "@/components/dashboard/sidebar/sidebar";
 import Navbar from "@/components/navbar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/sonner";
 import { env } from "@/lib/env";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
-import Background from "@/components/background";
-import Footer from "@/components/footer";
-import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
+import AppProvider from "@/providers/app-provider";
 
 const font = Geist({
   variable: "--font-geist",
@@ -24,18 +26,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${font.variable} antialiased h-screen w-screen relative flex flex-col grow`}
-      >
-        <Navbar />
-        <Background />
+      <body className={`${font.variable} antialiased`}>
         <Toaster />
-        <div className="w-full h-full flex flex-col items-center">
-          <main className="flex flex-col p-2 h-full max-w-7xl items-center">
-            {children}
-          </main>
-        </div>
-        <Footer />
+        <Background />
+        <AppProvider>
+          <Navbar />
+          {children}
+        </AppProvider>
       </body>
     </html>
   );

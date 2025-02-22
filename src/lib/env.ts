@@ -19,6 +19,8 @@ export const env = createEnv({
     STORAGE_S3_ACCESS_KEY: z.string(),
     STORAGE_S3_SECRET_KEY: z.string(),
     STORAGE_S3_BUCKET: z.string(),
+
+    ALLOWED_MIME_TYPES: z.string(),
   },
 
   /**
@@ -44,6 +46,9 @@ export const env = createEnv({
     STORAGE_S3_ACCESS_KEY: process.env.STORAGE_S3_ACCESS_KEY,
     STORAGE_S3_SECRET_KEY: process.env.STORAGE_S3_SECRET_KEY,
     STORAGE_S3_BUCKET: process.env.STORAGE_S3_BUCKET,
+
+    // Allowed file types
+    ALLOWED_MIME_TYPES: process.env.ALLOWED_MIME_TYPES,
   },
 
   /**

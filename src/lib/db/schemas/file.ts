@@ -15,3 +15,5 @@ export const fileTable = pgTable("file", {
   // Metrics
   views: integer("views").notNull(),
 });
+
+export type FileType = typeof fileTable.$inferSelect;

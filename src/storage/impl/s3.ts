@@ -1,8 +1,7 @@
 import { env } from "@/lib/env";
+import { readableToBuffer } from "@/lib/utils";
 import * as Minio from "minio";
 import Storage from "../storage";
-import { readableToBuffer } from "@/lib/utils";
-import internal from "stream";
 
 export default class S3Storage extends Storage {
   private client: Minio.Client;
@@ -32,14 +31,6 @@ export default class S3Storage extends Storage {
     try {
       const file = await this.client.getObject(env.STORAGE_S3_BUCKET, name);
       return readableToBuffer(file);
-    } catch {
-      return null;
-    }
-  }
-
-  async getFileStream(name: string): Promise<internal.Readable | null> {
-    try {
-      return await this.client.getObject(env.STORAGE_S3_BUCKET, name);
     } catch {
       return null;
     }

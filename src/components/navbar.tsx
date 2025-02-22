@@ -5,6 +5,8 @@ import { BedIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
+import { SidebarTrigger } from "./ui/sidebar";
+import SidebarToggle from "./dashboard/sidebar/sidebar-toggle";
 
 type Item = {
   name: string;
@@ -45,8 +47,8 @@ function NavButton({ name, icon, href }: Item) {
 
 export default function Navbar() {
   return (
-    <div className="flex h-15 justify-center items-center bg-card/70 backdrop-blur-md border border-border">
-      <div className="flex max-w-7xl items-center h-full w-full justify-between px-4">
+    <header className="fle sticky flex top-0 z-50 justify-center items-center bg-card/60 backdrop-blur-md border border-border">
+      <div className="flex max-w-7xl items-center h-[var(--header-height)] w-full justify-between px-4">
         <div className="flex gap-10 items-center">
           {/* Website */}
           <Link
@@ -58,7 +60,6 @@ export default function Navbar() {
               alt={`${env.NEXT_PUBLIC_WEBSITE_NAME} Logo`}
               width={20}
               height={20}
-              className="invert"
             />
             <span>{env.NEXT_PUBLIC_WEBSITE_NAME}</span>
           </Link>
@@ -84,9 +85,11 @@ export default function Navbar() {
           <NavButton name="Login" className="h-8" href="/auth/login" />
         </NotSignedIn>
         <SignedIn>
-          <NavButton name="Dashboard" className="h-8" href="/user/dashboard" />
+          <NavButton name="Dashboard" className="h-8" href="/dashboard" />
         </SignedIn>
       </div>
-    </div>
+
+      <SidebarToggle />
+    </header>
   );
 }
