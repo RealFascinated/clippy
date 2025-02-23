@@ -1,3 +1,4 @@
+import { FileType } from "@/lib/db/schemas/file";
 import { getFileById, updateFile } from "@/lib/helpers/file";
 import { getFileFullName } from "@/lib/utils/file";
 import { storage } from "@/storage/create-storage";
@@ -30,7 +31,7 @@ function parseRange(
  * @param fileId The ID of the file
  */
 async function getFileMetadata(fileId: string): Promise<{
-  file: any;
+  file: FileType;
   fileSize: number;
   mimeType: string;
   isVideo: boolean;
@@ -129,7 +130,7 @@ export async function GET(
   const incrementViews = searchParams.get("incrementviews") === "true" || true;
 
   try {
-    const { file, isVideo } = await getFileMetadata(id);
+    const { file, isVideo, headers } = await getFileMetadata(id);
 
     // Increment view count
     if (!isbot(request.headers.get("User-Agent")) && incrementViews) {
@@ -149,7 +150,7 @@ export async function GET(
     }
 
     // Return streamed response with common headers
-    return new Response(stream as any, { headers: file.headers });
+    return new Response(stream as any, { headers: headers });
   } catch (error) {
     if (error instanceof NextResponse) {
       return error;
