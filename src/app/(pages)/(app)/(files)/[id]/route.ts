@@ -1,27 +1,23 @@
 import { getFileById, updateFile } from "@/lib/helpers/file";
 import { getFileFullName } from "@/lib/utils/file";
 import { storage } from "@/storage/create-storage";
-import { ApiErrorResponse } from "@/type/api/responses";
 import { isbot } from "isbot";
 import { NextRequest, NextResponse } from "next/server";
 
 const notFound = NextResponse.json(
-  {
-    message: "File not found",
-  },
-  {
-    status: 404,
-  }
+  { message: "File not found" },
+  { status: 404 }
 );
 
 /**
- * Parses the range header
- *
- * @param rangeHeader the range header
- * @param fileSize the size of the file
- * @returns the start and end of the bytes to get
+ * Parses the range header to get the start and end of the bytes to get
+ * @param rangeHeader The range header string
+ * @param fileSize The size of the file in bytes
  */
-function parseRange(rangeHeader: string, fileSize: number) {
+function parseRange(
+  rangeHeader: string,
+  fileSize: number
+): { start: number; end: number } {
   const [start, end] = rangeHeader.replace(/bytes=/, "").split("-");
   return {
     start: parseInt(start, 10),
@@ -31,12 +27,17 @@ function parseRange(rangeHeader: string, fileSize: number) {
 
 /**
  * Helper function to get file metadata and headers
- *
- * @param id the ID of the file
- * @returns an object containing file metadata and headers
+ * @param fileId The ID of the file
  */
-async function getFileMetadata(id: string) {
-  const file = await getFileById(id);
+async function getFileMetadata(fileId: string): Promise<{
+  file: any;
+  fileSize: number;
+  mimeType: string;
+  isVideo: boolean;
+  isImage: boolean;
+  headers: Headers;
+}> {
+  const file = await getFileById(fileId);
   if (!file) {
     throw notFound;
   }
@@ -69,18 +70,51 @@ async function getFileMetadata(id: string) {
   return { file, fileSize, mimeType, isVideo, isImage, headers };
 }
 
+/**
+ * Helper function to handle video streaming with range support
+ * @param request The NextRequest object
+ * @param fileId The ID of the file
+ */
+async function getRangeResponse(
+  request: NextRequest,
+  fileId: string
+): Promise<Response> {
+  const { file, fileSize, mimeType } = await getFileMetadata(fileId);
+  const rangeHeader = request.headers.get("range");
+  if (!rangeHeader) {
+    throw notFound;
+  }
+
+  const { start, end } = parseRange(rangeHeader, fileSize);
+  const chunkSize = end - start + 1;
+  const stream = await storage.getFileStreamRange(file.storageName, start, end);
+  if (!stream) {
+    throw notFound;
+  }
+
+  return new Response(stream as any, {
+    status: 206,
+    headers: {
+      "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+      "Accept-Ranges": "bytes",
+      "Content-Length": chunkSize.toString(),
+      "Content-Type": mimeType,
+      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
+    },
+  });
+}
+
 export async function HEAD(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-): Promise<NextResponse<ApiErrorResponse> | Response> {
-  const { id } = await params;
+): Promise<NextResponse | Response> {
+  const { id: fileId } = await params;
 
   try {
-    const { headers } = await getFileMetadata(id);
-    return new Response(null, {
-      status: 200,
-      headers,
-    });
+    const { headers } = await getFileMetadata(fileId);
+    return new Response(null, { status: 200, headers });
   } catch (error) {
     return error as NextResponse;
   }
@@ -89,50 +123,23 @@ export async function HEAD(
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-): Promise<NextResponse<ApiErrorResponse> | Response> {
+): Promise<NextResponse | Response> {
   const { id } = await params;
   const searchParams = request.nextUrl.searchParams;
   const incrementViews = searchParams.get("incrementviews") === "true" || true;
 
   try {
-    const { file, fileSize, mimeType, isVideo, isImage, headers } =
-      await getFileMetadata(id);
+    const { file, isVideo } = await getFileMetadata(id);
 
     // Increment view count
     if (!isbot(request.headers.get("User-Agent")) && incrementViews) {
       file.views++;
-      await updateFile(file.id, {
-        views: file.views,
-      });
+      await updateFile(file.id, { views: file.views });
     }
 
     // Handle video streaming with range support
-    const rangeHeader = request.headers.get("range");
-    if (isVideo && rangeHeader) {
-      const { start, end } = parseRange(rangeHeader, fileSize);
-      const chunkSize = end - start + 1;
-      const stream = await storage.getFileStreamRange(
-        file.storageName,
-        start,
-        end
-      );
-      if (!stream) {
-        throw notFound;
-      }
-
-      return new Response(stream as any, {
-        status: 206,
-        headers: {
-          "Content-Range": `bytes ${start}-${end}/${fileSize}`,
-          "Accept-Ranges": "bytes",
-          "Content-Length": chunkSize.toString(),
-          "Content-Type": mimeType,
-          "Cache-Control":
-            "no-store, no-cache, must-revalidate, proxy-revalidate",
-          Pragma: "no-cache",
-          Expires: "0",
-        },
-      });
+    if (isVideo && request.headers.get("range")) {
+      return getRangeResponse(request, id);
     }
 
     // Get full object stream
@@ -142,10 +149,16 @@ export async function GET(
     }
 
     // Return streamed response with common headers
-    return new Response(stream as any, {
-      headers,
-    });
+    return new Response(stream as any, { headers: file.headers });
   } catch (error) {
-    return error as NextResponse;
+    if (error instanceof NextResponse) {
+      return error;
+    } else {
+      console.error(error);
+      return NextResponse.json(
+        { message: "An unexpected error occurred" },
+        { status: 500 }
+      );
+    }
   }
 }
