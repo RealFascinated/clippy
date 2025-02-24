@@ -53,13 +53,15 @@ export default function AppSidebar() {
         {groups.map((group, index) => {
           return (
             <SidebarGroup key={index}>
-              {group.title && <SidebarGroupLabel>{group.title}</SidebarGroupLabel>}
+              {group.title && (
+                <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
+              )}
               <SidebarGroupContent>
                 <SidebarMenu>
                   {group.items.map((item, index) => (
                     <SidebarMenuItem key={index}>
                       <SidebarMenuButton asChild>
-                        <Link href={item.url}>
+                        <Link href={item.url} prefetch={false}>
                           <item.icon />
                           <span>{item.title}</span>
                         </Link>

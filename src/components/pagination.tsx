@@ -72,7 +72,10 @@ export default function Pagination({
 
     const maxPagesToShow = mobilePagination ? 3 : 4;
     const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-    const endPage = Math.min(totalPages == 0 ? 1 : totalItems, startPage + maxPagesToShow - 1);
+    const endPage = Math.min(
+      totalPages == 0 ? 1 : totalItems - 1,
+      startPage + maxPagesToShow - 1
+    );
     const pageNumbers = [];
 
     if (startPage > 1) {

@@ -52,13 +52,18 @@ export default function AccountLogin() {
       <CardContent className="h-full w-full flex flex-col gap-6 items-center justify-center px-8 py-6">
         <div className="flex flex-col items-center text-center gap-1">
           <span className="font-bold text-xl">Sign In</span>
-          <span className="text-muted-foreground">Enter your email below to sign in to your account</span>
+          <span className="text-muted-foreground">
+            Enter your email below to sign in to your account
+          </span>
         </div>
 
         {error && <div className="text-red-400">{error}</div>}
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6 w-full">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-6 w-full"
+          >
             <div className="flex flex-col gap-2 w-full">
               {/* Email */}
               <FormField
@@ -81,7 +86,11 @@ export default function AccountLogin() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder="password" type="password" {...field} />
+                      <Input
+                        placeholder="password"
+                        type="password"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -92,7 +101,7 @@ export default function AccountLogin() {
             {/* Auth Buttons */}
             <div className="flex flex-col w-full gap-2">
               <Button>Sign In</Button>
-              <Link href="/auth/register">
+              <Link href="/auth/register" prefetch={false}>
                 <Button type="button" variant="secondary" className="w-full">
                   Register
                 </Button>

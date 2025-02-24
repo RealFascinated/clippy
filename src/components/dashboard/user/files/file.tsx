@@ -51,7 +51,10 @@ export default function UserFile({ file, refetch }: UserFileProps) {
         <span>{formatBytes(file.size)}</span>
 
         {/* Download File */}
-        <Link href={`/${getFileName(file)}?incrementviews=false&download=true`}>
+        <Link
+          href={`/${getFileName(file)}?incrementviews=false&download=true`}
+          prefetch={false}
+        >
           <DownloadIcon className="size-4.5" />
         </Link>
 
