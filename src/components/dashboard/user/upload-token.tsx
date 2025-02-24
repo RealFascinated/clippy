@@ -44,52 +44,57 @@ export default function UploadToken({ uploadToken }: UploadTokenProps) {
   }
 
   return (
-    <Card className="w-fit">
+    <Card className="w-full">
       <CardTitle>Upload Token</CardTitle>
       <CardContent className="p-3">
-        <div className="flex flex-col gap-2">
-          <span className="text-muted-foreground">
-            This is your upload token. Do NOT share it with anyone!
-          </span>
-          <CodeBlock
-            className="group"
-            codeClassName="blur-xs group-hover:blur-none transition-all transform-gpu"
-          >
-            <span>{uploadToken}</span>
-          </CodeBlock>
+        {uploadToken !== null ? (
+          <div className="flex flex-col gap-2">
+            <span className="text-muted-foreground">This is your upload token. Do NOT share it with anyone!</span>
+            <CodeBlock className="group" codeClassName="blur-xs group-hover:blur-none transition-all transform-gpu">
+              <span>{uploadToken}</span>
+            </CodeBlock>
 
-          {/* Buttons */}
-          <div className="flex gap-2">
-            {/* Reset Upload Token */}
-            <Dialog open={resetTokenConfirmOpen} onOpenChange={setResetTokenConfirmOpen}>
-              <DialogTrigger asChild>
-                <Button className="w-fit" variant="destructive">
-                  Reset
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Are you absolutely sure?</DialogTitle>
-                  <DialogDescription>
-                    This action cannot be undone. You will need to update your upload token on
-                    ShareX.
-                  </DialogDescription>
-                </DialogHeader>
-
-                <DialogFooter>
-                  <Button className="w-fit" variant="destructive" onClick={() => resetToken()}>
+            {/* Buttons */}
+            <div className="flex gap-2">
+              {/* Reset Upload Token */}
+              <Dialog open={resetTokenConfirmOpen} onOpenChange={setResetTokenConfirmOpen}>
+                <DialogTrigger asChild>
+                  <Button className="w-fit" variant="destructive">
                     Reset
                   </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                    <DialogDescription>
+                      This action cannot be undone. You will need to update your upload token on ShareX.
+                    </DialogDescription>
+                  </DialogHeader>
 
-            {/* Copy Upload Token */}
-            <Button onClick={() => copyToken()} className="w-fit">
-              Copy
+                  <DialogFooter>
+                    <Button className="w-fit" variant="destructive" onClick={() => resetToken()}>
+                      Reset
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+
+              {/* Copy Upload Token */}
+              <Button onClick={() => copyToken()} className="w-fit">
+                Copy
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <span className="text-muted-foreground">You do not have an upload token. Please create one.</span>
+
+            {/* Create Upload Token */}
+            <Button onClick={() => resetToken()} className="w-fit">
+              Create
             </Button>
           </div>
-        </div>
+        )}
       </CardContent>
     </Card>
   );

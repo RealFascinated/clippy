@@ -43,7 +43,7 @@
 }
 
 :root {
-  --background: hsl(0 0% 3.9%);
+  --background: hsl(0 0% 6.5%);
   --foreground: hsl(0 0% 98%);
   --card: hsl(0, 0%, 10%);
   --card-foreground: hsl(0 0% 98%);

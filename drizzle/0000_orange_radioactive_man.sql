@@ -51,11 +51,15 @@ CREATE TABLE "file" (
 	"id" text PRIMARY KEY NOT NULL,
 	"delete_key" text NOT NULL,
 	"size" integer NOT NULL,
+	"extension" text NOT NULL,
 	"mime_type" text NOT NULL,
 	"created_at" timestamp NOT NULL,
-	"storage_name" text NOT NULL,
 	"user_id" text NOT NULL,
-	"views" integer NOT NULL
+	"thumbnail_id" text,
+	"thumbnail_extension" text,
+	"thumbnail_size" integer,
+	"views" integer NOT NULL,
+	CONSTRAINT "file_thumbnail_id_unique" UNIQUE("thumbnail_id")
 );
 --> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint

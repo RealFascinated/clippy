@@ -52,9 +52,7 @@ export default function AccountLogin() {
       <CardContent className="h-full w-full flex flex-col gap-6 items-center justify-center px-8 py-6">
         <div className="flex flex-col items-center text-center gap-1">
           <span className="font-bold text-xl">Sign In</span>
-          <span className="text-muted-foreground">
-            Enter your email below to sign in to your account
-          </span>
+          <span className="text-muted-foreground">Enter your email below to sign in to your account</span>
         </div>
 
         {error && <div className="text-red-400">{error}</div>}

@@ -1,7 +1,8 @@
 import { users } from "@/lib/db/schemas/auth-schema";
-import { AnyColumn, asc, desc, eq } from "drizzle-orm";
+import { AnyColumn, asc, count, desc, eq } from "drizzle-orm";
 import { db } from "../db/drizzle";
 import { fileTable } from "../db/schemas/file";
+import { randomString } from "../utils/utils";
 
 /**
  * Gets a user by their upload token
@@ -28,12 +29,17 @@ export async function getUserFiles(
       direction: "asc" | "desc";
     };
     limit?: number;
+    offset?: number;
   }
 ) {
   const query = db.select().from(fileTable).where(eq(fileTable.userId, id));
 
   if (options?.limit) {
     query.limit(options.limit);
+  }
+
+  if (options?.offset) {
+    query.offset(options.offset);
   }
 
   if (options?.sort) {
@@ -50,4 +56,25 @@ export async function getUserFiles(
   }
 
   return await query;
+}
+
+/**
+ * Gets the total amount of files
+ * this user has uploaded
+ *
+ * @param id the id of the user
+ * @returns the amount of files uploaded
+ */
+export async function getUserFilesCount(id: string) {
+  const query = await db.select({ count: count() }).from(fileTable).where(eq(fileTable.userId, id));
+  return query[0].count ?? undefined;
+}
+
+/**
+ * Generates a new upload token for a user
+ *
+ * @returns the upload token
+ */
+export function generateUploadToken() {
+  return randomString(32);
 }

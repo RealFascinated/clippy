@@ -47,16 +47,8 @@ export default function Navbar() {
       <div className="flex max-w-7xl items-center h-[var(--header-height)] w-full justify-between px-4">
         <div className="flex gap-10 items-center">
           {/* Website */}
-          <Link
-            href="/"
-            className="flex items-center gap-2 font-bold hover:opacity-80 transition-all transform-gpu"
-          >
-            <Image
-              src="/logo.png"
-              alt={`${env.NEXT_PUBLIC_WEBSITE_NAME} Logo`}
-              width={20}
-              height={20}
-            />
+          <Link href="/" className="flex items-center gap-2 font-bold hover:opacity-80 transition-all transform-gpu">
+            <Image src="/logo.png" alt={`${env.NEXT_PUBLIC_WEBSITE_NAME} Logo`} width={20} height={20} />
             <span>{env.NEXT_PUBLIC_WEBSITE_NAME}</span>
           </Link>
 
@@ -64,13 +56,7 @@ export default function Navbar() {
           <div className="flex gap-4 items-center">
             {items.map((item, index) => {
               return (
-                <NavButton
-                  key={index}
-                  name={item.name}
-                  icon={item.icon}
-                  href={item.href}
-                  className={item.className}
-                />
+                <NavButton key={index} name={item.name} icon={item.icon} href={item.href} className={item.className} />
               );
             })}
           </div>

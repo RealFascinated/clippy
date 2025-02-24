@@ -1,3 +1,4 @@
+import ShareXConfig from "@/components/dashboard/user/sharex-config";
 import UploadToken from "@/components/dashboard/user/upload-token";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
@@ -14,7 +15,10 @@ export default async function Dashboard() {
 
   return (
     <div className="flex flex-col gap-2 w-full items-center">
-      <UploadToken uploadToken={session.user.uploadToken} />
+      <div className="grid md:grid-cols-2 gap-2">
+        <UploadToken uploadToken={session.user.uploadToken} />
+        <ShareXConfig uploadToken={session.user.uploadToken} />
+      </div>
     </div>
   );
 }

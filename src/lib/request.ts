@@ -30,9 +30,7 @@ class Request {
   private static buildUrl(baseUrl: string, searchParams?: Record<string, unknown>): string {
     if (!searchParams) return baseUrl;
 
-    const params = new URLSearchParams(
-      Object.entries(searchParams).map(([key, value]) => [key, String(value)])
-    );
+    const params = new URLSearchParams(Object.entries(searchParams).map(([key, value]) => [key, String(value)]));
     return `${baseUrl}?${params.toString()}`;
   }
 
@@ -74,11 +72,7 @@ class Request {
     }
   }
 
-  static async send<T>(
-    url: string,
-    method: "GET" | "POST",
-    options?: RequestOptions
-  ): Promise<T | undefined> {
+  static async send<T>(url: string, method: "GET" | "POST", options?: RequestOptions): Promise<T | undefined> {
     const finalOptions = { ...DEFAULT_OPTIONS, ...options };
     const finalUrl = this.buildUrl(url, finalOptions.searchParams);
     const cacheKey = this.getCacheKey(finalUrl, method, finalOptions);

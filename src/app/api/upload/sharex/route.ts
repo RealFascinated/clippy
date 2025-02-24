@@ -2,7 +2,8 @@ import { db } from "@/lib/db/drizzle";
 import { fileTable } from "@/lib/db/schemas/file";
 import { env } from "@/lib/env";
 import { getUserByUploadToken } from "@/lib/helpers/user";
-import { getFileExtension, randomString } from "@/lib/utils/utils";
+import { getThumbnail } from "@/lib/thumbmail";
+import { randomString } from "@/lib/utils/utils";
 import { storage } from "@/storage/create-storage";
 import { NextResponse } from "next/server";
 
@@ -28,6 +29,11 @@ interface SuccessResponse {
    * The url to delete the file.
    */
   deletionUrl: string;
+
+  /**
+   * The url to the thumbmail.
+   */
+  thumbnailUrl?: string;
 }
 
 interface ErrorResponse {
@@ -51,9 +57,7 @@ async function processFile(file: File): Promise<FileData> {
  * Handles file uploads from ShareX
  * @param request The incoming request containing form data
  */
-export async function POST(
-  request: Request
-): Promise<NextResponse<SuccessResponse | ErrorResponse>> {
+export async function POST(request: Request): Promise<NextResponse<SuccessResponse | ErrorResponse>> {
   try {
     const formData = await request.formData();
     const uploadToken: string | undefined = formData.get("token")?.toString();
@@ -62,7 +66,7 @@ export async function POST(
     }
     const user = await getUserByUploadToken(uploadToken);
     if (!user) {
-      return NextResponse.json({ message: "Unknown upload token" }, { status: 401 });
+      return NextResponse.json({ message: "Invalid upload token" }, { status: 401 });
     }
 
     const files = formData.getAll("sharex");
@@ -78,36 +82,73 @@ export async function POST(
     }
 
     const file = await processFile(files[0]);
-    const mimeType = file.type;
-
     const id = randomString(8);
-    const name = `${id}.${getFileExtension(mimeType)}`;
-
+    const extension = file.name.split(".")[1];
+    const name = `${id}.${extension}`;
+    const mimeType = file.type;
     const deleteKey = randomString(32);
+    const fileBuffer = Buffer.from(file.content);
 
-    await db.insert(fileTable).values({
+    console.log(mimeType);
+
+    let thumbnailData:
+      | {
+          id: string;
+          name: string;
+          size: number;
+        }
+      | undefined = undefined;
+    if (mimeType.startsWith("image") || mimeType.startsWith("video")) {
+      const thumbnailId = randomString(16);
+      const thumbnailName = `${thumbnailId}.webp`;
+      const thumbnail = await getThumbnail(name, fileBuffer, mimeType);
+
+      const savedThumbnail = await storage.saveFile(thumbnailName, thumbnail.buffer);
+      if (!savedThumbnail) {
+        await storage.deleteFile(thumbnailName);
+        return NextResponse.json({ message: "An error occured whilst generating the thumbnail" }, { status: 500 });
+      }
+
+      thumbnailData = {
+        id: thumbnailId,
+        name: thumbnailName,
+        size: thumbnail.size,
+      };
+    }
+
+    const savedFile = await storage.saveFile(name, fileBuffer);
+    if (!savedFile) {
+      await storage.deleteFile(name);
+      return NextResponse.json({ message: "An error occured whilst saving your file" }, { status: 500 });
+    }
+
+    const values = {
       id: id,
       views: 0,
       deleteKey: deleteKey,
       size: file.size,
       mimeType: file.type,
+      extension: extension,
       createdAt: new Date(),
-      storageName: name,
       userId: user.id,
-    });
 
-    const saved = await storage.saveFile(name, Buffer.from(file.content));
-    if (!saved) {
-      return NextResponse.json(
-        { message: "An error occured whilst saving your file" },
-        { status: 500 }
-      );
-    }
+      // Thumbnail
+      thumbnailId: thumbnailData?.id,
+      thumbnailExtension: thumbnailData ? thumbnailData.name.split(".")[1] : undefined,
+      thumbnailSize: thumbnailData?.size,
+    };
+
+    await db.insert(fileTable).values(values);
 
     return NextResponse.json({
       path: name,
       url: env.NEXT_PUBLIC_WEBSITE_URL,
-      deletionUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/file/delete/${deleteKey}`,
+      deletionUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/file/delete/${values.deleteKey}`,
+      ...(values.thumbnailId
+        ? {
+            thumbnailUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/thumbnail/${values.thumbnailId}.${values.thumbnailExtension}`,
+          }
+        : {}),
     });
   } catch (error) {
     console.error("Error processing file upload:", error);

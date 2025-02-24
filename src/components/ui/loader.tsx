@@ -1,5 +1,5 @@
-import ScaleLoader from "react-spinners/ScaleLoader";
+import Loaderr from "react-spinners/BeatLoader";
 
 export default function Loader() {
-  return <ScaleLoader color="#fff" />;
+  return <Loaderr color="#fff" size={10} />;
 }

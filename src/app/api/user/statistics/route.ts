@@ -6,9 +6,7 @@ import { UserStatisticsResponse } from "@/type/api/user/statistics-response";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function GET(
-  request: Request
-): Promise<NextResponse<UserStatisticsResponse | ApiErrorResponse>> {
+export async function GET(request: Request): Promise<NextResponse<UserStatisticsResponse | ApiErrorResponse>> {
   const requestHeaders = await headers();
   const session = await auth.api.getSession({
     headers: requestHeaders,

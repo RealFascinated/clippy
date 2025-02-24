@@ -46,7 +46,7 @@ export default function CreateAccount() {
       },
       {
         onSuccess: () => {
-          router.push("/user/dashboard");
+          router.push("/dashboard");
           router.refresh();
         },
         onError: error => {
@@ -61,9 +61,7 @@ export default function CreateAccount() {
       <CardContent className="h-full w-full flex flex-col gap-6 items-center justify-center px-8 py-6">
         <div className="flex flex-col items-center text-center gap-1">
           <span className="font-bold text-xl">Create an account</span>
-          <span className="text-muted-foreground">
-            Enter your email below to create your account
-          </span>
+          <span className="text-muted-foreground">Enter your email below to create your account</span>
         </div>
 
         {error && <div className="text-red-400">{error}</div>}
