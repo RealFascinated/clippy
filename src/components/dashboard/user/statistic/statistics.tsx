@@ -1,12 +1,12 @@
-"use client";
-
 import request from "@/lib/request";
 import { formatBytes } from "@/lib/utils/utils";
 import { UserStatisticsResponse } from "@/type/api/user/statistics-response";
-import { useQuery } from "@tanstack/react-query";
 import { ClockIcon, EyeIcon, FileIcon, ServerIcon } from "lucide-react";
 import { ReactElement } from "react";
 import UserStatistic from "./statistic";
+import { headers } from "next/headers";
+import { AxiosHeaders } from "axios";
+import { env } from "@/lib/env";
 
 type Format = "number" | "bytes";
 type Statistic = {
@@ -64,14 +64,13 @@ function format(value: unknown, format: Format) {
   }
 }
 
-export default function UserStatistics() {
-  const { data: statisticsResponse, isLoading } =
-    useQuery<UserStatisticsResponse>({
-      queryKey: ["statistics"],
-      queryFn: async () =>
-        (await request.get<UserStatisticsResponse>("/api/user/statistics"))!,
-      placeholderData: data => data,
-    });
+export default async function UserStatistics() {
+  const statisticsResponse = await request.get<UserStatisticsResponse>(
+    `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/statistics`,
+    {
+      headers: (await headers()) as unknown as AxiosHeaders,
+    }
+  );
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full justify-between gap-4 items-center">
@@ -82,8 +81,7 @@ export default function UserStatistics() {
             key={index}
             name={statistic.name}
             icon={statistic.icon}
-            value={!isLoading ? format(value, statistic.format) : undefined}
-            loading={isLoading}
+            value={format(value, statistic.format)}
           />
         );
       })}
