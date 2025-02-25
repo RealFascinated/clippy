@@ -1,7 +1,7 @@
 FROM oven/bun:1.2.2-debian AS base
 
-# Install ffmpeg
-RUN apt-get update && apt-get install -y ffmpeg
+# Install dependencies
+RUN apt-get update && apt-get install -y ffmpeg curl wget
 
 # Install dependencies
 FROM base AS depends
