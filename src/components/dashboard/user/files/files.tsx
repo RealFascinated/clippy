@@ -15,12 +15,13 @@ export default function UserFiles() {
   const {
     data: files,
     isLoading,
+    isRefetching,
     refetch,
   } = useQuery<Page<FileType>>({
     queryKey: ["userFiles", page],
     queryFn: async () =>
       (await request.get<Page<FileType>>(`/api/user/files/${page}`))!,
-    placeholderData: data => data,
+    placeholderData: (data) => data,
   });
 
   return (
@@ -63,7 +64,7 @@ export default function UserFiles() {
             page={page}
             totalItems={files.metadata.totalItems}
             itemsPerPage={files.metadata.itemsPerPage}
-            loadingPage={isLoading ? page : undefined}
+            loadingPage={isLoading || isRefetching ? page : undefined}
             onPageChange={(newPage) => setPage(newPage)}
           />
         </>

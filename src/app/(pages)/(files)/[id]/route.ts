@@ -85,6 +85,7 @@ async function getFileMetadata(
  */
 async function getRangeResponse(
   request: NextRequest,
+  user: UserType,
   fileId: string
 ): Promise<Response> {
   const { fileMeta } = await getFileMetadata(fileId);
@@ -96,7 +97,7 @@ async function getRangeResponse(
   const { start, end } = parseRange(rangeHeader, fileMeta.size);
   const chunkSize = end - start + 1;
   const stream = await storage.getFileStreamRange(
-    `${fileMeta.id}.${fileMeta.extension}`,
+    getFilePath(user.id, fileMeta),
     start,
     end
   );
@@ -168,7 +169,7 @@ export async function GET(
 
     // Handle video streaming with range support
     if (isVideo && request.headers.get("range")) {
-      return getRangeResponse(request, id);
+      return getRangeResponse(request, user, id);
     }
 
     // Get full object stream

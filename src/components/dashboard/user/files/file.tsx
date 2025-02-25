@@ -18,6 +18,7 @@ import { DownloadIcon, PlayIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
+import { format, differenceInHours, formatDistance } from "date-fns";
 
 type UserFileProps = {
   fileMeta: FileType;
@@ -28,40 +29,54 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
   const hasThumbnail =
     fileMeta.mimeType.startsWith("video") ||
     fileMeta.mimeType.startsWith("image");
+  const formattedDate =
+    differenceInHours(new Date(fileMeta.createdAt), new Date()) > 24
+      ? format(new Date(fileMeta.createdAt).toISOString(), "MM/dd/yyyy HH:ss a")
+      : formatDistance(new Date(fileMeta.createdAt), new Date()) + " ago";
 
   return (
-    <div className="bg-card h-54 flex flex-col items-center p-2 rounded-md">
-      {/* File Name */}
-      <span>{getFileName(fileMeta)}</span>
+    <div className="bg-card h-full flex flex-col items-center rounded-md">
+      <div className="h-full p-2 flex flex-col gap-1">
+        <div className="flex flex-col items-center">
+          {/* File Name */}
+          <span>{getFileName(fileMeta)}</span>
 
-      {/* Preview */}
-      <div className="flex-1 flex items-center">
-        {hasThumbnail ? (
-          <FilePreview fileMeta={fileMeta} />
-        ) : (
-          <div className="flex justify-center items-center">
-            <div className="w-16">
-              <FileExtensionIcon extension={fileMeta.extension} />
+          {/* Upload Date */}
+          <span className="text-sm text-muted-foreground">{formattedDate}</span>
+        </div>
+
+        {/* Preview */}
+        <div className="flex-1 flex items-center">
+          {hasThumbnail ? (
+            <FilePreview fileMeta={fileMeta} />
+          ) : (
+            <div className="flex justify-center items-center">
+              <div className="w-16">
+                <FileExtensionIcon extension={fileMeta.extension} />
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Stats */}
-      <div className="flex gap-2 items-center">
-        {/* File Size */}
-        <span>{formatBytes(fileMeta.size)}</span>
+      <div className="flex gap-2 items-center justify-between w-full px-1.5 bg-background py-1 rounded-bl-md rounded-br-md">
+        <span className="text-sm text-muted-foreground">
+          {formatBytes(fileMeta.size)}
+        </span>
 
-        {/* Download File */}
-        <Link
-          href={`/${getFileName(fileMeta)}?incrementviews=false&download=true`}
-          prefetch={false}
-        >
-          <DownloadIcon className="size-4.5" />
-        </Link>
+        <div className="flex gap-2 items-center">
+          {/* Download File */}
+          <Link
+            href={`/${getFileName(fileMeta)}?incrementviews=false&download=true`}
+            prefetch={false}
+          >
+            <DownloadIcon className="size-4.5" />
+          </Link>
 
-        {/* Delete File Button */}
-        <DeleteFileDialog fileMeta={fileMeta} refetch={refetch} />
+          {/* Delete File Button */}
+          <DeleteFileDialog fileMeta={fileMeta} refetch={refetch} />
+        </div>
       </div>
     </div>
   );
@@ -84,7 +99,7 @@ function FilePreview({ fileMeta }: { fileMeta: FileType }) {
           <PlayIcon className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 size-10" />
         )}
       </DialogTrigger>
-      <DialogContent className="flex flex-col items-center w-fit sm:max-w-3xl">
+      <DialogContent className="flex flex-col items-center w-fit sm:max-w-4xl">
         <DialogHeader>
           <DialogTitle>{getFileName(fileMeta)}</DialogTitle>
         </DialogHeader>
