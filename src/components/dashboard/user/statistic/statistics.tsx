@@ -1,12 +1,11 @@
+import { env } from "@/lib/env";
 import request from "@/lib/request";
 import { formatBytes } from "@/lib/utils/utils";
 import { UserStatisticsResponse } from "@/type/api/user/statistics-response";
 import { ClockIcon, EyeIcon, FileIcon, ServerIcon } from "lucide-react";
+import { headers } from "next/headers";
 import { ReactElement } from "react";
 import UserStatistic from "./statistic";
-import { AxiosHeaders } from "axios";
-import { env } from "@/lib/env";
-import { headers } from "next/headers";
 
 type Format = "number" | "bytes";
 type Statistic = {

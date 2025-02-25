@@ -37,6 +37,10 @@ export async function GET(
 
     statistics.storageUsed += image.size;
     statistics.totalViews += image.views;
+
+    if (image.thumbnailSize) {
+      statistics.storageUsed += image.thumbnailSize;
+    }
   }
 
   return NextResponse.json(statistics, { status: 200 });
