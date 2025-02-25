@@ -21,6 +21,13 @@ export function CodeBlock({ children, className, codeClassName }: CodeProps) {
 
 export function InlineCodeBlock({ children, className }: CodeProps) {
   return (
-    <code className={cn("bg-secondary px-1 py-0.5 border rounded-md w-fit text-primary", className)}>{children}</code>
+    <code
+      className={cn(
+        "bg-secondary px-1 py-0.5 border rounded-md w-fit text-primary",
+        className
+      )}
+    >
+      {children}
+    </code>
   );
 }

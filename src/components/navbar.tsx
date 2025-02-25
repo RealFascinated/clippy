@@ -1,11 +1,11 @@
 import { env } from "@/lib/env";
 import NotSignedIn from "@/providers/auth/not-signed-in";
 import SignedIn from "@/providers/auth/signed-in";
-import { BedIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
 import SidebarToggle from "./dashboard/sidebar/sidebar-toggle";
+import ProfileButton from "./user/profile-button";
 
 type Item = {
   name: string;
@@ -14,23 +14,7 @@ type Item = {
   className?: string;
 };
 
-const items: Item[] = [
-  {
-    name: "Hello",
-    icon: <BedIcon />,
-    href: "/",
-  },
-  {
-    name: "Hello",
-    icon: <BedIcon />,
-    href: "/",
-  },
-  {
-    name: "Hello",
-    icon: <BedIcon />,
-    href: "/",
-  },
-];
+const items: Item[] = [];
 
 function NavButton({ name, icon, href }: Item) {
   return (
@@ -45,7 +29,7 @@ function NavButton({ name, icon, href }: Item) {
   );
 }
 
-export default function Navbar() {
+export default async function Navbar() {
   return (
     <header className="fle sticky flex top-0 z-50 justify-center items-center bg-card/60 backdrop-blur-md border border-border">
       <div className="flex max-w-7xl items-center h-[var(--header-height)] w-full justify-between px-4">
@@ -86,7 +70,7 @@ export default function Navbar() {
           <NavButton name="Login" className="h-8" href="/auth/login" />
         </NotSignedIn>
         <SignedIn>
-          <NavButton name="Dashboard" className="h-8" href="/dashboard" />
+          <ProfileButton />
         </SignedIn>
       </div>
 

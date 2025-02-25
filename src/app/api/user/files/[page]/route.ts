@@ -25,7 +25,7 @@ export async function GET(
   pagination.setItemsPerPage(ITEMS_PER_PAGE);
   pagination.setTotalItems(totalFiles);
 
-  const paginatedPage = await pagination.getPage(page, async (fetchItems) => {
+  const paginatedPage = await pagination.getPage(page, async fetchItems => {
     const files = await getUserFiles(session.user.id, {
       limit: ITEMS_PER_PAGE,
       offset: fetchItems.start,

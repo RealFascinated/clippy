@@ -22,7 +22,9 @@ export async function getFileById(id: string) {
  * @returns the file, or undefined if not found
  */
 export async function getFileByDeleteKey(deleteKey: string) {
-  return (await db.select().from(fileTable).where(eq(fileTable.deleteKey, deleteKey)))[0];
+  return (
+    await db.select().from(fileTable).where(eq(fileTable.deleteKey, deleteKey))
+  )[0];
 }
 
 /**

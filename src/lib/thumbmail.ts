@@ -24,7 +24,10 @@ export async function getThumbnail(
 
   if (mimeType.includes("video")) {
     const tempDir = os.tmpdir();
-    const inputPath = path.join(tempDir, `${randomString(8)}.${getFileExtension(mimeType)}`);
+    const inputPath = path.join(
+      tempDir,
+      `${randomString(8)}.${getFileExtension(mimeType)}`
+    );
     const outputPath = path.join(tempDir, `${randomString(8)}.webp`);
 
     try {
@@ -35,9 +38,15 @@ export async function getThumbnail(
       thumbnail = await fs.readFile(outputPath);
 
       // Resize the thumbnail to a maximum width and height of 250 pixels using Sharp
-      thumbnail = await Sharp(thumbnail).resize(250, 250, { fit: "inside" }).webp({ quality }).toBuffer();
+      thumbnail = await Sharp(thumbnail)
+        .resize(250, 250, { fit: "inside" })
+        .webp({ quality })
+        .toBuffer();
     } catch (err) {
-      console.error(`An error occurred while processing the video file ${fileName}:`, err);
+      console.error(
+        `An error occurred while processing the video file ${fileName}:`,
+        err
+      );
     } finally {
       // Cleanup temporary files
       await fs.unlink(inputPath).catch(console.error);
@@ -45,9 +54,15 @@ export async function getThumbnail(
     }
   } else if (mimeType.includes("image")) {
     try {
-      thumbnail = await Sharp(buffer).resize(250, 250, { fit: "inside" }).webp({ quality }).toBuffer();
+      thumbnail = await Sharp(buffer)
+        .resize(250, 250, { fit: "inside" })
+        .webp({ quality })
+        .toBuffer();
     } catch (err) {
-      console.error(`An error occurred while processing the image file ${fileName}:`, err);
+      console.error(
+        `An error occurred while processing the image file ${fileName}:`,
+        err
+      );
     }
   }
 

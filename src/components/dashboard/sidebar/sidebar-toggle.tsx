@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 export default function SidebarToggle() {
   const pathname = usePathname();
-  if (!pathname.startsWith("/user/dashboard")) {
+  if (!pathname.startsWith("/dashboard")) {
     return null;
   }
 

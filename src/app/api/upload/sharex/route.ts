@@ -57,28 +57,42 @@ async function processFile(file: File): Promise<FileData> {
  * Handles file uploads from ShareX
  * @param request The incoming request containing form data
  */
-export async function POST(request: Request): Promise<NextResponse<SuccessResponse | ErrorResponse>> {
+export async function POST(
+  request: Request
+): Promise<NextResponse<SuccessResponse | ErrorResponse>> {
   try {
     const formData = await request.formData();
     const uploadToken: string | undefined = formData.get("token")?.toString();
     if (!uploadToken) {
-      return NextResponse.json({ message: "No upload token was provided" }, { status: 401 });
+      return NextResponse.json(
+        { message: "No upload token was provided" },
+        { status: 401 }
+      );
     }
     const user = await getUserByUploadToken(uploadToken);
     if (!user) {
-      return NextResponse.json({ message: "Invalid upload token" }, { status: 401 });
+      return NextResponse.json(
+        { message: "Invalid upload token" },
+        { status: 401 }
+      );
     }
 
     const files = formData.getAll("sharex");
 
     // Validate if files exist
     if (!files.length) {
-      return NextResponse.json({ message: "No files were uploaded" }, { status: 400 });
+      return NextResponse.json(
+        { message: "No files were uploaded" },
+        { status: 400 }
+      );
     }
 
     // Validate file types
     if (!files.every(file => file instanceof File)) {
-      return NextResponse.json({ message: "Invalid file format" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Invalid file format" },
+        { status: 400 }
+      );
     }
 
     const file = await processFile(files[0]);
@@ -103,10 +117,16 @@ export async function POST(request: Request): Promise<NextResponse<SuccessRespon
       const thumbnailName = `${thumbnailId}.webp`;
       const thumbnail = await getThumbnail(name, fileBuffer, mimeType);
 
-      const savedThumbnail = await storage.saveFile(thumbnailName, thumbnail.buffer);
+      const savedThumbnail = await storage.saveFile(
+        thumbnailName,
+        thumbnail.buffer
+      );
       if (!savedThumbnail) {
         await storage.deleteFile(thumbnailName);
-        return NextResponse.json({ message: "An error occured whilst generating the thumbnail" }, { status: 500 });
+        return NextResponse.json(
+          { message: "An error occured whilst generating the thumbnail" },
+          { status: 500 }
+        );
       }
 
       thumbnailData = {
@@ -119,7 +139,10 @@ export async function POST(request: Request): Promise<NextResponse<SuccessRespon
     const savedFile = await storage.saveFile(name, fileBuffer);
     if (!savedFile) {
       await storage.deleteFile(name);
-      return NextResponse.json({ message: "An error occured whilst saving your file" }, { status: 500 });
+      return NextResponse.json(
+        { message: "An error occured whilst saving your file" },
+        { status: 500 }
+      );
     }
 
     const values = {
@@ -134,7 +157,9 @@ export async function POST(request: Request): Promise<NextResponse<SuccessRespon
 
       // Thumbnail
       thumbnailId: thumbnailData?.id,
-      thumbnailExtension: thumbnailData ? thumbnailData.name.split(".")[1] : undefined,
+      thumbnailExtension: thumbnailData
+        ? thumbnailData.name.split(".")[1]
+        : undefined,
       thumbnailSize: thumbnailData?.size,
     };
 
@@ -155,7 +180,8 @@ export async function POST(request: Request): Promise<NextResponse<SuccessRespon
 
     return NextResponse.json(
       {
-        message: "Failed to upload your file, please contact an admin if this keeps occuring",
+        message:
+          "Failed to upload your file, please contact an admin if this keeps occuring",
       },
       { status: 500 }
     );

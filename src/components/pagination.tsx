@@ -1,5 +1,8 @@
 import { cn } from "@/lib/utils/utils";
-import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from "@heroicons/react/16/solid";
+import {
+  ChevronDoubleLeftIcon,
+  ChevronDoubleRightIcon,
+} from "@heroicons/react/16/solid";
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import React, { useEffect, useState } from "react";
@@ -18,7 +21,10 @@ type PaginationItemWrapperProps = {
   children: React.ReactNode;
 };
 
-const PaginationItemWrapper = ({ isLoadingPage, children }: PaginationItemWrapperProps) => (
+const PaginationItemWrapper = ({
+  isLoadingPage,
+  children,
+}: PaginationItemWrapperProps) => (
   <PaginationItem
     className={clsx(isLoadingPage ? "cursor-not-allowed" : "cursor-pointer")}
     aria-disabled={isLoadingPage}
@@ -56,7 +62,12 @@ export default function Pagination({
   useEffect(() => setCurrentPage(page), [page]);
 
   const handlePageChange = (newPage: number) => {
-    if (newPage >= 1 && newPage <= totalPages && newPage !== currentPage && !isLoading) {
+    if (
+      newPage >= 1 &&
+      newPage <= totalPages &&
+      newPage !== currentPage &&
+      !isLoading
+    ) {
       setCurrentPage(newPage);
       onPageChange(newPage);
     }
@@ -81,7 +92,10 @@ export default function Pagination({
     if (startPage > 1) {
       pageNumbers.push(
         <PaginationItemWrapper key="start" isLoadingPage={isLoading}>
-          <PaginationLink href={generatePageUrl?.(1) || ""} onClick={e => handleLinkClick(1, e)}>
+          <PaginationLink
+            href={generatePageUrl?.(1) || ""}
+            onClick={e => handleLinkClick(1, e)}
+          >
             1
           </PaginationLink>
         </PaginationItemWrapper>
@@ -102,7 +116,11 @@ export default function Pagination({
             href={generatePageUrl?.(i) || ""}
             onClick={e => handleLinkClick(i, e)}
           >
-            {loadingPage === i ? <ArrowPathIcon className="w-4 h-4 animate-spin" /> : i}
+            {loadingPage === i ? (
+              <ArrowPathIcon className="w-4 h-4 animate-spin" />
+            ) : (
+              i
+            )}
           </PaginationLink>
         </PaginationItemWrapper>
       );
@@ -117,7 +135,10 @@ export default function Pagination({
         );
       pageNumbers.push(
         <PaginationItemWrapper key="end" isLoadingPage={isLoading}>
-          <PaginationLink href={generatePageUrl?.(totalPages) || ""} onClick={e => handleLinkClick(totalPages, e)}>
+          <PaginationLink
+            href={generatePageUrl?.(totalPages) || ""}
+            onClick={e => handleLinkClick(totalPages, e)}
+          >
             {totalPages}
           </PaginationLink>
         </PaginationItemWrapper>
@@ -158,7 +179,9 @@ export default function Pagination({
           )}
           <PaginationItemWrapper key="previous" isLoadingPage={isLoading}>
             <PaginationPrevious
-              href={currentPage > 1 ? generatePageUrl?.(currentPage - 1) || "" : ""}
+              href={
+                currentPage > 1 ? generatePageUrl?.(currentPage - 1) || "" : ""
+              }
               onClick={e => handleLinkClick(currentPage - 1, e)}
               aria-disabled={currentPage === 1}
               className={clsx(currentPage === 1 && "cursor-not-allowed", "p-3")}
@@ -167,10 +190,17 @@ export default function Pagination({
           {renderPageNumbers()}
           <PaginationItemWrapper key="next" isLoadingPage={isLoading}>
             <PaginationNext
-              href={currentPage < totalPages ? generatePageUrl?.(currentPage + 1) || "" : ""}
+              href={
+                currentPage < totalPages
+                  ? generatePageUrl?.(currentPage + 1) || ""
+                  : ""
+              }
               onClick={e => handleLinkClick(currentPage + 1, e)}
               aria-disabled={currentPage === totalPages}
-              className={clsx(currentPage === totalPages && "cursor-not-allowed", "p-3")}
+              className={clsx(
+                currentPage === totalPages && "cursor-not-allowed",
+                "p-3"
+              )}
             />
           </PaginationItemWrapper>
           {mobilePagination && (
@@ -178,7 +208,9 @@ export default function Pagination({
               <PaginationLink
                 href={generatePageUrl?.(totalPages) || ""}
                 onClick={e => handleLinkClick(totalPages, e)}
-                className={clsx(currentPage === totalPages && "cursor-not-allowed")}
+                className={clsx(
+                  currentPage === totalPages && "cursor-not-allowed"
+                )}
               >
                 <ChevronDoubleRightIcon className="h-4 w-4" />
               </PaginationLink>

@@ -26,7 +26,11 @@ export default abstract class Storage {
    */
   abstract getFileStream(name: string): Promise<internal.Readable | null>;
 
-  abstract getFileStreamRange(name: string, start: number, end: number): Promise<internal.Readable | null>;
+  abstract getFileStreamRange(
+    name: string,
+    start: number,
+    end: number
+  ): Promise<internal.Readable | null>;
 
   /**
    * Deleted a file from the storage.

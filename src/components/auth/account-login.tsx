@@ -9,7 +9,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "../ui/form";
 import { Input } from "../ui/input";
 
 const registerSchema = z.object({
@@ -37,7 +43,7 @@ export default function AccountLogin() {
       },
       {
         onSuccess: () => {
-          router.push("/user/dashboard");
+          router.push("/dashboard");
           router.refresh();
         },
         onError: error => {

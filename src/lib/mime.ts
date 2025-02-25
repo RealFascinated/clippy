@@ -46,7 +46,10 @@ export function validateMimeType(mime: string): boolean {
         valid = true;
         break;
       }
-    } else if (mimeParts[0] === allowedParts[0] && mimeParts[1] === allowedParts[1]) {
+    } else if (
+      mimeParts[0] === allowedParts[0] &&
+      mimeParts[1] === allowedParts[1]
+    ) {
       valid = true;
       break;
     }

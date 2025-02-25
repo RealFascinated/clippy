@@ -20,7 +20,8 @@ export function randomString(length: number): string {
   }
 
   // Define the character set for the random string
-  const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const charset =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
   // Create a Uint8Array to store random values
   const randomBytes = new Uint8Array(length);

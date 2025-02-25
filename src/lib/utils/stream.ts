@@ -6,7 +6,9 @@ import internal from "stream";
  * @param readable the readable stream
  * @returns a buffer from the stream
  */
-export async function readableToBuffer(readable: internal.Readable): Promise<Buffer> {
+export async function readableToBuffer(
+  readable: internal.Readable
+): Promise<Buffer> {
   if (!readable || typeof readable.on !== "function") {
     throw new TypeError("Input must be a Readable stream");
   }

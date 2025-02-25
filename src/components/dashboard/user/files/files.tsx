@@ -18,14 +18,17 @@ export default function UserFiles() {
     refetch,
   } = useQuery<Page<FileType>>({
     queryKey: ["userFiles", page],
-    queryFn: async () => (await request.get<Page<FileType>>(`/api/user/files/${page}`))!,
+    queryFn: async () =>
+      (await request.get<Page<FileType>>(`/api/user/files/${page}`))!,
     placeholderData: data => data,
   });
 
   return (
     <div className="flex flex-col gap-2 w-full bg-secondary/90 rounded-md p-2 border">
       <span className="font-semibold">Your Files</span>
-      <span className="text-muted-foreground">All of your files you have uploaded</span>
+      <span className="text-muted-foreground">
+        All of your files you have uploaded
+      </span>
 
       {isLoading && (
         <div className="w-full flex justify-center">
@@ -51,7 +54,9 @@ export default function UserFiles() {
               </div>
             </>
           ) : (
-            <span className="text-red-400">No files found, or unknown page</span>
+            <span className="text-red-400">
+              No files found, or unknown page
+            </span>
           )}
 
           <Pagination

@@ -23,7 +23,8 @@ type UploadTokenProps = {
 
 export default function UploadToken({ uploadToken }: UploadTokenProps) {
   const router = useRouter();
-  const [resetTokenConfirmOpen, setResetTokenConfirmOpen] = useState<boolean>(false);
+  const [resetTokenConfirmOpen, setResetTokenConfirmOpen] =
+    useState<boolean>(false);
 
   async function resetToken() {
     await Request.post("/api/user/reset-upload-token");
@@ -49,15 +50,23 @@ export default function UploadToken({ uploadToken }: UploadTokenProps) {
       <CardContent className="p-3">
         {uploadToken !== null ? (
           <div className="flex flex-col gap-2">
-            <span className="text-muted-foreground">This is your upload token. Do NOT share it with anyone!</span>
-            <CodeBlock className="group" codeClassName="blur-xs group-hover:blur-none transition-all transform-gpu">
+            <span className="text-muted-foreground">
+              This is your upload token. Do NOT share it with anyone!
+            </span>
+            <CodeBlock
+              className="group"
+              codeClassName="blur-xs group-hover:blur-none transition-all transform-gpu"
+            >
               <span>{uploadToken}</span>
             </CodeBlock>
 
             {/* Buttons */}
             <div className="flex gap-2">
               {/* Reset Upload Token */}
-              <Dialog open={resetTokenConfirmOpen} onOpenChange={setResetTokenConfirmOpen}>
+              <Dialog
+                open={resetTokenConfirmOpen}
+                onOpenChange={setResetTokenConfirmOpen}
+              >
                 <DialogTrigger asChild>
                   <Button className="w-fit" variant="destructive">
                     Reset
@@ -67,12 +76,17 @@ export default function UploadToken({ uploadToken }: UploadTokenProps) {
                   <DialogHeader>
                     <DialogTitle>Are you absolutely sure?</DialogTitle>
                     <DialogDescription>
-                      This action cannot be undone. You will need to update your upload token on ShareX.
+                      This action cannot be undone. You will need to update your
+                      upload token on ShareX.
                     </DialogDescription>
                   </DialogHeader>
 
                   <DialogFooter>
-                    <Button className="w-fit" variant="destructive" onClick={() => resetToken()}>
+                    <Button
+                      className="w-fit"
+                      variant="destructive"
+                      onClick={() => resetToken()}
+                    >
                       Reset
                     </Button>
                   </DialogFooter>
@@ -87,7 +101,9 @@ export default function UploadToken({ uploadToken }: UploadTokenProps) {
           </div>
         ) : (
           <div className="flex flex-col gap-2">
-            <span className="text-muted-foreground">You do not have an upload token. Please create one.</span>
+            <span className="text-muted-foreground">
+              You do not have an upload token. Please create one.
+            </span>
 
             {/* Create Upload Token */}
             <Button onClick={() => resetToken()} className="w-fit">

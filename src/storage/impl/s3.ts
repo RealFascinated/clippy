@@ -55,9 +55,18 @@ export default class S3Storage extends Storage {
     }
   }
 
-  async getFileStreamRange(name: string, start: number, end: number): Promise<internal.Readable | null> {
+  async getFileStreamRange(
+    name: string,
+    start: number,
+    end: number
+  ): Promise<internal.Readable | null> {
     try {
-      return await this.client.getPartialObject(env.STORAGE_S3_BUCKET, name, start, end - start + 1);
+      return await this.client.getPartialObject(
+        env.STORAGE_S3_BUCKET,
+        name,
+        start,
+        end - start + 1
+      );
     } catch {
       return null;
     }

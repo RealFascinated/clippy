@@ -66,7 +66,10 @@ export async function getUserFiles(
  * @returns the amount of files uploaded
  */
 export async function getUserFilesCount(id: string) {
-  const query = await db.select({ count: count() }).from(fileTable).where(eq(fileTable.userId, id));
+  const query = await db
+    .select({ count: count() })
+    .from(fileTable)
+    .where(eq(fileTable.userId, id));
   return query[0].count ?? undefined;
 }
 

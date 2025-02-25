@@ -43,7 +43,10 @@ export class Pagination<T> {
    * @returns A promise resolving to the page of items.
    * @throws throws an error if the page number is invalid.
    */
-  async getPage(page: number, fetchItems?: FetchItemsFunction<T>): Promise<Page<T>> {
+  async getPage(
+    page: number,
+    fetchItems?: FetchItemsFunction<T>
+  ): Promise<Page<T>> {
     const totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
 
     if (page < 1 || page > totalPages) {
@@ -62,14 +65,22 @@ export class Pagination<T> {
     } else if (fetchItems) {
       pageItems = await fetchItems(new FetchItems(start, end));
     } else {
-      throw new Error("Items function is not set and no fetchItems callback provided");
+      throw new Error(
+        "Items function is not set and no fetchItems callback provided"
+      );
     }
 
-    return new Page<T>(pageItems, new Metadata(totalPages, this.totalItems, page, this.itemsPerPage));
+    return new Page<T>(
+      pageItems,
+      new Metadata(totalPages, this.totalItems, page, this.itemsPerPage)
+    );
   }
 
   public empty<T>(page: number, totalPages: number): Page<T> {
-    return new Page<T>([], new Metadata(totalPages, this.totalItems, page, this.itemsPerPage));
+    return new Page<T>(
+      [],
+      new Metadata(totalPages, this.totalItems, page, this.itemsPerPage)
+    );
   }
 }
 
@@ -124,7 +135,12 @@ export class Metadata {
    */
   public readonly itemsPerPage: number;
 
-  constructor(totalPages: number, totalItems: number, page: number, itemsPerPage: number) {
+  constructor(
+    totalPages: number,
+    totalItems: number,
+    page: number,
+    itemsPerPage: number
+  ) {
     this.totalPages = totalPages;
     this.totalItems = totalItems;
     this.page = page;

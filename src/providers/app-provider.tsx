@@ -9,7 +9,9 @@ type AppProviderProps = {
 export default function AppProvider({ children }: AppProviderProps) {
   return (
     <QueryProvider>
-      <SidebarProvider className="flex flex-col [--header-height:48px]">{children}</SidebarProvider>
+      <SidebarProvider className="flex flex-col [--header-height:48px]">
+        {children}
+      </SidebarProvider>
     </QueryProvider>
   );
 }

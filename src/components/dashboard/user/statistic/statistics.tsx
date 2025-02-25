@@ -65,11 +65,13 @@ function format(value: unknown, format: Format) {
 }
 
 export default function UserStatistics() {
-  const { data: statisticsResponse, isLoading } = useQuery<UserStatisticsResponse>({
-    queryKey: ["statistics"],
-    queryFn: async () => (await request.get<UserStatisticsResponse>("/api/user/statistics"))!,
-    placeholderData: data => data,
-  });
+  const { data: statisticsResponse, isLoading } =
+    useQuery<UserStatisticsResponse>({
+      queryKey: ["statistics"],
+      queryFn: async () =>
+        (await request.get<UserStatisticsResponse>("/api/user/statistics"))!,
+      placeholderData: data => data,
+    });
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full justify-between gap-4 items-center">

@@ -25,7 +25,8 @@ type UserFileProps = {
 };
 
 export default function UserFile({ file, refetch }: UserFileProps) {
-  const hasThumbnail = file.mimeType.startsWith("video") || file.mimeType.startsWith("image");
+  const hasThumbnail =
+    file.mimeType.startsWith("video") || file.mimeType.startsWith("image");
 
   return (
     <div className="bg-card h-54 flex flex-col items-center p-2 rounded-md">
@@ -130,13 +131,18 @@ function DeleteFileDialog({ file, refetch }: UserFileProps) {
         <DialogHeader>
           <DialogTitle>Are you absolutely sure?</DialogTitle>
           <DialogDescription>
-            This will delete the file <InlineCodeBlock>{getFileName(file)}</InlineCodeBlock>, this action cannot be
-            undone.
+            This will delete the file{" "}
+            <InlineCodeBlock>{getFileName(file)}</InlineCodeBlock>, this action
+            cannot be undone.
           </DialogDescription>
         </DialogHeader>
 
         <DialogFooter>
-          <Button className="w-fit" variant="destructive" onClick={() => deleteFile(file)}>
+          <Button
+            className="w-fit"
+            variant="destructive"
+            onClick={() => deleteFile(file)}
+          >
             Delete
           </Button>
         </DialogFooter>
