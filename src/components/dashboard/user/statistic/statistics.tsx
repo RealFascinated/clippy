@@ -4,9 +4,9 @@ import { UserStatisticsResponse } from "@/type/api/user/statistics-response";
 import { ClockIcon, EyeIcon, FileIcon, ServerIcon } from "lucide-react";
 import { ReactElement } from "react";
 import UserStatistic from "./statistic";
-import { headers } from "next/headers";
 import { AxiosHeaders } from "axios";
 import { env } from "@/lib/env";
+import { headers } from "next/headers";
 
 type Format = "number" | "bytes";
 type Statistic = {
@@ -68,13 +68,11 @@ export default async function UserStatistics() {
   const statisticsResponse = await request.get<UserStatisticsResponse>(
     `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/statistics`,
     {
-      headers: (await headers()) as unknown as AxiosHeaders,
+      headers: {
+        cookie: (await headers()).get("cookie"),
+      },
     }
   );
-
-  if (!statisticsResponse) {
-    return null;
-  }
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full justify-between gap-4 items-center">
