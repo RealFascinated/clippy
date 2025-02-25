@@ -1,17 +1,19 @@
-import { authError } from "@/lib/api-utils";
+import { authError } from "@/lib/api-commons";
 import { auth } from "@/lib/auth";
 import { generateUploadToken } from "@/lib/helpers/user";
 import { ApiErrorResponse, ApiSuccessResponse } from "@/type/api/responses";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function POST(request: Request): Promise<NextResponse<ApiSuccessResponse | ApiErrorResponse>> {
+export async function POST(
+  request: Request
+): Promise<NextResponse<ApiSuccessResponse | ApiErrorResponse>> {
   const requestHeaders = await headers();
   const session = await auth.api.getSession({
     headers: requestHeaders,
   });
   if (!session) {
-    return authError();
+    return authError;
   }
 
   try {
@@ -22,7 +24,10 @@ export async function POST(request: Request): Promise<NextResponse<ApiSuccessRes
       headers: requestHeaders,
     });
   } catch {
-    return NextResponse.json({ message: "An error occured when resetting the upload token" }, { status: 500 });
+    return NextResponse.json(
+      { message: "An error occured when resetting the upload token" },
+      { status: 500 }
+    );
   }
 
   return NextResponse.json({ message: "Reset Upload Token" }, { status: 200 });

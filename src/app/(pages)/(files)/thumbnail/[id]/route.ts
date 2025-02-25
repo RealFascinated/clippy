@@ -1,7 +1,6 @@
+import { notFound } from "@/lib/api-commons";
 import { storage } from "@/storage/create-storage";
 import { NextRequest, NextResponse } from "next/server";
-
-const notFound = NextResponse.json({ message: "File not found" }, { status: 404 });
 
 export async function GET(
   request: NextRequest,

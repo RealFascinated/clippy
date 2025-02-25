@@ -1,4 +1,4 @@
-import { authError } from "@/lib/api-utils";
+import { authError } from "@/lib/api-commons";
 import { auth } from "@/lib/auth";
 import { getUserFiles, getUserFilesCount } from "@/lib/helpers/user";
 import { Pagination } from "@/lib/pagination";
@@ -17,7 +17,7 @@ export async function GET(
     headers: requestHeaders,
   });
   if (!session) {
-    return authError();
+    return authError;
   }
 
   const totalFiles = await getUserFilesCount(session.user.id);
@@ -25,7 +25,7 @@ export async function GET(
   pagination.setItemsPerPage(ITEMS_PER_PAGE);
   pagination.setTotalItems(totalFiles);
 
-  const paginatedPage = await pagination.getPage(page, async fetchItems => {
+  const paginatedPage = await pagination.getPage(page, async (fetchItems) => {
     const files = await getUserFiles(session.user.id, {
       limit: ITEMS_PER_PAGE,
       offset: fetchItems.start,

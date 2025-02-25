@@ -1,17 +1,19 @@
-import { authError } from "@/lib/api-utils";
+import { authError } from "@/lib/api-commons";
 import { auth } from "@/lib/auth";
 import { env } from "@/lib/env";
 import { ApiErrorResponse, ApiSuccessResponse } from "@/type/api/responses";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request): Promise<NextResponse<ApiSuccessResponse | ApiErrorResponse>> {
+export async function GET(
+  request: Request
+): Promise<NextResponse<ApiSuccessResponse | ApiErrorResponse>> {
   const requestHeaders = await headers();
   const session = await auth.api.getSession({
     headers: requestHeaders,
   });
   if (!session) {
-    return authError();
+    return authError;
   }
 
   if (!session.user.uploadToken) {

@@ -1,3 +1,4 @@
+import { notFound } from "@/lib/api-commons";
 import { FileType } from "@/lib/db/schemas/file";
 import { getFileById, updateFile } from "@/lib/helpers/file";
 import { getFileName } from "@/lib/utils/file";
@@ -5,14 +6,15 @@ import { storage } from "@/storage/create-storage";
 import { isbot } from "isbot";
 import { NextRequest, NextResponse } from "next/server";
 
-const notFound = NextResponse.json({ message: "File not found" }, { status: 404 });
-
 /**
  * Parses the range header to get the start and end of the bytes to get
  * @param rangeHeader The range header string
  * @param fileSize The size of the file in bytes
  */
-function parseRange(rangeHeader: string, fileSize: number): { start: number; end: number } {
+function parseRange(
+  rangeHeader: string,
+  fileSize: number
+): { start: number; end: number } {
   const [start, end] = rangeHeader.replace(/bytes=/, "").split("-");
   return {
     start: parseInt(start, 10),
@@ -21,8 +23,10 @@ function parseRange(rangeHeader: string, fileSize: number): { start: number; end
 }
 
 /**
- * Helper function to get file metadata and headers
+ * Gets the file metadata for the file
+ *
  * @param fileId The ID of the file
+ * @returns the file metadata
  */
 async function getFileMetadata(
   fileId: string,
@@ -60,7 +64,10 @@ async function getFileMetadata(
 
   // Download file, or is not image and is not video
   if (download || (!isVideo && !isImage)) {
-    headers.set("Content-Disposition", `attachment; filename="${getFileName(file)}"`);
+    headers.set(
+      "Content-Disposition",
+      `attachment; filename="${getFileName(file)}"`
+    );
     // Prevent caching for downloads
     headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
   }
@@ -73,7 +80,10 @@ async function getFileMetadata(
  * @param request The NextRequest object
  * @param fileId The ID of the file
  */
-async function getRangeResponse(request: NextRequest, fileId: string): Promise<Response> {
+async function getRangeResponse(
+  request: NextRequest,
+  fileId: string
+): Promise<Response> {
   const { file, fileSize, mimeType } = await getFileMetadata(fileId);
   const rangeHeader = request.headers.get("range");
   if (!rangeHeader) {
@@ -82,7 +92,11 @@ async function getRangeResponse(request: NextRequest, fileId: string): Promise<R
 
   const { start, end } = parseRange(rangeHeader, fileSize);
   const chunkSize = end - start + 1;
-  const stream = await storage.getFileStreamRange(`${file.id}.${file.extension}`, start, end);
+  const stream = await storage.getFileStreamRange(
+    `${file.id}.${file.extension}`,
+    start,
+    end
+  );
   if (!stream) {
     throw notFound;
   }
@@ -162,7 +176,10 @@ export async function GET(
       return error;
     } else {
       console.error(error);
-      return NextResponse.json({ message: "An unexpected error occurred" }, { status: 500 });
+      return NextResponse.json(
+        { message: "An unexpected error occurred" },
+        { status: 500 }
+      );
     }
   }
 }

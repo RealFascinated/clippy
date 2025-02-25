@@ -73,8 +73,12 @@ function FilePreview({ file }: { file: FileType }) {
 
   return (
     <Dialog>
-      <DialogTrigger className="relative">
-        <img src={thumbnailUrl} alt="Recent File Image Preview" className="transparent max-h-36" />
+      <DialogTrigger className="relative cursor-pointer">
+        <img
+          src={thumbnailUrl}
+          alt="Recent File Image Preview"
+          className="transparent max-h-36"
+        />
         {file.mimeType.startsWith("video") && (
           <PlayIcon className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 size-10" />
         )}

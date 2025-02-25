@@ -1,4 +1,4 @@
-import { authError } from "@/lib/api-utils";
+import { authError } from "@/lib/api-commons";
 import { auth } from "@/lib/auth";
 import { getUserFiles } from "@/lib/helpers/user";
 import { ApiErrorResponse } from "@/type/api/responses";
@@ -6,13 +6,15 @@ import { UserStatisticsResponse } from "@/type/api/user/statistics-response";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request): Promise<NextResponse<UserStatisticsResponse | ApiErrorResponse>> {
+export async function GET(
+  request: Request
+): Promise<NextResponse<UserStatisticsResponse | ApiErrorResponse>> {
   const requestHeaders = await headers();
   const session = await auth.api.getSession({
     headers: requestHeaders,
   });
   if (!session) {
-    return authError();
+    return authError;
   }
 
   const images = await getUserFiles(session.user.id);
@@ -27,7 +29,8 @@ export async function GET(request: Request): Promise<NextResponse<UserStatistics
     statistics.totalUploads++;
 
     // Checks if the image was made less than 24 hours ago
-    const timeDifference = new Date().getTime() - new Date(image.createdAt).getTime();
+    const timeDifference =
+      new Date().getTime() - new Date(image.createdAt).getTime();
     if (timeDifference < 24 * 60 * 60 * 1000) {
       statistics.uploadsToday++;
     }
