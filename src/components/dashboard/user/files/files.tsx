@@ -26,9 +26,9 @@ export default function UserFiles() {
 
   return (
     <div className="flex flex-col gap-2 w-full bg-secondary/90 rounded-md p-2 border">
-      <span className="font-semibold">Your Files</span>
+      <span className="font-semibold">Uploads</span>
       <span className="text-muted-foreground">
-        All of your files you have uploaded
+        All files associated with your account
       </span>
 
       {isLoading && (

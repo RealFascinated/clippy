@@ -10,7 +10,7 @@ export default function DashboardLayout({
     <div className="flex flex-1">
       <AppSidebar />
       <SidebarInset className="bg-none flex items-center w-full flex-col">
-        <div className="flex items-center w-full max-w-7xl">
+        <div className="flex items-center w-full max-w-[1600px]">
           <div className="flex flex-1 flex-col gap-4 p-4 items-center w-full">
             {children}
           </div>
