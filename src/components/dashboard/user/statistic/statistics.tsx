@@ -21,25 +21,25 @@ const statistics: Statistic[] = [
     key: "totalUploads",
     name: "Total Uploads",
     format: "number",
-    icon: <FileIcon />,
+    icon: <FileIcon className="size-5" />,
   },
   {
     key: "uploadsToday",
     name: "Uploads Today",
     format: "number",
-    icon: <ClockIcon />,
+    icon: <ClockIcon className="size-5" />,
   },
   {
     key: "storageUsed",
     name: "Storage Used",
     format: "bytes",
-    icon: <ServerIcon />,
+    icon: <ServerIcon className="size-5" />,
   },
   {
     key: "totalViews",
     name: "Total Views",
     format: "number",
-    icon: <EyeIcon />,
+    icon: <EyeIcon className="size-5" />,
   },
 ];
 
@@ -71,6 +71,10 @@ export default async function UserStatistics() {
       headers: (await headers()) as unknown as AxiosHeaders,
     }
   );
+
+  if (!statisticsResponse) {
+    return null;
+  }
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full justify-between gap-4 items-center">
