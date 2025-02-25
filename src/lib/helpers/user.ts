@@ -15,6 +15,16 @@ export async function getUserByUploadToken(token: string) {
 }
 
 /**
+ * Gets a user by their id
+ *
+ * @param token the users id
+ * @returns the user, or undefined if not found
+ */
+export async function getUserById(id: string) {
+  return (await db.select().from(users).where(eq(users.id, id)))[0];
+}
+
+/**
  * Gets all of the users files.
  *
  * @param id the id of the user

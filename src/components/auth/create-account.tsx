@@ -76,73 +76,75 @@ export default function CreateAccount() {
           </span>
         </div>
 
-        {error && <div className="text-red-400">{error}</div>}
+        <div className="w-full flex flex-col gap-2 items-center">
+          {error && <div className="text-red-400">{error}</div>}
 
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-6 w-full"
-          >
-            <div className="flex flex-col gap-2 w-full">
-              {/* Username */}
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder="username" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col gap-6 w-full"
+            >
+              <div className="flex flex-col gap-2 w-full">
+                {/* Username */}
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="username" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              {/* Email */}
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder="name@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                {/* Email */}
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="name@example.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              {/* Password */}
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder="password"
-                        type="password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                {/* Password */}
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="password"
+                          type="password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-            {/* Auth Buttons */}
-            <div className="flex flex-col w-full gap-4">
-              <Button>Register</Button>
-              <Link
-                href="/auth/login"
-                className="text-muted-foreground text-center hover:opacity-80 transition-all transform-gpu"
-              >
-                <span>Already have an account</span>
-              </Link>
-            </div>
-          </form>
-        </Form>
+              {/* Auth Buttons */}
+              <div className="flex flex-col w-full gap-4">
+                <Button>Register</Button>
+                <Link
+                  href="/auth/login"
+                  className="text-muted-foreground text-center hover:opacity-80 transition-all transform-gpu"
+                >
+                  <span>Already have an account</span>
+                </Link>
+              </div>
+            </form>
+          </Form>
+        </div>
       </CardContent>
     </Card>
   );

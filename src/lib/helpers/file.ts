@@ -16,6 +16,21 @@ export async function getFileById(id: string) {
 }
 
 /**
+ * Gets the file from the database 
+ * using it's thumbnail id
+ *
+ * @param id the id of the thumbnail
+ * @returns the file, or undefined if not found
+ */
+export async function getFileByThumbnailId(id: string) {
+  if (id.includes(".")) {
+    id = id.split(".")[0];
+  }
+  return (await db.select().from(fileTable).where(eq(fileTable.thumbnailId, id)))[0];
+}
+
+
+/**
  * Gets the file from the database
  *
  * @param id the delete key of the file

@@ -1,7 +1,10 @@
 import { notFound } from "@/lib/api-commons";
+import { UserType } from "@/lib/db/schemas/auth-schema";
 import { FileType } from "@/lib/db/schemas/file";
 import { getFileById, updateFile } from "@/lib/helpers/file";
+import { getUserById } from "@/lib/helpers/user";
 import { getFileName } from "@/lib/utils/file";
+import { getFilePath } from "@/lib/utils/paths";
 import { storage } from "@/storage/create-storage";
 import { isbot } from "isbot";
 import { NextRequest, NextResponse } from "next/server";
@@ -32,20 +35,20 @@ async function getFileMetadata(
   fileId: string,
   download?: boolean
 ): Promise<{
-  file: FileType;
-  fileSize: number;
-  mimeType: string;
+  fileMeta: FileType;
+  user: UserType;
   isVideo: boolean;
   isImage: boolean;
   headers: Headers;
 }> {
-  const file = await getFileById(fileId);
-  if (!file) {
+  const fileMeta = await getFileById(fileId);
+  if (!fileMeta) {
     throw notFound;
   }
+  const user = await getUserById(fileMeta.userId);
 
-  const fileSize = file.size;
-  const mimeType = file.mimeType || "application/octet-stream";
+  const fileSize = fileMeta.size;
+  const mimeType = fileMeta.mimeType || "application/octet-stream";
   const isVideo = mimeType.startsWith("video/");
   const isImage = mimeType.startsWith("image/");
 
@@ -66,13 +69,13 @@ async function getFileMetadata(
   if (download || (!isVideo && !isImage)) {
     headers.set(
       "Content-Disposition",
-      `attachment; filename="${getFileName(file)}"`
+      `attachment; filename="${getFileName(fileMeta)}"`
     );
     // Prevent caching for downloads
     headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
   }
 
-  return { file, fileSize, mimeType, isVideo, isImage, headers };
+  return { fileMeta, user, isVideo, isImage, headers };
 }
 
 /**
@@ -84,16 +87,16 @@ async function getRangeResponse(
   request: NextRequest,
   fileId: string
 ): Promise<Response> {
-  const { file, fileSize, mimeType } = await getFileMetadata(fileId);
+  const { fileMeta } = await getFileMetadata(fileId);
   const rangeHeader = request.headers.get("range");
   if (!rangeHeader) {
     throw notFound;
   }
 
-  const { start, end } = parseRange(rangeHeader, fileSize);
+  const { start, end } = parseRange(rangeHeader, fileMeta.size);
   const chunkSize = end - start + 1;
   const stream = await storage.getFileStreamRange(
-    `${file.id}.${file.extension}`,
+    `${fileMeta.id}.${fileMeta.extension}`,
     start,
     end
   );
@@ -104,10 +107,10 @@ async function getRangeResponse(
   return new Response(stream as any, {
     status: 206,
     headers: {
-      "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+      "Content-Range": `bytes ${start}-${end}/${fileMeta.size}`,
       "Accept-Ranges": "bytes",
       "Content-Length": chunkSize.toString(),
-      "Content-Type": mimeType,
+      "Content-Type": fileMeta.mimeType,
       "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
       Pragma: "no-cache",
       Expires: "0",
@@ -119,10 +122,10 @@ export async function HEAD(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse | Response> {
-  const { id: fileId } = await params;
+  const { id } = await params;
 
   try {
-    const { headers } = await getFileMetadata(fileId);
+    const { headers } = await getFileMetadata(id);
     return new Response(null, { status: 200, headers });
   } catch (error) {
     return error as NextResponse;
@@ -139,18 +142,23 @@ export async function GET(
   const download = searchParams.get("download") === "true" || false;
 
   try {
-    const { file, isVideo, headers } = await getFileMetadata(id, download);
+    const { fileMeta, user, isVideo, headers } = await getFileMetadata(
+      id,
+      download
+    );
 
     // Increment view count
     if (!isbot(request.headers.get("User-Agent")) && incrementViews) {
-      file.views++;
-      await updateFile(file.id, { views: file.views });
+      fileMeta.views++;
+      await updateFile(fileMeta.id, { views: fileMeta.views });
     }
 
     // Download the file
     if (download) {
       // Get full object stream
-      const stream = await storage.getFileStream(getFileName(file));
+      const stream = await storage.getFileStream(
+        getFilePath(user.id, fileMeta)
+      );
       if (!stream) {
         throw notFound;
       }
@@ -164,7 +172,7 @@ export async function GET(
     }
 
     // Get full object stream
-    const stream = await storage.getFileStream(getFileName(file));
+    const stream = await storage.getFileStream(getFilePath(user.id, fileMeta));
     if (!stream) {
       throw notFound;
     }

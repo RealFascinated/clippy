@@ -63,58 +63,60 @@ export default function AccountLogin() {
           </span>
         </div>
 
-        {error && <div className="text-red-400">{error}</div>}
+        <div className="w-full flex flex-col gap-2 items-center">
+          {error && <div className="text-red-400">{error}</div>}
 
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-6 w-full"
-          >
-            <div className="flex flex-col gap-2 w-full">
-              {/* Email */}
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder="name@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col gap-6 w-full"
+            >
+              <div className="flex flex-col gap-2 w-full">
+                {/* Email */}
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="name@example.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              {/* Password */}
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder="password"
-                        type="password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                {/* Password */}
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="password"
+                          type="password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-            {/* Auth Buttons */}
-            <div className="flex flex-col w-full gap-2">
-              <Button>Sign In</Button>
-              <Link href="/auth/register" prefetch={false}>
-                <Button type="button" variant="secondary" className="w-full">
-                  Register
-                </Button>
-              </Link>
-            </div>
-          </form>
-        </Form>
+              {/* Auth Buttons */}
+              <div className="flex flex-col w-full gap-2">
+                <Button>Sign In</Button>
+                <Link href="/auth/register" prefetch={false}>
+                  <Button type="button" variant="secondary" className="w-full">
+                    Register
+                  </Button>
+                </Link>
+              </div>
+            </form>
+          </Form>
+        </div>
       </CardContent>
     </Card>
   );

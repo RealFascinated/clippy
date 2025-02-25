@@ -42,10 +42,10 @@ export default function UserFiles() {
           {files.items.length > 0 ? (
             <>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 items-center">
-                {files.items.map((file, index) => (
+                {files.items.map((fileMeta, index) => (
                   <UserFile
                     key={index}
-                    file={file}
+                    fileMeta={fileMeta}
                     refetch={async () => {
                       await refetch();
                     }}
@@ -64,7 +64,7 @@ export default function UserFiles() {
             totalItems={files.metadata.totalItems}
             itemsPerPage={files.metadata.itemsPerPage}
             loadingPage={isLoading ? page : undefined}
-            onPageChange={newPage => setPage(newPage)}
+            onPageChange={(newPage) => setPage(newPage)}
           />
         </>
       )}

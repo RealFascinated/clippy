@@ -1,8 +1,9 @@
 import { db } from "@/lib/db/drizzle";
-import { fileTable } from "@/lib/db/schemas/file";
+import { fileTable, FileType } from "@/lib/db/schemas/file";
 import { env } from "@/lib/env";
 import { getUserByUploadToken } from "@/lib/helpers/user";
 import { getThumbnail } from "@/lib/thumbmail";
+import { getFilePath, getFileThumbnailPath } from "@/lib/utils/paths";
 import { randomString } from "@/lib/utils/utils";
 import { storage } from "@/storage/create-storage";
 import { NextResponse } from "next/server";
@@ -88,7 +89,7 @@ export async function POST(
     }
 
     // Validate file types
-    if (!files.every(file => file instanceof File)) {
+    if (!files.every((file) => file instanceof File)) {
       return NextResponse.json(
         { message: "Invalid file format" },
         { status: 400 }
@@ -103,49 +104,7 @@ export async function POST(
     const deleteKey = randomString(32);
     const fileBuffer = Buffer.from(file.content);
 
-    console.log(mimeType);
-
-    let thumbnailData:
-      | {
-          id: string;
-          name: string;
-          size: number;
-        }
-      | undefined = undefined;
-    if (mimeType.startsWith("image") || mimeType.startsWith("video")) {
-      const thumbnailId = randomString(16);
-      const thumbnailName = `${thumbnailId}.webp`;
-      const thumbnail = await getThumbnail(name, fileBuffer, mimeType);
-
-      const savedThumbnail = await storage.saveFile(
-        thumbnailName,
-        thumbnail.buffer
-      );
-      if (!savedThumbnail) {
-        await storage.deleteFile(thumbnailName);
-        return NextResponse.json(
-          { message: "An error occured whilst generating the thumbnail" },
-          { status: 500 }
-        );
-      }
-
-      thumbnailData = {
-        id: thumbnailId,
-        name: thumbnailName,
-        size: thumbnail.size,
-      };
-    }
-
-    const savedFile = await storage.saveFile(name, fileBuffer);
-    if (!savedFile) {
-      await storage.deleteFile(name);
-      return NextResponse.json(
-        { message: "An error occured whilst saving your file" },
-        { status: 500 }
-      );
-    }
-
-    const values = {
+    const fileMeta: FileType = {
       id: id,
       views: 0,
       deleteKey: deleteKey,
@@ -156,22 +115,54 @@ export async function POST(
       userId: user.id,
 
       // Thumbnail
-      thumbnailId: thumbnailData?.id,
-      thumbnailExtension: thumbnailData
-        ? thumbnailData.name.split(".")[1]
-        : undefined,
-      thumbnailSize: thumbnailData?.size,
+      thumbnailId: null,
+      thumbnailExtension: null,
+      thumbnailSize: null,
     };
 
-    await db.insert(fileTable).values(values);
+    if (mimeType.startsWith("image") || mimeType.startsWith("video")) {
+      const thumbnailId = randomString(16);
+      const thumbnailName = `${thumbnailId}.webp`;
+      const thumbnail = await getThumbnail(name, fileBuffer, mimeType);
+
+      fileMeta.thumbnailId = thumbnailId;
+      fileMeta.thumbnailExtension = "webp";
+      fileMeta.thumbnailSize = thumbnail.size;
+
+      const savedThumbnail = await storage.saveFile(
+        getFileThumbnailPath(user.id, fileMeta),
+        thumbnail.buffer
+      );
+      if (!savedThumbnail) {
+        await storage.deleteFile(thumbnailName);
+        return NextResponse.json(
+          { message: "An error occured whilst generating the thumbnail" },
+          { status: 500 }
+        );
+      }
+    }
+
+    const savedFile = await storage.saveFile(
+      getFilePath(user.id, fileMeta),
+      fileBuffer
+    );
+    if (!savedFile) {
+      await storage.deleteFile(name);
+      return NextResponse.json(
+        { message: "An error occured whilst saving your file" },
+        { status: 500 }
+      );
+    }
+
+    await db.insert(fileTable).values(fileMeta);
 
     return NextResponse.json({
       path: name,
       url: env.NEXT_PUBLIC_WEBSITE_URL,
-      deletionUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/file/delete/${values.deleteKey}`,
-      ...(values.thumbnailId
+      deletionUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/file/delete/${fileMeta.deleteKey}`,
+      ...(fileMeta.thumbnailId
         ? {
-            thumbnailUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/thumbnail/${values.thumbnailId}.${values.thumbnailExtension}`,
+            thumbnailUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/thumbnail/${fileMeta.thumbnailId}.${fileMeta.thumbnailExtension}`,
           }
         : {}),
     });
