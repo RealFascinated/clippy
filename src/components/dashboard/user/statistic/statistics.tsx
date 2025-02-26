@@ -6,6 +6,7 @@ import { ClockIcon, EyeIcon, FileIcon, ServerIcon } from "lucide-react";
 import { headers } from "next/headers";
 import { ReactElement } from "react";
 import UserStatistic from "./statistic";
+import { formatNumberWithCommas } from "@/lib/number-utils";
 
 type Format = "number" | "bytes";
 type Statistic = {
@@ -52,7 +53,7 @@ const statistics: Statistic[] = [
 function format(value: unknown, format: Format) {
   switch (format) {
     case "number": {
-      return value;
+      return formatNumberWithCommas(value as number);
     }
     case "bytes": {
       return formatBytes(value as number);

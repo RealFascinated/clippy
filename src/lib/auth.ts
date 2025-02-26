@@ -7,8 +7,6 @@ import { env } from "./env";
 import { username } from "better-auth/plugins/username";
 import { admin } from "better-auth/plugins/admin";
 
-console.log(env);
-
 export const auth = betterAuth({
   baseURL: env.NEXT_PUBLIC_WEBSITE_URL,
   database: drizzleAdapter(db, {

@@ -13,7 +13,6 @@ export async function GET(
 
   const fileMeta = await getFileByThumbnailId(id);
   if (!fileMeta) {
-    console.log("no 1");
     return notFound;
   }
   const user = await getUserById(fileMeta.userId);
@@ -21,7 +20,6 @@ export async function GET(
     getFileThumbnailPath(user.id, fileMeta)
   );
   if (!thumbnail) {
-    console.log("no 2");
     return notFound;
   }
 

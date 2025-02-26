@@ -80,7 +80,7 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
 
         <div className="flex gap-2 items-center">
           <button className="cursor-pointer" onClick={() => copyUrl()}>
-            <LinkIcon className="size-4.5" />
+            <LinkIcon className="size-4.5 hover:opacity-80 transition-all transform-gpu" />
           </button>
 
           {/* Download File */}
@@ -88,7 +88,7 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
             href={`/${getFileName(fileMeta)}?incrementviews=false&download=true`}
             prefetch={false}
           >
-            <DownloadIcon className="size-4.5" />
+            <DownloadIcon className="size-4.5 hover:opacity-80 transition-all transform-gpu" />
           </Link>
 
           {/* Delete File Button */}
@@ -169,7 +169,7 @@ function DeleteFileDialog({ fileMeta, refetch }: UserFileProps) {
     <Dialog open={deleteConfirm} onOpenChange={setDeleteConfirm}>
       <DialogTrigger asChild>
         <button className="cursor-pointer">
-          <TrashIcon className="size-4 text-red-400" />
+          <TrashIcon className="size-4 text-red-400 hover:opacity-80 transition-all transform-gpu" />
         </button>
       </DialogTrigger>
       <DialogContent>
