@@ -1,4 +1,39 @@
 services:
+  clippy:
+    image: fascinated/clippy:latest
+    environment:
+      # Website
+      NEXT_PUBLIC_WEBSITE_NAME: Clippy
+      NEXT_PUBLIC_WEBSITE_URL: http://localhost:3000
+
+      # Postgres
+      DATABASE_URL: postgres://clippy:clippy@db:5432/clippy
+
+      # Better Auth
+      BETTER_AUTH_SECRET: 1Ov7ApNc8FQgdca46J61mM53g16MZgwJj2gjse2B
+
+      # Currently only s3 is supported
+      STORAGE_PROVIDER: S3
+
+      # S3 Configuration
+      STORAGE_S3_ENDPOINT: minio
+      STORAGE_S3_PORT: 9000
+      STORAGE_S3_USE_SSL: false
+      STORAGE_S3_ACCESS_KEY: clippy
+      STORAGE_S3_SECRET_KEY: clippy
+      STORAGE_S3_BUCKET: clippy
+
+      ALLOWED_MIME_TYPES: image/*,video/*
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      db-migrator:
+        condition: service_completed_successfully
+      minio:
+        condition: service_started
+
   db:
     image: postgres:17
     environment:
@@ -16,5 +51,32 @@ services:
       timeout: 5s
       retries: 5
 
+  db-migrator:
+    image: fascinated/clippy:latest
+    environment:
+      DATABASE_URL: postgres://clippy:clippy@db:5432/clippy
+    command: bunx database:migrate
+    depends_on:
+      db:
+        condition: service_healthy
+
+  minio:
+    image: minio/minio:latest
+    environment:
+      MINIO_ROOT_USER: clippy
+      MINIO_ROOT_PASSWORD: clippy
+    ports:
+      - "9000:9000"
+      - "9001:9001" # MinIO console
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
 volumes:
   postgres_data:
+  minio_data:
