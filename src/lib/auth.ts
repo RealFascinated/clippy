@@ -11,11 +11,6 @@ console.log(env);
 
 export const auth = betterAuth({
   baseURL: env.NEXT_PUBLIC_WEBSITE_URL,
-  advanced: {
-    useSecureCookies: env.NEXT_PUBLIC_WEBSITE_URL.startsWith("https")
-      ? true
-      : false,
-  },
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
