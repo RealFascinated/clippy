@@ -39,7 +39,7 @@ export const env = createEnv({
     BETTER_AUTH_URL: process.env.NEXT_PUBLIC_WEBSITE_URL,
 
     // File Storage
-    STORAGE_PROVIDER: process.env.STORAGE_PROVIDER ?? "S3",
+    STORAGE_PROVIDER: process.env.STORAGE_PROVIDER,
     STORAGE_S3_ENDPOINT: process.env.STORAGE_S3_ENDPOINT,
     STORAGE_S3_PORT: Number(process.env.STORAGE_S3_PORT),
     STORAGE_S3_USE_SSL: process.env.STORAGE_S3_USE_SSL === "true",

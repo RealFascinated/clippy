@@ -1,12 +1,17 @@
 import { env } from "@/lib/env";
 import S3Storage from "./impl/s3";
 import Storage from "./storage";
+import DummyStorage from "./impl/dummy";
 
 function createStorage(provider: "S3"): Storage {
   switch (provider) {
     case "S3":
       return new S3Storage();
     default:
+      console.log(process.env.NEXT_PHASE);
+      if (process.env.NEXT_PHASE) {
+        return new DummyStorage();
+      }
       throw new Error(`Unknown storage provider: ${provider}`);
   }
 }
