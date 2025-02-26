@@ -67,7 +67,7 @@ export default {
       const size = buffer.length;
 
       const fileStat = await fs.stat(filePath);
-      const createdAt = fileStat.birthtime;
+      const createdAt = fileStat.mtime;
 
       try {
         await uploadFile(
