@@ -16,6 +16,19 @@ export default class S3Storage extends Storage {
       accessKey: env.STORAGE_S3_ACCESS_KEY,
       secretKey: env.STORAGE_S3_SECRET_KEY,
     });
+
+    this.ensureBucket(env.STORAGE_S3_BUCKET);
+  }
+
+  /**
+   * Creates the bucket if it's missing
+   * 
+   * @param bucket the name of the bucket
+   */
+  async ensureBucket(bucket: string) {
+    if (!(await this.client.bucketExists(bucket))) {
+      this.client.makeBucket(bucket);
+    }
   }
 
   async saveFile(name: string, data: Buffer): Promise<boolean> {
