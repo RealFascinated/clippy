@@ -23,7 +23,7 @@ export default async function ProfileButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <span className="py-1.5 px-2 bg-secondary rounded-md cursor-pointer">
+        <span className="py-1.5 px-2 bg-secondary rounded-md cursor-pointer hover:opacity-80 transition-all transform-gpu">
           @{user.username}
         </span>
       </DropdownMenuTrigger>
