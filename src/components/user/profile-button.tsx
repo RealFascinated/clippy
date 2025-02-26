@@ -1,5 +1,4 @@
 import { auth } from "@/lib/auth";
-import { getInitials } from "@/lib/utils/user";
 import { headers } from "next/headers";
 import Link from "next/link";
 import {
@@ -24,8 +23,8 @@ export default async function ProfileButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <span className="p-2 bg-secondary rounded-full cursor-pointer">
-          {getInitials(user.name)}
+        <span className="py-1.5 px-2 bg-secondary rounded-md cursor-pointer">
+          @{user.username}
         </span>
       </DropdownMenuTrigger>
       <DropdownMenuContent>

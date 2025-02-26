@@ -14,11 +14,16 @@ import { FileType } from "@/lib/db/schemas/file";
 import request from "@/lib/request";
 import { getFileName } from "@/lib/utils/file";
 import { formatBytes } from "@/lib/utils/utils";
-import { DownloadIcon, PlayIcon, TrashIcon } from "lucide-react";
+import { DownloadIcon, LinkIcon, PlayIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { format, differenceInHours, formatDistance } from "date-fns";
+import Loader from "@/components/ui/loader";
+import dynamic from "next/dynamic";
+import { env } from "@/lib/env";
+
+const ReactPlayer = dynamic(() => import("react-player"));
 
 type UserFileProps = {
   fileMeta: FileType;
@@ -34,6 +39,14 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
       ? format(new Date(fileMeta.createdAt).toISOString(), "MM/dd/yyyy HH:ss a")
       : formatDistance(new Date(fileMeta.createdAt), new Date()) + " ago";
 
+  function copyUrl() {
+    navigator.clipboard.writeText(
+      `${env.NEXT_PUBLIC_WEBSITE_URL}/${getFileName(fileMeta)}`
+    );
+
+    toast(`Copied the url for ${getFileName(fileMeta)} to your clipboard`);
+  }
+
   return (
     <div className="bg-card h-full flex flex-col items-center rounded-md">
       <div className="h-full p-2 flex flex-col gap-1">
@@ -46,7 +59,7 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
         </div>
 
         {/* Preview */}
-        <div className="flex-1 flex items-center">
+        <div className="flex-1 flex items-center w-full justify-center">
           {hasThumbnail ? (
             <FilePreview fileMeta={fileMeta} />
           ) : (
@@ -66,6 +79,10 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
         </span>
 
         <div className="flex gap-2 items-center">
+          <button className="cursor-pointer" onClick={() => copyUrl()}>
+            <LinkIcon className="size-4.5" />
+          </button>
+
           {/* Download File */}
           <Link
             href={`/${getFileName(fileMeta)}?incrementviews=false&download=true`}
@@ -87,15 +104,25 @@ function FilePreview({ fileMeta }: { fileMeta: FileType }) {
   const isImage = fileMeta.mimeType.startsWith("image");
   const isVideo = fileMeta.mimeType.startsWith("video");
 
+  const [loading, setLoading] = useState<boolean>(
+    isVideo || isImage ? true : false
+  );
+
   return (
     <Dialog>
-      <DialogTrigger className="relative cursor-pointer">
+      <DialogTrigger className="relative cursor-pointer w-full flex items-center justify-center">
         <img
           src={`/thumbnails/${fileMeta.thumbnailId}.${fileMeta.thumbnailExtension}`}
           alt="Recent File Image Preview"
           className="transparent max-h-36"
+          onLoad={() => setLoading(false)}
         />
-        {fileMeta.mimeType.startsWith("video") && (
+        {loading && (
+          <div className="w-full flex justify-center">
+            <Loader />
+          </div>
+        )}
+        {fileMeta.mimeType.startsWith("video") && !loading && (
           <PlayIcon className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 size-10" />
         )}
       </DialogTrigger>
@@ -107,7 +134,10 @@ function FilePreview({ fileMeta }: { fileMeta: FileType }) {
           <img src={url} alt={`Image for ${getFileName(fileMeta)}`} />
         )}
 
-        {isVideo && <video src={url} controls autoPlay />}
+        {
+          isVideo && <ReactPlayer url={url} volume={0.25} playing controls />
+          // <video src={url} controls autoPlay />
+        }
       </DialogContent>
     </Dialog>
   );

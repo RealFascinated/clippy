@@ -1,11 +1,9 @@
-import { db } from "@/lib/db/drizzle";
-import { fileTable, FileType } from "@/lib/db/schemas/file";
+import { FileType } from "@/lib/db/schemas/file";
 import { env } from "@/lib/env";
+import { uploadFile } from "@/lib/helpers/file";
 import { getUserByUploadToken } from "@/lib/helpers/user";
-import { getThumbnail } from "@/lib/thumbmail";
-import { getFilePath, getFileThumbnailPath } from "@/lib/utils/paths";
+import { getFileName } from "@/lib/utils/file";
 import { randomString } from "@/lib/utils/utils";
-import { storage } from "@/storage/create-storage";
 import { NextResponse } from "next/server";
 
 interface FileData {
@@ -96,68 +94,30 @@ export async function POST(
       );
     }
 
-    const file = await processFile(files[0]);
-    const id = randomString(8);
-    const extension = file.name.split(".")[1];
-    const name = `${id}.${extension}`;
-    const mimeType = file.type;
-    const deleteKey = randomString(32);
-    const fileBuffer = Buffer.from(file.content);
-
-    const fileMeta: FileType = {
-      id: id,
-      views: 0,
-      deleteKey: deleteKey,
-      size: file.size,
-      mimeType: file.type,
-      extension: extension,
-      createdAt: new Date(),
-      userId: user.id,
-
-      // Thumbnail
-      thumbnailId: null,
-      thumbnailExtension: null,
-      thumbnailSize: null,
-    };
-
-    if (mimeType.startsWith("image") || mimeType.startsWith("video")) {
-      const thumbnailId = randomString(16);
-      const thumbnailName = `${thumbnailId}.webp`;
-      const thumbnail = await getThumbnail(name, fileBuffer, mimeType);
-
-      fileMeta.thumbnailId = thumbnailId;
-      fileMeta.thumbnailExtension = "webp";
-      fileMeta.thumbnailSize = thumbnail.size;
-
-      const savedThumbnail = await storage.saveFile(
-        getFileThumbnailPath(user.id, fileMeta),
-        thumbnail.buffer
+    let fileMeta: FileType;
+    try {
+      const file = await processFile(files[0]);
+      fileMeta = await uploadFile(
+        randomString(8),
+        file.name,
+        file.size,
+        Buffer.from(file.content),
+        file.type,
+        user
       );
-      if (!savedThumbnail) {
-        await storage.deleteFile(thumbnailName);
-        return NextResponse.json(
-          { message: "An error occured whilst generating the thumbnail" },
-          { status: 500 }
-        );
-      }
-    }
-
-    const savedFile = await storage.saveFile(
-      getFilePath(user.id, fileMeta),
-      fileBuffer
-    );
-    if (!savedFile) {
-      await storage.deleteFile(name);
+    } catch (err) {
       return NextResponse.json(
-        { message: "An error occured whilst saving your file" },
-        { status: 500 }
+        {
+          message: (err as Error).message,
+        },
+        {
+          status: 500,
+        }
       );
     }
-
-    await db.insert(fileTable).values(fileMeta);
 
     return NextResponse.json({
-      path: name,
+      path: getFileName(fileMeta),
       url: env.NEXT_PUBLIC_WEBSITE_URL,
       deletionUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/file/delete/${fileMeta.deleteKey}`,
       ...(fileMeta.thumbnailId

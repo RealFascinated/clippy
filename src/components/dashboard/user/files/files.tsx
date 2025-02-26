@@ -42,10 +42,10 @@ export default function UserFiles() {
         <>
           {files.items.length > 0 ? (
             <>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 items-center">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 items-center">
                 {files.items.map((fileMeta, index) => (
                   <UserFile
-                    key={index}
+                    key={fileMeta.id}
                     fileMeta={fileMeta}
                     refetch={async () => {
                       await refetch();

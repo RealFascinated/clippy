@@ -19,9 +19,15 @@ import {
 import { Input } from "../ui/input";
 
 const registerSchema = z.object({
-  username: z.string().min(3, {
-    message: "Your username must be atleast 4 characters.",
-  }),
+  name: z.string(),
+  username: z
+    .string()
+    .min(3, {
+      message: "Your username must be atleast 4 characters.",
+    })
+    .max(12, {
+      message: "Your username must not be more than 16 characters.",
+    }),
   email: z.string().email({
     message: "You need to enter a valid email.",
   }),
@@ -37,6 +43,7 @@ export default function CreateAccount() {
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
+      name: "",
       username: "",
       email: "",
       password: "",
@@ -44,13 +51,15 @@ export default function CreateAccount() {
   });
 
   function onSubmit({
+    name,
     username,
     email,
     password,
   }: z.infer<typeof registerSchema>) {
     authClient.signUp.email(
       {
-        name: username,
+        name,
+        username,
         email,
         password,
       },
@@ -59,7 +68,7 @@ export default function CreateAccount() {
           router.push("/dashboard");
           router.refresh();
         },
-        onError: error => {
+        onError: (error) => {
           setError(error.error.message);
         },
       }
@@ -85,6 +94,20 @@ export default function CreateAccount() {
               className="flex flex-col gap-6 w-full"
             >
               <div className="flex flex-col gap-2 w-full">
+                {/* Name */}
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="John Doe" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 {/* Username */}
                 <FormField
                   control={form.control}
@@ -92,7 +115,15 @@ export default function CreateAccount() {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input placeholder="username" {...field} />
+                        <Input
+                          placeholder="username"
+                          {...field}
+                          onChange={(event) => {
+                            event.target.value =
+                              event.target.value.toLowerCase();
+                            field.onChange(event);
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

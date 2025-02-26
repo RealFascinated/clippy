@@ -4,6 +4,8 @@ import { nextCookies } from "better-auth/next-js";
 import { db } from "./db/drizzle";
 import * as schema from "./db/schemas/auth-schema";
 import { env } from "./env";
+import { username } from "better-auth/plugins/username";
+import { admin } from "better-auth/plugins/admin";
 
 export const auth = betterAuth({
   baseURL: env.NEXT_PUBLIC_WEBSITE_URL,
@@ -18,7 +20,21 @@ export const auth = betterAuth({
     minPasswordLength: 8,
     enabled: true,
   },
-  plugins: [nextCookies()],
+  plugins: [
+    username({
+      minUsernameLength: 3,
+      maxUsernameLength: 12,
+      usernameValidator: (username) => {
+        // Disallow admin
+        if (username === "admin") {
+          return false;
+        }
+        return true;
+      },
+    }),
+    admin(),
+    nextCookies(),
+  ],
   session: {
     cookieCache: {
       enabled: true,

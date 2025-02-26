@@ -45,7 +45,7 @@ export async function GET(
     {
       status: 200,
       headers: {
-        "Content-Disposition": `attachment; filename="sharex-config-${session.user.name}.json"`,
+        "Content-Disposition": `attachment; filename="sharex-config-${session.user.name}.sxcu"`,
       },
     }
   );
