@@ -8,8 +8,7 @@ function createStorage(provider: "S3"): Storage {
     case "S3":
       return new S3Storage();
     default:
-      console.log(process.env.NEXT_PHASE);
-      if (process.env.NEXT_PHASE) {
+      if (process.env.NEXT_PHASE == "phase-production-build") {
         return new DummyStorage();
       }
       throw new Error(`Unknown storage provider: ${provider}`);

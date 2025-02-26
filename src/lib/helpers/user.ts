@@ -25,13 +25,13 @@ export async function getUserById(id: string) {
 }
 
 /**
- * Gets a user by their name
+ * Gets a user by their username
  *
- * @param name the users name
+ * @param username the user's username
  * @returns the user, or undefined if not found
  */
-export async function getUserByName(name: string) {
-  return (await db.select().from(users).where(eq(users.name, name)))[0];
+export async function getUserByName(username: string) {
+  return (await db.select().from(users).where(eq(users.username, username)))[0];
 }
 
 /**

@@ -12,15 +12,15 @@ services:
       # Better Auth
       BETTER_AUTH_SECRET: 1Ov7ApNc8FQgdca46J61mM53g16MZgwJj2gjse2B
 
-      # Currently only s3 is supported
+      # Currently only S3 is supported
       STORAGE_PROVIDER: S3
 
       # S3 Configuration
       STORAGE_S3_ENDPOINT: minio
       STORAGE_S3_PORT: 9000
       STORAGE_S3_USE_SSL: false
-      STORAGE_S3_ACCESS_KEY: clippy
-      STORAGE_S3_SECRET_KEY: clippy
+      STORAGE_S3_ACCESS_KEY: clippysupersecretpassword
+      STORAGE_S3_SECRET_KEY: clippysupersecretpassword
       STORAGE_S3_BUCKET: clippy
 
       ALLOWED_MIME_TYPES: image/*,video/*
@@ -55,7 +55,7 @@ services:
     image: fascinated/clippy:latest
     environment:
       DATABASE_URL: postgres://clippy:clippy@db:5432/clippy
-    command: bunx database:migrate
+    command: bun run database:migrate
     depends_on:
       db:
         condition: service_healthy
@@ -63,8 +63,8 @@ services:
   minio:
     image: minio/minio:latest
     environment:
-      MINIO_ROOT_USER: clippy
-      MINIO_ROOT_PASSWORD: clippy
+      MINIO_ROOT_USER: clippysupersecretpassword
+      MINIO_ROOT_PASSWORD: clippysupersecretpassword
     ports:
       - "9000:9000"
       - "9001:9001" # MinIO console
