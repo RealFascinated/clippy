@@ -1,12 +1,12 @@
 import { env } from "@/lib/env";
 import request from "@/lib/request";
+import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { formatBytes } from "@/lib/utils/utils";
 import { UserStatisticsResponse } from "@/type/api/user/statistics-response";
 import { ClockIcon, EyeIcon, FileIcon, ServerIcon } from "lucide-react";
 import { headers } from "next/headers";
 import { ReactElement } from "react";
 import UserStatistic from "./statistic";
-import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 
 type Format = "number" | "bytes";
 type Statistic = {
@@ -75,7 +75,7 @@ export default async function UserStatistics() {
   );
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full justify-between gap-4 items-center">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full justify-between gap-4 items-center select-none">
       {statistics.map((statistic, index) => {
         const value = statisticsResponse?.[statistic.key];
         return (

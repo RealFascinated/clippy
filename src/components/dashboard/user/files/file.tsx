@@ -44,6 +44,7 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
   const uploadedDate = new Date(fileMeta.createdAt);
   const difference = currentDate.getTime() - uploadedDate.getTime();
 
+  const exactDate: string = format(fileMeta.createdAt, "dd/MM/yyyy - HH:mm a");
   const formattedDate =
     difference > 86400000 // 24 hours in milliseconds
       ? format(uploadedDate, "MM/dd/yyyy HH:mm a") // Note: fixed HH:ss to HH:mm
@@ -60,12 +61,16 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
   return (
     <div className="bg-card h-full flex flex-col items-center rounded-md">
       <div className="h-full p-2 flex flex-col gap-1">
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center select-none">
           {/* File Name */}
           <span>{getFileName(fileMeta)}</span>
 
           {/* Upload Date */}
-          <span className="text-sm text-muted-foreground">{formattedDate}</span>
+          <SimpleTooltip content={`Uploaded on ${exactDate}`}>
+            <span className="text-sm text-muted-foreground">
+              {formattedDate}
+            </span>
+          </SimpleTooltip>
         </div>
 
         {/* Preview */}
