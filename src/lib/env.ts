@@ -4,6 +4,8 @@ import { z } from "zod";
 export const env = createEnv({
   client: {
     NEXT_PUBLIC_WEBSITE_NAME: z.string(),
+    NEXT_PUBLIC_WEBSITE_DESCRIPTION: z.string(),
+    NEXT_PUBLIC_WEBSITE_LOGO: z.string(),
     NEXT_PUBLIC_WEBSITE_URL: z.string(),
   },
 
@@ -29,6 +31,11 @@ export const env = createEnv({
   runtimeEnv: {
     // Website
     NEXT_PUBLIC_WEBSITE_NAME: process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "Clippy",
+    NEXT_PUBLIC_WEBSITE_DESCRIPTION:
+      process.env.NEXT_PUBLIC_WEBSITE_DESCRIPTION ??
+      "Open Source ShareX Uploader.",
+    NEXT_PUBLIC_WEBSITE_LOGO:
+      process.env.NEXT_PUBLIC_WEBSITE_LOGO ?? "/logo.png",
     NEXT_PUBLIC_WEBSITE_URL: process.env.NEXT_PUBLIC_WEBSITE_URL,
 
     // Postgres

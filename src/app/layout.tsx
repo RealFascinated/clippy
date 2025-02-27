@@ -14,7 +14,7 @@ const font: NextFont = localFont({
 
 export const metadata: Metadata = {
   title: env.NEXT_PUBLIC_WEBSITE_NAME,
-  description: "Open Source ShareX Uploader.",
+  description: env.NEXT_PUBLIC_WEBSITE_DESCRIPTION,
 };
 
 export default function RootLayout({

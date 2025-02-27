@@ -41,7 +41,7 @@ export default async function Navbar() {
             prefetch={false}
           >
             <Image
-              src="/logo.png"
+              src={env.NEXT_PUBLIC_WEBSITE_LOGO}
               alt={`${env.NEXT_PUBLIC_WEBSITE_NAME} Logo`}
               width={20}
               height={20}
