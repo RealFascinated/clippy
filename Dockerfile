@@ -28,9 +28,11 @@ WORKDIR /usr/src/app
 
 # Download and extract static FFmpeg build
 RUN mkdir -p /usr/local/bin && \
-    curl -sL https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz | tar -xJ --strip-components=1 -C /usr/local/bin ffmpeg-*-static/ffmpeg && \
-    chmod +x /usr/local/bin/ffmpeg
-
+    curl -sL https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz -o ffmpeg.tar.xz && \
+    tar -xJf ffmpeg.tar.xz --strip-components=1 -C /usr/local/bin ffmpeg-master-latest-linux64-gpl/ffmpeg && \
+    chmod +x /usr/local/bin/ffmpeg && \
+    rm ffmpeg.tar.xz
+    
 # Copy only the production dependencies
 COPY --from=prod-deps /usr/src/app/node_modules ./node_modules
 
