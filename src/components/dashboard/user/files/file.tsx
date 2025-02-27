@@ -133,13 +133,22 @@ function FilePreview({ fileMeta }: { fileMeta: FileType }) {
           <DialogTitle>{getFileName(fileMeta)}</DialogTitle>
         </DialogHeader>
         {isImage && (
-          <img src={url} alt={`Image for ${getFileName(fileMeta)}`} />
+          <img
+            src={url}
+            alt={`Image for ${getFileName(fileMeta)}`}
+            className="max-h-[70vh]"
+          />
         )}
 
-        {
-          isVideo && <ReactPlayer url={url} volume={0.25} playing controls />
-          // <video src={url} controls autoPlay />
-        }
+        {isVideo && (
+          <ReactPlayer
+            url={url}
+            volume={0.25}
+            playing
+            controls
+            className="max-h-[70vh]"
+          />
+        )}
       </DialogContent>
     </Dialog>
   );
