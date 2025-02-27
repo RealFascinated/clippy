@@ -1,8 +1,8 @@
 FROM oven/bun:1.2.2-slim AS base
 
-# Install minimal dependencies
+# Install minimal dependencies including xz-utils
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends -qq curl wget && \
+    apt-get install -y --no-install-recommends -qq curl wget xz-utils && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
