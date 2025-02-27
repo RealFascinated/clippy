@@ -31,7 +31,7 @@ const ReactPlayer = dynamic(() => import("react-player"));
 
 type UserFileProps = {
   fileMeta: FileType;
-  refetch?: () => Promise<void>;
+  refetch: () => Promise<void>;
 };
 
 export default function UserFile({ fileMeta, refetch }: UserFileProps) {
@@ -177,7 +177,7 @@ function DeleteFileDialog({ fileMeta, refetch }: UserFileProps) {
         throwOnError: true,
         withCredentials: true, // use cookies
       });
-      refetch && (await refetch());
+      await refetch();
       toast(`Successfully deleted ${getFileName(fileMeta)}!`);
     } catch {
       toast(`Failed to delete ${getFileName(fileMeta)}`);
@@ -216,7 +216,7 @@ function DeleteFileDialog({ fileMeta, refetch }: UserFileProps) {
   );
 }
 
-function FileInfo({ fileMeta }: UserFileProps) {
+function FileInfo({ fileMeta }: { fileMeta: FileType }) {
   return (
     <Dialog>
       <DialogTrigger>
