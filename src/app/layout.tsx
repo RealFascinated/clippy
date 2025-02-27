@@ -13,7 +13,10 @@ const font: NextFont = localFont({
 });
 
 export const metadata: Metadata = {
-  title: env.NEXT_PUBLIC_WEBSITE_NAME,
+  title: {
+    default: env.NEXT_PUBLIC_WEBSITE_NAME,
+    template: `%s | ${env.NEXT_PUBLIC_WEBSITE_NAME}`,
+  },
   description: env.NEXT_PUBLIC_WEBSITE_DESCRIPTION,
   icons: [{ rel: "icon", url: env.NEXT_PUBLIC_WEBSITE_LOGO }],
 };
