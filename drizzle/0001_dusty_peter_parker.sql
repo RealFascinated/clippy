@@ -1,0 +1,1 @@
+ALTER TABLE "file" ADD COLUMN "original_name" text;

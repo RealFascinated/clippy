@@ -7,6 +7,7 @@ export const fileTable = pgTable("file", {
   size: integer("size").notNull(),
   extension: text("extension").notNull(),
   mimeType: text("mime_type").notNull(),
+  originalName: text("original_name"),
   createdAt: timestamp("created_at").notNull(),
   userId: text("user_id")
     .notNull()

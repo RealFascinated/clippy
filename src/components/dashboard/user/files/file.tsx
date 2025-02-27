@@ -12,24 +12,26 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import Loader from "@/components/ui/loader";
 import { FileType } from "@/lib/db/schemas/file";
+import { env } from "@/lib/env";
 import request from "@/lib/request";
 import { getFileName } from "@/lib/utils/file";
+import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { formatBytes } from "@/lib/utils/utils";
+import { InformationCircleIcon } from "@heroicons/react/16/solid";
+import { differenceInHours, format, formatDistance } from "date-fns";
 import { DownloadIcon, LinkIcon, PlayIcon, TrashIcon } from "lucide-react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
-import { format, differenceInHours, formatDistance } from "date-fns";
-import Loader from "@/components/ui/loader";
-import dynamic from "next/dynamic";
-import { env } from "@/lib/env";
 
 const ReactPlayer = dynamic(() => import("react-player"));
 
 type UserFileProps = {
   fileMeta: FileType;
-  refetch: () => Promise<void>;
+  refetch?: () => Promise<void>;
 };
 
 export default function UserFile({ fileMeta, refetch }: UserFileProps) {
@@ -92,6 +94,8 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
           >
             <DownloadIcon className="size-4.5 hover:opacity-80 transition-all transform-gpu" />
           </Link>
+
+          <FileInfo fileMeta={fileMeta} />
 
           {/* Delete File Button */}
           <DeleteFileDialog fileMeta={fileMeta} refetch={refetch} />
@@ -168,7 +172,7 @@ function DeleteFileDialog({ fileMeta, refetch }: UserFileProps) {
         throwOnError: true,
         withCredentials: true, // use cookies
       });
-      await refetch();
+      refetch && (await refetch());
       toast(`Successfully deleted ${getFileName(fileMeta)}!`);
     } catch {
       toast(`Failed to delete ${getFileName(fileMeta)}`);
@@ -202,6 +206,57 @@ function DeleteFileDialog({ fileMeta, refetch }: UserFileProps) {
             Delete
           </Button>
         </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function FileInfo({ fileMeta }: UserFileProps) {
+  return (
+    <Dialog>
+      <DialogTrigger>
+        <InformationCircleIcon className="size-4.5 cursor-pointer hover:opacity-80 transition-all transform-gpu" />
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>File Information</DialogTitle>
+        </DialogHeader>
+
+        <div className="flex flex-col">
+          {/* File Name */}
+          <span>
+            <span className="font-semibold">Name:</span> {getFileName(fileMeta)}
+          </span>
+
+          {/* Original File Name */}
+          <span>
+            <span className="font-semibold">Original Name:</span>{" "}
+            {fileMeta.originalName ?? "Unknown"}
+          </span>
+
+          {/* File Size */}
+          <span>
+            <span className="font-semibold">Size:</span>{" "}
+            {formatBytes(fileMeta.size)}
+          </span>
+
+          {/* Mime Type */}
+          <span>
+            <span className="font-semibold">Mimetype:</span> {fileMeta.mimeType}
+          </span>
+
+          {/* Views */}
+          <span>
+            <span className="font-semibold">Views:</span>{" "}
+            {formatNumberWithCommas(fileMeta.views)}
+          </span>
+
+          {/* Upload Date */}
+          <span>
+            <span className="font-semibold">Uploaded Date:</span>{" "}
+            {format(fileMeta.createdAt, "dd/MM/yyyy - HH:ss a")}
+          </span>
+        </div>
       </DialogContent>
     </Dialog>
   );

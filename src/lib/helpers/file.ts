@@ -102,6 +102,7 @@ export async function uploadFile(
     size: fileSize,
     mimeType: mimeType,
     extension: extension,
+    originalName: fileName,
     createdAt: createdAt ? createdAt : new Date(),
     userId: user.id,
 
