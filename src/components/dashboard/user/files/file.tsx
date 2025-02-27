@@ -1,3 +1,5 @@
+"use client";
+
 import FileExtensionIcon from "@/components/file-icon";
 import { Button } from "@/components/ui/button";
 import { InlineCodeBlock } from "@/components/ui/code-block";

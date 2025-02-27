@@ -56,6 +56,7 @@ export default function Pagination({
   onPageChange,
   generatePageUrl,
 }: Props) {
+  page = page == 0 ? 1 : page;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const isLoading = loadingPage !== undefined;
   const [currentPage, setCurrentPage] = useState(page);
@@ -84,10 +85,7 @@ export default function Pagination({
 
     const maxPagesToShow = mobilePagination ? 3 : 4;
     const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-    const endPage = Math.min(
-      totalPages == 0 ? 1 : totalPages - 1,
-      startPage + maxPagesToShow - 1
-    );
+    const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
     const pageNumbers = [];
 
     if (startPage > 1) {
