@@ -1,8 +1,8 @@
 FROM oven/bun:1.2.2-slim AS base
 
-# Install dependencies with minimal output
+# Install minimal dependencies
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends -qq ffmpeg curl wget && \
+    apt-get install -y --no-install-recommends -qq curl wget && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -25,6 +25,11 @@ RUN bun install --frozen-lockfile --production --quiet
 # Final production image
 FROM base AS runner
 WORKDIR /usr/src/app
+
+# Download and extract static FFmpeg build
+RUN mkdir -p /usr/local/bin && \
+    curl -sL https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz | tar -xJ --strip-components=1 -C /usr/local/bin ffmpeg-*-static/ffmpeg && \
+    chmod +x /usr/local/bin/ffmpeg
 
 # Copy only the production dependencies
 COPY --from=prod-deps /usr/src/app/node_modules ./node_modules
