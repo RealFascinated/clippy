@@ -1,27 +1,35 @@
-FROM oven/bun:1.2.2-debian AS base
+FROM oven/bun:1.2.2-slim AS base
 
-# Install dependencies
-RUN apt-get update && apt-get install -y ffmpeg curl wget --quiet
+# Install dependencies with cleanup in the same layer to reduce size
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg curl wget \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install dependencies
 FROM base AS depends
 WORKDIR /usr/src/app
 COPY package.json* bun.lock* ./
-RUN bun install --frozen-lockfile --quiet
+RUN bun install --frozen-lockfile --production --quiet
 
-# Run the app
+# Build the app
+FROM depends AS builder
+COPY . .
+RUN bun run build
+
+# Final production image
 FROM base AS runner
 WORKDIR /usr/src/app
 
-COPY . .
-COPY --from=depends /usr/src/app/node_modules ./node_modules
-
-RUN bun run build
+# Copy only necessary files from the builder
+COPY --from=builder /usr/src/app/.next/standalone ./
+COPY --from=builder /usr/src/app/.next/static ./.next/static
+COPY --from=builder /usr/src/app/public ./public
+COPY --from=builder /usr/src/app/drizzle ./drizzle
+COPY --from=builder /usr/src/app/node_modules ./node_modules
 
 ENV NODE_ENV=production
-
 ENV HOSTNAME="0.0.0.0"
 EXPOSE 3000
 ENV PORT=3000
 
-CMD ["bun", "run", "start"]
+CMD ["bun", "run", "server.js"]
