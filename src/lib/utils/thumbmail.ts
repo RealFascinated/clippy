@@ -3,8 +3,8 @@ import os from "os";
 import path from "path";
 import Sharp from "sharp";
 import { extractVideoThumbnail } from "./ffmpeg";
-import { getFileExtension } from "./utils/file";
-import { randomString } from "./utils/utils";
+import { getFileExtension } from "./file";
+import { randomString } from "./utils";
 
 /**
  * Gets a thumbnail for an image or video.

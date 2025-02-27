@@ -1,4 +1,4 @@
-import { env } from "./env";
+import { env } from "../env";
 
 /**
  * Validates the mime type against the allowed types in the config

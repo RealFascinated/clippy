@@ -6,7 +6,7 @@ import { ClockIcon, EyeIcon, FileIcon, ServerIcon } from "lucide-react";
 import { headers } from "next/headers";
 import { ReactElement } from "react";
 import UserStatistic from "./statistic";
-import { formatNumberWithCommas } from "@/lib/number-utils";
+import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 
 type Format = "number" | "bytes";
 type Statistic = {

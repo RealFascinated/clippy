@@ -2,7 +2,7 @@ import { FileType } from "@/lib/db/schemas/file";
 import { env } from "@/lib/env";
 import { uploadFile } from "@/lib/helpers/file";
 import { getUserByUploadToken } from "@/lib/helpers/user";
-import { validateMimeType } from "@/lib/mime";
+import { validateMimeType } from "@/lib/utils/mime";
 import { getFileName } from "@/lib/utils/file";
 import { randomString } from "@/lib/utils/utils";
 import { ApiErrorResponse } from "@/type/api/responses";

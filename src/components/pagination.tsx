@@ -15,7 +15,7 @@ import {
   PaginationPrevious,
   Pagination as ShadCnPagination,
 } from "./ui/pagination";
-import { formatNumberWithCommas } from "@/lib/number-utils";
+import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 
 type PaginationItemWrapperProps = {
   isLoadingPage: boolean;
