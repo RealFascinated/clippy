@@ -3,7 +3,7 @@ import os from "os";
 import path from "path";
 import Sharp from "sharp";
 import { extractVideoThumbnail } from "./ffmpeg";
-import { getFileExtension, randomString } from "./utils/utils";
+import { getFileExtensionFromMimeType, randomString } from "./utils/utils";
 
 /**
  * Gets a thumbnail for an image or video.
@@ -26,7 +26,7 @@ export async function getThumbnail(
     const tempDir = os.tmpdir();
     const inputPath = path.join(
       tempDir,
-      `${randomString(8)}.${getFileExtension(mimeType)}`
+      `${randomString(8)}.${getFileExtensionFromMimeType(mimeType)}`
     );
     const outputPath = path.join(tempDir, `${randomString(8)}.webp`);
 

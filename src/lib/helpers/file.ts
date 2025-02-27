@@ -6,6 +6,7 @@ import { fileTable, FileType } from "../db/schemas/file";
 import { getThumbnail } from "../thumbmail";
 import { getFilePath, getFileThumbnailPath } from "../utils/paths";
 import { randomString } from "../utils/utils";
+import { getFileExtension } from "../utils/file";
 
 /**
  * Gets the file from the database
@@ -86,7 +87,11 @@ export async function uploadFile(
   user: UserType,
   createdAt?: Date
 ): Promise<FileType> {
-  const extension = fileName.split(".")[1];
+  const extension = getFileExtension(fileName);
+  if (!extension) {
+    throw new Error("File is missing an extension, unable to upload");
+  }
+
   const name = `${fileId}.${extension}`;
   const deleteKey = randomString(32);
 

@@ -2,8 +2,10 @@ import { FileType } from "@/lib/db/schemas/file";
 import { env } from "@/lib/env";
 import { uploadFile } from "@/lib/helpers/file";
 import { getUserByUploadToken } from "@/lib/helpers/user";
+import { validateMimeType } from "@/lib/mime";
 import { getFileName } from "@/lib/utils/file";
 import { randomString } from "@/lib/utils/utils";
+import { ApiErrorResponse } from "@/type/api/responses";
 import { NextResponse } from "next/server";
 
 interface FileData {
@@ -35,10 +37,6 @@ interface SuccessResponse {
   thumbnailUrl?: string;
 }
 
-interface ErrorResponse {
-  message: string;
-}
-
 /**
  * Processes a single file upload and returns structured file data
  */
@@ -58,7 +56,7 @@ async function processFile(file: File): Promise<FileData> {
  */
 export async function POST(
   request: Request
-): Promise<NextResponse<SuccessResponse | ErrorResponse>> {
+): Promise<NextResponse<SuccessResponse | ApiErrorResponse>> {
   try {
     const formData = await request.formData();
     const uploadToken: string | undefined = formData.get("token")?.toString();
@@ -97,6 +95,12 @@ export async function POST(
     let fileMeta: FileType;
     try {
       const file = await processFile(files[0]);
+      if (!validateMimeType(file.type)) {
+        return NextResponse.json(
+          { message: `The mime-type "${file.type}" is not allowed` },
+          { status: 400 }
+        );
+      }
       fileMeta = await uploadFile(
         randomString(8),
         file.name,

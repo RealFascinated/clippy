@@ -45,7 +45,7 @@ export function randomString(length: number): string {
  * @param mime the mime to use
  * @returns the file extension
  */
-export function getFileExtension(mime: string) {
+export function getFileExtensionFromMimeType(mime: string) {
   return mime.split("/")[1];
 }
 

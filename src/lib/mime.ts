@@ -19,9 +19,10 @@ export function validateMimeType(mime: string): boolean {
 
   mime = mime.toLowerCase();
 
-  let valid = true;
+  // Start with valid = false
+  let valid = false;
   for (const allowedType of allowedTypes) {
-    if (allowedType === "*") {
+    if (allowedType === "*" || allowedType === "*/*") {
       valid = true; // Allow all MIME types
       break;
     }
