@@ -15,6 +15,7 @@ const font: NextFont = localFont({
 export const metadata: Metadata = {
   title: env.NEXT_PUBLIC_WEBSITE_NAME,
   description: env.NEXT_PUBLIC_WEBSITE_DESCRIPTION,
+  icons: [{ rel: "icon", url: env.NEXT_PUBLIC_WEBSITE_LOGO }],
 };
 
 export default function RootLayout({
