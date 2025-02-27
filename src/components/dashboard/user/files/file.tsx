@@ -38,10 +38,15 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
   const hasThumbnail =
     fileMeta.mimeType.startsWith("video") ||
     fileMeta.mimeType.startsWith("image");
+
+  const currentDate = new Date();
+  const uploadedDate = new Date(fileMeta.createdAt);
+  const difference = currentDate.getTime() - uploadedDate.getTime();
+
   const formattedDate =
-    differenceInHours(new Date(fileMeta.createdAt), new Date()) > 24
-      ? format(new Date(fileMeta.createdAt).toISOString(), "MM/dd/yyyy HH:ss a")
-      : formatDistance(new Date(fileMeta.createdAt), new Date()) + " ago";
+    difference > 86400000 // 24 hours in milliseconds
+      ? format(uploadedDate, "MM/dd/yyyy HH:mm a") // Note: fixed HH:ss to HH:mm
+      : formatDistance(uploadedDate, currentDate) + " ago";
 
   function copyUrl() {
     navigator.clipboard.writeText(
@@ -254,7 +259,7 @@ function FileInfo({ fileMeta }: UserFileProps) {
           {/* Upload Date */}
           <span>
             <span className="font-semibold">Uploaded Date:</span>{" "}
-            {format(fileMeta.createdAt, "dd/MM/yyyy - HH:ss a")}
+            {format(fileMeta.createdAt, "dd/MM/yyyy - HH:mm a")}
           </span>
         </div>
       </DialogContent>
