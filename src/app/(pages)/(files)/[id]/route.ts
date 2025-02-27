@@ -69,7 +69,7 @@ async function getFileMetadata(
   if (download || (!isVideo && !isImage)) {
     headers.set(
       "Content-Disposition",
-      `attachment; filename="${getFileName(fileMeta)}"`
+      `inline; filename="${getFileName(fileMeta)}"`
     );
     // Prevent caching for downloads
     headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
