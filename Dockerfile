@@ -33,6 +33,7 @@ COPY --from=prod-deps /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/.next ./.next
 COPY --from=builder /usr/src/app/public ./public
 COPY --from=builder /usr/src/app/drizzle ./drizzle
+COPY --from=builder /usr/src/app/drizzle.config.ts ./drizzle.config.ts
 COPY --from=builder /usr/src/app/package.json ./
 
 ENV NODE_ENV=production
