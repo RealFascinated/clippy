@@ -30,6 +30,7 @@ WORKDIR /usr/src/app
 COPY --from=prod-deps /usr/src/app/node_modules ./node_modules
 
 # Copy build artifacts and other necessary files
+COPY --from=builder /usr/src/app/.next/standalone ./
 COPY --from=builder /usr/src/app/.next ./.next
 COPY --from=builder /usr/src/app/public ./public
 COPY --from=builder /usr/src/app/drizzle ./drizzle
@@ -41,4 +42,4 @@ ENV HOSTNAME="0.0.0.0"
 EXPOSE 3000
 ENV PORT=3000
 
-CMD ["bun", "run", "start"]
+CMD ["bun", "server.js"]
