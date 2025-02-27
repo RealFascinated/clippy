@@ -4,9 +4,9 @@ import { db } from "../db/drizzle";
 import { UserType } from "../db/schemas/auth-schema";
 import { fileTable, FileType } from "../db/schemas/file";
 import { getThumbnail } from "../thumbmail";
+import { getFileExtension } from "../utils/file";
 import { getFilePath, getFileThumbnailPath } from "../utils/paths";
 import { randomString } from "../utils/utils";
-import { getFileExtension } from "../utils/file";
 
 /**
  * Gets the file from the database
@@ -87,7 +87,7 @@ export async function uploadFile(
   user: UserType,
   createdAt?: Date
 ): Promise<FileType> {
-  const extension = getFileExtension(fileName);
+  const extension = getFileExtension(fileName)?.toLowerCase();
   if (!extension) {
     throw new Error("File is missing an extension, unable to upload");
   }

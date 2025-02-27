@@ -40,16 +40,6 @@ export function randomString(length: number): string {
 }
 
 /**
- * Gets the file extension from the mime.
- *
- * @param mime the mime to use
- * @returns the file extension
- */
-export function getFileExtensionFromMimeType(mime: string) {
-  return mime.split("/")[1];
-}
-
-/**
  * Formats file bytes to human readable format.
  *
  * @param bytes - The number of bytes to format.
