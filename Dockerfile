@@ -26,13 +26,9 @@ RUN bun install --frozen-lockfile --production --quiet
 FROM base AS runner
 WORKDIR /usr/src/app
 
-# Download and extract static FFmpeg build
-RUN mkdir -p /usr/local/bin && \
-    curl -sL https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz -o ffmpeg.tar.xz && \
-    tar -xJf ffmpeg.tar.xz --strip-components=1 -C /usr/local/bin ffmpeg-master-latest-linux64-gpl/ffmpeg && \
-    chmod +x /usr/local/bin/ffmpeg && \
-    rm ffmpeg.tar.xz
-    
+# Copy static FFmpeg build
+COPY --from=mwader/static-ffmpeg:7.1 /ffmpeg /usr/local/bin/
+
 # Copy only the production dependencies
 COPY --from=prod-deps /usr/src/app/node_modules ./node_modules
 
