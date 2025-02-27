@@ -1,6 +1,7 @@
 "use client";
 
 import FileExtensionIcon from "@/components/file-icon";
+import SimpleTooltip from "@/components/simple-tooltip";
 import { Button } from "@/components/ui/button";
 import { InlineCodeBlock } from "@/components/ui/code-block";
 import {
@@ -20,7 +21,7 @@ import { getFileName } from "@/lib/utils/file";
 import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { formatBytes } from "@/lib/utils/utils";
 import { InformationCircleIcon } from "@heroicons/react/16/solid";
-import { differenceInHours, format, formatDistance } from "date-fns";
+import { format, formatDistance } from "date-fns";
 import { DownloadIcon, LinkIcon, PlayIcon, TrashIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -88,17 +89,21 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
         </span>
 
         <div className="flex gap-2 items-center">
-          <button className="cursor-pointer" onClick={() => copyUrl()}>
-            <LinkIcon className="size-4.5 hover:opacity-80 transition-all transform-gpu" />
-          </button>
+          <SimpleTooltip content="Copy URL">
+            <button className="cursor-pointer" onClick={() => copyUrl()}>
+              <LinkIcon className="size-4.5 hover:opacity-80 transition-all transform-gpu" />
+            </button>
+          </SimpleTooltip>
 
           {/* Download File */}
-          <Link
-            href={`/${getFileName(fileMeta)}?incrementviews=false&download=true`}
-            prefetch={false}
-          >
-            <DownloadIcon className="size-4.5 hover:opacity-80 transition-all transform-gpu" />
-          </Link>
+          <SimpleTooltip content="Download File">
+            <Link
+              href={`/${getFileName(fileMeta)}?incrementviews=false&download=true`}
+              prefetch={false}
+            >
+              <DownloadIcon className="size-4.5 hover:opacity-80 transition-all transform-gpu" />
+            </Link>
+          </SimpleTooltip>
 
           <FileInfo fileMeta={fileMeta} />
 
@@ -187,10 +192,10 @@ function DeleteFileDialog({ fileMeta, refetch }: UserFileProps) {
 
   return (
     <Dialog open={deleteConfirm} onOpenChange={setDeleteConfirm}>
-      <DialogTrigger asChild>
-        <button className="cursor-pointer">
-          <TrashIcon className="size-4 text-red-400 hover:opacity-80 transition-all transform-gpu" />
-        </button>
+      <DialogTrigger>
+        <SimpleTooltip className="bg-destructive" content="Delete File">
+          <TrashIcon className="size-4 text-red-400 hover:opacity-80 cursor-pointer transition-all transform-gpu" />
+        </SimpleTooltip>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -220,7 +225,9 @@ function FileInfo({ fileMeta }: { fileMeta: FileType }) {
   return (
     <Dialog>
       <DialogTrigger>
-        <InformationCircleIcon className="size-4.5 cursor-pointer hover:opacity-80 transition-all transform-gpu" />
+        <SimpleTooltip content="File Info">
+          <InformationCircleIcon className="size-4.5 cursor-pointer hover:opacity-80 transition-all transform-gpu" />
+        </SimpleTooltip>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
