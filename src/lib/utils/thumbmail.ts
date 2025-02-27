@@ -24,7 +24,9 @@ export async function getThumbnail(
   let thumbnail: Buffer | undefined;
 
   if (mimeType.includes("video")) {
-    const tempDir = os.tmpdir();
+    const tempDir = path.join(os.tmpdir(), `clippy-${randomString(8)}`);
+    await fs.mkdir(tempDir);
+
     const inputPath = path.join(
       tempDir,
       `${randomString(8)}.${getFileExtension(fileName)}`
@@ -44,14 +46,14 @@ export async function getThumbnail(
         .webp({ quality })
         .toBuffer();
     } catch (err) {
-      console.error(
+      console.log(
         `An error occurred while processing the video file ${fileName}:`,
         err
       );
     } finally {
       // Cleanup temporary files
-      await fs.unlink(inputPath).catch(console.error);
-      await fs.unlink(outputPath).catch(console.error);
+      await fs.rmdir(tempDir);
+      console.log(`Cleaning up thumbnail directory: ${tempDir}`);
     }
   } else if (mimeType.includes("image")) {
     try {

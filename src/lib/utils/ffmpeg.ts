@@ -12,8 +12,8 @@ export function extractVideoThumbnail(inputFile: string, outputFile: string) {
     command
       .input(inputFile)
       .output(outputFile)
-      .outputOptions(["-ss 00:00:01.000", "-vframes 1", "-c:v libwebp"])
-      .on("error", err => {
+      .outputOptions(["-ss 00:00:00.000", "-vframes 1"])
+      .on("error", (err) => {
         console.error(
           `An error occurred while extracting the thumbnail for ${inputFile}: ${err.message}`
         );

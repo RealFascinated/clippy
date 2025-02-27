@@ -112,34 +112,54 @@ export async function uploadFile(
     thumbnailSize: null,
   };
 
+  // Process thumbnail and main file save in parallel
+  const savePromises = [];
+
   if (mimeType.startsWith("image") || mimeType.startsWith("video")) {
-    const thumbnailId = randomString(16);
-    const thumbnailName = `${thumbnailId}.webp`;
-    const thumbnail = await getThumbnail(name, fileBuffer, mimeType);
+    const thumbnailPromise = (async () => {
+      const thumbnailId = randomString(16);
+      const thumbnailName = `${thumbnailId}.webp`;
 
-    fileMeta.thumbnailId = thumbnailId;
-    fileMeta.thumbnailExtension = "webp";
-    fileMeta.thumbnailSize = thumbnail.size;
+      // Start thumbnail generation early
+      const thumbnail = await getThumbnail(name, fileBuffer, mimeType);
 
-    const savedThumbnail = await storage.saveFile(
-      getFileThumbnailPath(user.id, fileMeta),
-      thumbnail.buffer
+      fileMeta.thumbnailId = thumbnailId;
+      fileMeta.thumbnailExtension = "webp";
+      fileMeta.thumbnailSize = thumbnail.size;
+
+      const savedThumbnail = await storage.saveFile(
+        getFileThumbnailPath(user.id, fileMeta),
+        thumbnail.buffer
+      );
+
+      if (!savedThumbnail) {
+        await storage.deleteFile(thumbnailName);
+        throw new Error("An error occurred whilst generating the thumbnail");
+      }
+    })();
+
+    savePromises.push(thumbnailPromise);
+  }
+
+  // Save the main file
+  const filePromise = (async () => {
+    const result = await storage.saveFile(
+      getFilePath(user.id, fileMeta),
+      fileBuffer
     );
-    if (!savedThumbnail) {
-      await storage.deleteFile(thumbnailName);
-      throw new Error("An error occured whilst generating the thumbnail");
+
+    if (!result) {
+      await storage.deleteFile(name);
+      throw new Error("An error occurred whilst saving your file");
     }
-  }
+  })();
 
-  const savedFile = await storage.saveFile(
-    getFilePath(user.id, fileMeta),
-    fileBuffer
-  );
-  if (!savedFile) {
-    await storage.deleteFile(name);
-    throw new Error("An error occured whilst saving your file");
-  }
+  savePromises.push(filePromise);
 
+  // Wait for all save operations to complete
+  await Promise.all(savePromises);
+
+  // Insert into database
   await db.insert(fileTable).values(fileMeta);
 
   return fileMeta;
