@@ -1,12 +1,17 @@
-import { env } from "@/lib/env";
 import "dotenv/config";
 import { defineConfig } from "drizzle-kit";
+
+const databaseUrl = process.env.DATABASE_URL;
+if (!databaseUrl) {
+  console.log(`DATABASE_URL is missing from your environment variables.`);
+  process.exit(1);
+}
 
 export default defineConfig({
   out: "./drizzle",
   schema: ["./src/lib/db/schemas/"],
   dialect: "postgresql",
   dbCredentials: {
-    url: env.DATABASE_URL,
+    url: databaseUrl,
   },
 });
