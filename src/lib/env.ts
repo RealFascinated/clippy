@@ -22,7 +22,7 @@ export const env = createEnv({
     STORAGE_S3_SECRET_KEY: z.string(),
     STORAGE_S3_BUCKET: z.string(),
 
-    ALLOWED_MIME_TYPES: z.string(),
+    ALLOWED_MIME_TYPES: z.string().optional(),
   },
 
   /**

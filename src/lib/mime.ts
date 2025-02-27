@@ -1,7 +1,5 @@
 import { env } from "./env";
 
-const allowedTypes = env.ALLOWED_MIME_TYPES.toLowerCase().split(",");
-
 /**
  * Validates the mime type against the allowed types in the config
  *
@@ -9,14 +7,15 @@ const allowedTypes = env.ALLOWED_MIME_TYPES.toLowerCase().split(",");
  * @returns true if valid, false otherwise
  */
 export function validateMimeType(mime: string): boolean {
-  if (allowedTypes.length == 0) {
+  if (!env.ALLOWED_MIME_TYPES) {
     console.log(
       `ALLOWED_MIME_TYPES is empty, defaulting to all allowed. To make this message stop add "*/*" to the allowed list. 
-      Please note this will allow any file type to be uploaded`
+        Please note this will allow any file type to be uploaded`
     );
     return true;
   }
 
+  const allowedTypes = env.ALLOWED_MIME_TYPES.toLowerCase().split(",");
   mime = mime.toLowerCase();
 
   // Start with valid = false
