@@ -122,7 +122,7 @@ export async function POST(
       deletionUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/file/delete/${fileMeta.deleteKey}`,
       ...(fileMeta.thumbnailId
         ? {
-            thumbnailUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/thumbnail/${fileMeta.thumbnailId}.${fileMeta.thumbnailExtension}`,
+            thumbnailUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/thumbnails/${fileMeta.thumbnailId}.${fileMeta.thumbnailExtension}`,
           }
         : {}),
     });
