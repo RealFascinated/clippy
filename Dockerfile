@@ -1,12 +1,12 @@
 FROM oven/bun:1.2.2-slim AS base
 
-# Install minimal dependencies including xz-utils
+# Install dependencies
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends -qq curl wget xz-utils && \
+    apt-get install -y --no-install-recommends -qq curl wget && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install ALL dependencies for building
+# Build stage
 FROM base AS builder
 WORKDIR /usr/src/app
 COPY package.json* bun.lock* ./
@@ -16,25 +16,29 @@ RUN bun install --frozen-lockfile --quiet
 COPY . .
 RUN bun run build
 
-# Install ONLY production dependencies
+# Production dependencies stage
 FROM base AS prod-deps
 WORKDIR /usr/src/app
 COPY package.json* bun.lock* ./
 RUN bun install --frozen-lockfile --production --quiet
 
-# Final production image
-FROM base AS runner
+# Final smaller image with Alpine
+FROM oven/bun:1.2.2-alpine AS runner
 WORKDIR /usr/src/app
 
-# Copy static FFmpeg build
-COPY --from=mwader/static-ffmpeg:7.1 /ffmpeg /usr/local/bin/
+# Install curl and wget in Alpine
+RUN apk add --no-cache curl wget ca-certificates
+
+# Copy only the ffmpeg binary from alpine version
+COPY --from=mwader/static-ffmpeg:7.1-alpine /ffmpeg /usr/local/bin/
 
 # Copy only the production dependencies
 COPY --from=prod-deps /usr/src/app/node_modules ./node_modules
 
-# Copy build artifacts and other necessary files
+# Copy only necessary build artifacts
 COPY --from=builder /usr/src/app/.next/standalone ./
-COPY --from=builder /usr/src/app/.next ./.next
+COPY --from=builder /usr/src/app/.next/static ./.next/static
+COPY --from=builder /usr/src/app/.next/server ./.next/server
 COPY --from=builder /usr/src/app/public ./public
 COPY --from=builder /usr/src/app/drizzle ./drizzle
 COPY --from=builder /usr/src/app/drizzle.config.ts ./drizzle.config.ts
