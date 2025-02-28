@@ -14,6 +14,7 @@ export const env = createEnv({
     BETTER_AUTH_SECRET: z.string(),
 
     STORAGE_PROVIDER: z.enum(["S3"]),
+    FILE_ID_LENGTH: z.number().optional().default(8),
 
     STORAGE_S3_ENDPOINT: z.string(),
     STORAGE_S3_PORT: z.number(),
@@ -47,6 +48,7 @@ export const env = createEnv({
 
     // File Storage
     STORAGE_PROVIDER: process.env.STORAGE_PROVIDER,
+    FILE_ID_LENGTH: Number(process.env.FILE_ID_LENGTH ?? 8),
     STORAGE_S3_ENDPOINT: process.env.STORAGE_S3_ENDPOINT,
     STORAGE_S3_PORT: Number(process.env.STORAGE_S3_PORT),
     STORAGE_S3_USE_SSL: process.env.STORAGE_S3_USE_SSL === "true",

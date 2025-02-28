@@ -102,7 +102,7 @@ export async function POST(
 				);
 			}
 			fileMeta = await uploadFile(
-				randomString(8),
+				randomString(env.FILE_ID_LENGTH),
 				file.name,
 				file.size,
 				Buffer.from(file.content),
