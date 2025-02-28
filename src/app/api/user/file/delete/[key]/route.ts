@@ -1,3 +1,4 @@
+import { notFound } from "@/lib/api-commons";
 import { getFileByDeleteKey, removeFile } from "@/lib/helpers/file";
 import Logger from "@/lib/logger";
 import { getFileName } from "@/lib/utils/file";
@@ -13,7 +14,7 @@ export async function GET(
   const { key } = await params;
   const file = await getFileByDeleteKey(key);
   if (!file) {
-    return NextResponse.json({ message: "Unknown Key" }, { status: 404 });
+    return notFound;
   }
 
   try {
