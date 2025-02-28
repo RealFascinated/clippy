@@ -1,3 +1,4 @@
+import AvatarInitials from "@/components/avatar-initials";
 import { getUser } from "@/lib/auth";
 import Link from "next/link";
 import {
@@ -14,7 +15,12 @@ export default async function ProfileButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <span className="py-1.5 px-2 bg-secondary rounded-md cursor-pointer hover:opacity-80 transition-all transform-gpu">
+        <span className="py-1.5 px-2 flex gap-1.5 items-center bg-secondary rounded-md cursor-pointer hover:opacity-80 transition-all transform-gpu">
+          <AvatarInitials
+            className="bg-zinc-900/75"
+            name={user.username ?? "Minion Bob"}
+            size="xs"
+          />
           @{user.username}
         </span>
       </DropdownMenuTrigger>

@@ -27,7 +27,7 @@
   --muted-foreground: hsl(0 0% 63.9%);
   --accent: hsl(0 0% 14.9%);
   --accent-foreground: hsl(0 0% 98%);
-  --destructive: hsl(0 62.8% 30.6%);
+  --destructive: hsl(0 100% 67%);
   --destructive-foreground: hsl(0 0% 98%);
   --border: hsl(0, 0%, 19%);
   --input: hsl(0 0% 14.9%);
@@ -85,4 +85,7 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
+
+  /* Breakpoints */
+  --breakpoint-xs: 30rem;
 }

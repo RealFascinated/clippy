@@ -1,7 +1,6 @@
 import AppearanceSettings from "@/components/dashboard/user/settings/appearance-settings";
+import ConfigSettings from "@/components/dashboard/user/settings/config-settings";
 import NotificationSettings from "@/components/dashboard/user/settings/notification-settings";
-import ShareXConfig from "@/components/dashboard/user/settings/sharex-config";
-import UploadToken from "@/components/dashboard/user/settings/upload-token";
 import UserSettings from "@/components/dashboard/user/settings/user-settings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getUser } from "@/lib/auth";
@@ -18,12 +17,7 @@ const tabs = [
     id: "config",
     name: "Config",
     description: "Manage your upload client configurations.",
-    content: (user: any) => (
-      <div className="grid md:grid-cols-2 gap-2">
-        <UploadToken uploadToken={user.uploadToken} />
-        <ShareXConfig uploadToken={user.uploadToken} />
-      </div>
-    ),
+    content: (user: any) => <ConfigSettings user={user} />,
   },
   {
     id: "notifications",
@@ -49,8 +43,10 @@ export default async function Dashboard() {
     <div className="mx-auto w-full max-w-5xl self-start flex flex-col gap-5">
       {/* Header */}
       <div className="flex flex-col gap-1.5 select-none">
-        <h1 className="text-2xl font-bold">Account Settings</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-xl xs:text-2xl font-bold transition-all transform-gpu">
+          Account Settings
+        </h1>
+        <p className="text-sm xs:text-base text-muted-foreground transition-all transform-gpu">
           Manage your account settings and preferences.
         </p>
       </div>
@@ -79,8 +75,12 @@ export default async function Dashboard() {
           >
             {/* Tab Header */}
             <div className="flex flex-col gap-0.5 select-none">
-              <h1 className="text-2xl font-bold">{tab.name}</h1>
-              <p className="text-muted-foreground">{tab.description}</p>
+              <h1 className="text-xl xs:text-2xl font-bold transition-all transform-gpu">
+                {tab.name}
+              </h1>
+              <p className="text-sm xs:text-base text-muted-foreground transition-all transform-gpu">
+                {tab.description}
+              </p>
             </div>
 
             {/* Tab Content */}
