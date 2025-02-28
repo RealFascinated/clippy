@@ -1,11 +1,5 @@
 FROM oven/bun:1.2.2-slim AS base
 
-# Install dependencies
-RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends -qq curl wget && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
 # Build stage
 FROM base AS builder
 WORKDIR /usr/src/app
@@ -26,11 +20,11 @@ RUN bun install --frozen-lockfile --production --quiet
 FROM oven/bun:1.2.2-alpine AS runner
 WORKDIR /usr/src/app
 
-# Install curl and wget in Alpine
+# Install dependencies
 RUN apk add --no-cache curl wget ca-certificates
 
-# Copy only the ffmpeg binary from alpine version
-COPY --from=mwader/static-ffmpeg:7.1-alpine /ffmpeg /usr/local/bin/
+# Copy only the ffmpeg binary
+COPY --from=mwader/static-ffmpeg:7.1 /ffmpeg /usr/local/bin/
 
 # Copy only the production dependencies
 COPY --from=prod-deps /usr/src/app/node_modules ./node_modules
