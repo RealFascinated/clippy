@@ -1,8 +1,11 @@
-import { users } from "@/lib/db/schemas/auth-schema";
+import { users, UserType } from "@/lib/db/schemas/auth-schema";
 import { AnyColumn, asc, count, desc, eq } from "drizzle-orm";
 import { db } from "../db/drizzle";
 import { fileTable } from "../db/schemas/file";
 import { randomString } from "../utils/utils";
+import { headers } from "next/headers";
+import { auth } from "../auth";
+import { redirect } from "next/navigation";
 
 /**
  * Gets a user by their upload token
@@ -100,4 +103,21 @@ export async function getUserFilesCount(id: string) {
  */
 export function generateUploadToken() {
   return randomString(32);
+}
+
+/**
+ * Get the current user. If the user is not
+ * logged in, redirect to the main page.
+ *
+ * @returns the current user (wtf is the type? x.x)
+ */
+export async function getUser(): Promise<UserType> {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  // This shouldn't happen
+  if (!session) {
+    redirect("/");
+  }
+  return session.user as UserType;
 }

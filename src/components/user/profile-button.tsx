@@ -1,5 +1,4 @@
 import AvatarInitials from "@/components/avatar-initials";
-import { getUser } from "@/lib/auth";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -9,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import LogoutButton from "./logout-button";
+import { getUser } from "@/lib/helpers/user";
 
 export default async function ProfileButton() {
   const user = await getUser();

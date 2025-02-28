@@ -3,8 +3,8 @@ import ConfigSettings from "@/components/dashboard/user/settings/config-settings
 import NotificationSettings from "@/components/dashboard/user/settings/notification-settings";
 import UserSettings from "@/components/dashboard/user/settings/user-settings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getUser } from "@/lib/auth";
 import { UserType } from "@/lib/db/schemas/auth-schema";
+import { getUser } from "@/lib/helpers/user";
 import { Metadata } from "next";
 
 const tabs = [

@@ -1,7 +1,7 @@
 import UserFiles from "@/components/dashboard/user/files/files";
 import UserStatistics from "@/components/dashboard/user/statistic/statistics";
 import WelcomeBanner from "@/components/dashboard/user/welcome-banner";
-import { getUser } from "@/lib/auth";
+import { getUser } from "@/lib/helpers/user";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

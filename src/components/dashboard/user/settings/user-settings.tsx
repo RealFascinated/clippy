@@ -1,5 +1,6 @@
 import AvatarInitials from "@/components/avatar-initials";
-import { getUser } from "@/lib/auth";
+import { getUserRole } from "@/lib/helpers/role";
+import { getUser } from "@/lib/helpers/user";
 import { format } from "date-fns";
 
 export default async function UserSettings() {
@@ -16,9 +17,11 @@ function UserDetails({ user }: { user: any }) {
   return (
     <div className="flex gap-3 items-center select-none">
       {/* Avatar */}
-      <AvatarInitials name={user.username} />
+      <div>
+        <AvatarInitials name={user.username} />
+      </div>
 
-      {/* Details */}
+      {/* Account Details */}
       <div className="relative w-full flex flex-col">
         {/* Name & Username */}
         <div className="flex gap-1.5 items-center">
@@ -31,11 +34,14 @@ function UserDetails({ user }: { user: any }) {
         {/* Email & Creation Date */}
         <div className="flex flex-col text-sm text-muted-foreground">
           <span>{user.email}</span>
-          <span className="sm:hidden text-xs">{createdAt}</span>
 
-          <span className="hidden sm:block absolute right-0 top-0">
-            {createdAt}
-          </span>
+          {/* Creation Date & Role */}
+          <div className="absolute right-0 bottom-0 flex flex-col items-end">
+            <span className="font-medium">
+              {getUserRole(user).name} Account
+            </span>
+            <span>{createdAt}</span>
+          </div>
         </div>
       </div>
     </div>
