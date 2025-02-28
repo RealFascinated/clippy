@@ -8,8 +8,10 @@ import request from "@/lib/request";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import UserFile from "./file";
+import { ScreenSize, useIsScreenSize } from "@/hooks/use-mobile";
 
 export default function UserFiles() {
+  const isMobile = useIsScreenSize(ScreenSize.Small);
   const [page, setPage] = useState<number>(1);
 
   const {
@@ -21,7 +23,7 @@ export default function UserFiles() {
     queryKey: ["userFiles", page],
     queryFn: async () =>
       (await request.get<Page<FileType>>(`/api/user/files/${page}`))!,
-    placeholderData: data => data,
+    placeholderData: (data) => data,
   });
 
   return (
@@ -61,11 +63,12 @@ export default function UserFiles() {
           )}
 
           <Pagination
+            mobilePagination={isMobile}
             page={page}
             totalItems={files.metadata.totalItems}
             itemsPerPage={files.metadata.itemsPerPage}
             loadingPage={isLoading || isRefetching ? page : undefined}
-            onPageChange={newPage => setPage(newPage)}
+            onPageChange={(newPage) => setPage(newPage)}
           />
         </>
       )}

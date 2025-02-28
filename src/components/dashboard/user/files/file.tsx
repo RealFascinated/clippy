@@ -14,6 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Loader from "@/components/ui/loader";
+import { ScreenSize, useIsScreenSize } from "@/hooks/use-mobile";
 import { FileType } from "@/lib/db/schemas/file";
 import { env } from "@/lib/env";
 import request from "@/lib/request";
@@ -36,6 +37,7 @@ type UserFileProps = {
 };
 
 export default function UserFile({ fileMeta, refetch }: UserFileProps) {
+  const isMobile = useIsScreenSize(ScreenSize.Small);
   const hasThumbnail =
     fileMeta.mimeType.startsWith("video") ||
     fileMeta.mimeType.startsWith("image");
@@ -110,7 +112,7 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
             </Link>
           </SimpleTooltip>
 
-          <FileInfo fileMeta={fileMeta} />
+          {!isMobile && <FileInfo fileMeta={fileMeta} />}
 
           {/* Delete File Button */}
           <DeleteFileDialog fileMeta={fileMeta} refetch={refetch} />
