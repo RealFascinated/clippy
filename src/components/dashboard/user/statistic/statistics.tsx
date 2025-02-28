@@ -14,6 +14,7 @@ type Statistic = {
   name: string;
   format: Format;
   icon: ReactElement;
+  tooltip?: (statistics: UserStatisticsResponse) => string | ReactElement;
 };
 
 const statistics: Statistic[] = [
@@ -34,6 +35,21 @@ const statistics: Statistic[] = [
     name: "Storage Used",
     format: "bytes",
     icon: <ServerIcon className="size-5" />,
+    tooltip: (statistics) => {
+      return (
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-col">
+            <span className="font-semibold">File Usage</span>
+            <span>{formatBytes(statistics.filesStorageUsed)}</span>
+          </div>
+
+          <div className="flex flex-col">
+            <span className="font-semibold">Thumbnail Usage</span>
+            <span>{formatBytes(statistics.thumbnailStorageUsed)}</span>
+          </div>
+        </div>
+      );
+    },
   },
   {
     key: "totalViews",
@@ -74,6 +90,10 @@ export default async function UserStatistics() {
     }
   );
 
+  if (!statisticsResponse) {
+    return null;
+  }
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full justify-between gap-4 items-center select-none">
       {statistics.map((statistic, index) => {
@@ -84,6 +104,7 @@ export default async function UserStatistics() {
             name={statistic.name}
             icon={statistic.icon}
             value={format(value, statistic.format)}
+            tooltip={statistic.tooltip && statistic.tooltip(statisticsResponse)}
           />
         );
       })}

@@ -22,6 +22,8 @@ export async function GET(
     totalUploads: 0,
     uploadsToday: 0,
     storageUsed: 0,
+    filesStorageUsed: 0,
+    thumbnailStorageUsed: 0,
     totalViews: 0,
   };
 
@@ -36,9 +38,11 @@ export async function GET(
     }
 
     statistics.storageUsed += image.size;
+    statistics.filesStorageUsed += image.size;
     statistics.totalViews += image.views;
 
     if (image.thumbnailSize) {
+      statistics.thumbnailStorageUsed += image.thumbnailSize;
       statistics.storageUsed += image.thumbnailSize;
     }
   }
