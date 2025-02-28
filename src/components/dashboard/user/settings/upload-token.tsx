@@ -14,8 +14,8 @@ import Request from "@/lib/request";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Button } from "../../ui/button";
-import { Card, CardContent, CardTitle } from "../../ui/card";
+import { Button } from "../../../ui/button";
+import { Card, CardContent, CardTitle } from "../../../ui/card";
 
 type UploadTokenProps = {
   uploadToken?: string | null;

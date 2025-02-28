@@ -1,5 +1,4 @@
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { getUser } from "@/lib/auth";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -11,15 +10,7 @@ import {
 import LogoutButton from "./logout-button";
 
 export default async function ProfileButton() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (!session) {
-    return null;
-  }
-
-  const { user } = session;
-
+  const user = await getUser();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
