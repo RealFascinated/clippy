@@ -29,6 +29,9 @@ function UserDetails({ user }: { user: any }) {
           <span className="text-sm text-muted-foreground">
             @{user.username}
           </span>
+          <span className="block md:hidden text-sm text-muted-foreground">
+            - {getUserRole(user).name} Account
+          </span>
         </div>
 
         {/* Email & Creation Date */}
@@ -36,8 +39,8 @@ function UserDetails({ user }: { user: any }) {
           <span>{user.email}</span>
 
           {/* Creation Date & Role */}
-          <div className="absolute right-0 bottom-0 flex flex-col items-end">
-            <span className="font-medium">
+          <div className="md:absolute md:right-0 md:bottom-0 flex flex-col md:items-end">
+            <span className="hidden md:block">
               {getUserRole(user).name} Account
             </span>
             <span>{createdAt}</span>
