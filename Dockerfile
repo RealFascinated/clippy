@@ -37,6 +37,7 @@ COPY --from=builder /usr/src/app/public ./public
 COPY --from=builder /usr/src/app/drizzle ./drizzle
 COPY --from=builder /usr/src/app/drizzle.config.ts ./drizzle.config.ts
 COPY --from=builder /usr/src/app/package.json ./
+COPY --from=builder /usr/src/app/cli ./cli
 
 ENV NEXT_PUBLIC_APP_ENV=production
 ENV HOSTNAME="0.0.0.0"
