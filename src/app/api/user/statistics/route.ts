@@ -27,13 +27,17 @@ export async function GET(
     totalViews: 0,
   };
 
+  const currentDate = new Date();
   for (const image of images) {
     statistics.totalUploads++;
 
-    // Checks if the image was made less than 24 hours ago
-    const timeDifference =
-      new Date().getTime() - new Date(image.createdAt).getTime();
-    if (timeDifference < 24 * 60 * 60 * 1000) {
+    // Check if the upload date is today
+    const uploadDate = new Date(image.createdAt);
+    if (
+      uploadDate.getDate() === currentDate.getDate() &&
+      uploadDate.getMonth() === currentDate.getMonth() &&
+      uploadDate.getFullYear() === currentDate.getFullYear()
+    ) {
       statistics.uploadsToday++;
     }
 
