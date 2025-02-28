@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import os from "os";
 import path from "path";
 import Sharp from "sharp";
+import Logger from "../logger";
 import { extractVideoThumbnail } from "./ffmpeg";
 import { getFileExtension } from "./file";
 import { randomString } from "./utils";
@@ -46,14 +47,14 @@ export async function getThumbnail(
         .webp({ quality })
         .toBuffer();
     } catch (err) {
-      console.log(
+      Logger.warn(
         `An error occurred while processing the video file ${fileName}:`,
         err
       );
     } finally {
       // Cleanup temporary files
       await fs.rmdir(tempDir);
-      console.log(`Cleaning up thumbnail directory: ${tempDir}`);
+      Logger.warn(`Cleaning up thumbnail directory: ${tempDir}`);
     }
   } else if (mimeType.includes("image")) {
     try {
@@ -62,7 +63,7 @@ export async function getThumbnail(
         .webp({ quality })
         .toBuffer();
     } catch (err) {
-      console.error(
+      Logger.warn(
         `An error occurred while processing the image file ${fileName}:`,
         err
       );

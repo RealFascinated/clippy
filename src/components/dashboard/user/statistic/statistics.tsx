@@ -35,7 +35,7 @@ const statistics: Statistic[] = [
     name: "Storage Used",
     format: "bytes",
     icon: <ServerIcon className="size-5" />,
-    tooltip: (statistics) => {
+    tooltip: statistics => {
       return (
         <div className="flex flex-col gap-2">
           <div className="flex flex-col">

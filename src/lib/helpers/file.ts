@@ -3,10 +3,11 @@ import { eq } from "drizzle-orm";
 import { db } from "../db/drizzle";
 import { UserType } from "../db/schemas/auth-schema";
 import { fileTable, FileType } from "../db/schemas/file";
-import { getFileExtension } from "../utils/file";
+import Logger from "../logger";
+import { getFileExtension, getFileName } from "../utils/file";
 import { getFilePath, getFileThumbnailPath } from "../utils/paths";
 import { getThumbnail } from "../utils/thumbmail";
-import { randomString } from "../utils/utils";
+import { formatBytes, randomString } from "../utils/utils";
 
 /**
  * Gets the file from the database
@@ -161,6 +162,10 @@ export async function uploadFile(
 
   // Insert into database
   await db.insert(fileTable).values(fileMeta);
+
+  Logger.info(
+    `A new file has been uploaded "${getFileName(fileMeta)}" (${mimeType}, ${formatBytes(fileMeta.size)})`
+  );
 
   return fileMeta;
 }

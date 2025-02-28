@@ -49,7 +49,7 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
   const exactDate: string = format(fileMeta.createdAt, "dd/MM/yyyy - HH:mm a");
   const formattedDate =
     difference > 86400000 // 24 hours in milliseconds
-      ? format(uploadedDate, "MM/dd/yyyy HH:mm a") // Note: fixed HH:ss to HH:mm
+      ? format(uploadedDate, "MM/dd/yyyy HH:mm a")
       : formatDistance(uploadedDate, currentDate) + " ago";
 
   function copyUrl() {

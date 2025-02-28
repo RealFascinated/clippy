@@ -1,4 +1,5 @@
 import { env } from "@/lib/env";
+import Logger from "@/lib/logger";
 import { readableToBuffer } from "@/lib/utils/stream";
 import * as Minio from "minio";
 import internal from "stream";
@@ -36,7 +37,7 @@ export default class S3Storage extends Storage {
       await this.client.putObject(env.STORAGE_S3_BUCKET, name, data);
       return true;
     } catch (err) {
-      console.log(err);
+      Logger.error(err);
       return false;
     }
   }
@@ -63,7 +64,7 @@ export default class S3Storage extends Storage {
       await this.client.removeObject(env.STORAGE_S3_BUCKET, name);
       return true;
     } catch (err) {
-      console.log(err);
+      Logger.error(err);
       return false;
     }
   }

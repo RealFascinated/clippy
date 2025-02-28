@@ -1,4 +1,5 @@
 import { env } from "../env";
+import Logger from "../logger";
 
 /**
  * Validates the mime type against the allowed types in the config
@@ -8,7 +9,7 @@ import { env } from "../env";
  */
 export function validateMimeType(mime: string): boolean {
   if (!env.ALLOWED_MIME_TYPES) {
-    console.log(
+    Logger.error(
       `ALLOWED_MIME_TYPES is empty, defaulting to all allowed. To make this message stop add "*/*" to the allowed list. 
         Please note this will allow any file type to be uploaded`
     );

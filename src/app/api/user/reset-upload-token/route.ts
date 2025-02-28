@@ -1,6 +1,7 @@
 import { authError } from "@/lib/api-commons";
 import { auth } from "@/lib/auth";
 import { generateUploadToken } from "@/lib/helpers/user";
+import Logger from "@/lib/logger";
 import { ApiErrorResponse, ApiSuccessResponse } from "@/type/api/responses";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -30,5 +31,6 @@ export async function POST(
     );
   }
 
+  Logger.info(`User ${session.user.username} reset their upload token`);
   return NextResponse.json({ message: "Reset Upload Token" }, { status: 200 });
 }

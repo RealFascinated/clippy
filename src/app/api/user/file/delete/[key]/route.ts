@@ -1,5 +1,7 @@
 import { getFileByDeleteKey, removeFile } from "@/lib/helpers/file";
+import Logger from "@/lib/logger";
 import { getFileName } from "@/lib/utils/file";
+import { getFileThumbnailPath } from "@/lib/utils/paths";
 import { storage } from "@/storage/create-storage";
 import { ApiErrorResponse, ApiSuccessResponse } from "@/type/api/responses";
 import { NextResponse } from "next/server";
@@ -15,10 +17,19 @@ export async function GET(
   }
 
   try {
-    const deleted = await storage.deleteFile(getFileName(file));
-    if (!deleted) {
+    const deletedFile = await storage.deleteFile(getFileName(file));
+    if (!deletedFile) {
       return NextResponse.json(
-        { message: "Unable to delete this file, please contact an admin" },
+        { message: "Unable to delete the file, please contact an admin" },
+        { status: 500 }
+      );
+    }
+    const deletedThubnail = await storage.deleteFile(
+      getFileThumbnailPath(file.userId, file)
+    );
+    if (!deletedThubnail) {
+      return NextResponse.json(
+        { message: "Unable to delete the thumbnail, please contact an admin" },
         { status: 500 }
       );
     }
@@ -32,6 +43,8 @@ export async function GET(
       { status: 500 }
     );
   }
+
+  Logger.info(`The file ${getFileName(file)} was deleted`);
 
   return NextResponse.json(
     {

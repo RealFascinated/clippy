@@ -1,9 +1,10 @@
+import Logger from "@/lib/logger";
 import "dotenv/config";
 import { defineConfig } from "drizzle-kit";
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
-  console.log(`DATABASE_URL is missing from your environment variables.`);
+  Logger.error(`DATABASE_URL is missing from your environment variables.`);
   process.exit(1);
 }
 
