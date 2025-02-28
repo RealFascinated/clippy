@@ -59,27 +59,6 @@ const statistics: Statistic[] = [
   },
 ];
 
-/**
- * Formats the value for a statistic
- *
- * @param value the value to format
- * @param format the format to use
- * @returns the formatted value
- */
-function format(value: unknown, format: Format) {
-  switch (format) {
-    case "number": {
-      return formatNumberWithCommas(value as number);
-    }
-    case "bytes": {
-      return formatBytes(value as number);
-    }
-    default: {
-      return value;
-    }
-  }
-}
-
 export default async function UserStatistics() {
   const statisticsResponse = await request.get<UserStatisticsResponse>(
     `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/statistics`,
@@ -103,7 +82,8 @@ export default async function UserStatistics() {
             key={index}
             name={statistic.name}
             icon={statistic.icon}
-            value={format(value, statistic.format)}
+            format={statistic.format}
+            value={value}
             tooltip={statistic.tooltip && statistic.tooltip(statisticsResponse)}
           />
         );
