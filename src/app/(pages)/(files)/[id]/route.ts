@@ -151,7 +151,7 @@ export async function GET(
     // Increment view count
     if (!isbot(request.headers.get("User-Agent")) && incrementViews) {
       fileMeta.views++;
-      await updateFile(fileMeta.id, { views: fileMeta.views });
+      updateFile(fileMeta.id, { views: fileMeta.views }); // run in background
     }
 
     // Download the file

@@ -15,9 +15,8 @@ export async function GET(
   if (!fileMeta) {
     return notFound;
   }
-  const user = await getUserById(fileMeta.userId);
   const thumbnail = await storage.getFile(
-    getFileThumbnailPath(user.id, fileMeta)
+    getFileThumbnailPath(fileMeta.userId, fileMeta)
   );
   if (!thumbnail) {
     return notFound;
