@@ -12,7 +12,6 @@
     "prettier": "bunx prettier -w --config ./prettierrc.json ."
   },
   "dependencies": {
-    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^4.1.2",
     "@radix-ui/react-dialog": "^1.1.6",
