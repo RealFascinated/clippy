@@ -24,7 +24,7 @@ export async function GET(
   return new Response(thumbnail, {
     headers: {
       "Content-Type": "image/webp",
-      "Cache-Control": "public, max-age=3600",
+      "Cache-Control": "public, max-age=43200", // 12 hours
     },
   });
 }

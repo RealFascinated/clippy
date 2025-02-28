@@ -62,7 +62,7 @@ async function getFileMetadata(
   if (isVideo) {
     headers.set("Accept-Ranges", "bytes");
   } else if (isImage) {
-    headers.set("Cache-Control", "public, max-age=3600"); // Cache for 1 hour
+    headers.set("Cache-Control", "public, max-age=43200"); // 12 hours
   }
 
   // Download file, or is not image and is not video
