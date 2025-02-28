@@ -9,6 +9,10 @@ export const env = createEnv({
     NEXT_PUBLIC_WEBSITE_URL: z.string(),
   },
 
+  shared: {
+    NEXT_PUBLIC_APP_ENV: z.string(),
+  },
+
   server: {
     DATABASE_URL: z.string(),
     BETTER_AUTH_SECRET: z.string(),
@@ -38,6 +42,9 @@ export const env = createEnv({
     NEXT_PUBLIC_WEBSITE_LOGO:
       process.env.NEXT_PUBLIC_WEBSITE_LOGO ?? "/logo.png",
     NEXT_PUBLIC_WEBSITE_URL: process.env.NEXT_PUBLIC_WEBSITE_URL,
+
+    // Shared
+    NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV ?? "development",
 
     // Postgres
     DATABASE_URL: process.env.DATABASE_URL,

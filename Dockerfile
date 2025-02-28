@@ -38,7 +38,7 @@ COPY --from=builder /usr/src/app/drizzle ./drizzle
 COPY --from=builder /usr/src/app/drizzle.config.ts ./drizzle.config.ts
 COPY --from=builder /usr/src/app/package.json ./
 
-ENV NODE_ENV=production
+ENV NEXT_PUBLIC_APP_ENV=production
 ENV HOSTNAME="0.0.0.0"
 EXPOSE 3000
 ENV PORT=3000

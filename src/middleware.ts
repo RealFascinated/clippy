@@ -1,9 +1,18 @@
 import { getSessionCookie } from "better-auth";
 import { NextRequest, NextResponse } from "next/server";
+import { isProduction } from "./lib/utils/utils";
+import Logger from "./lib/logger";
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const sessionCookie = getSessionCookie(request);
+
+  // Log requests in production
+  if (isProduction()) {
+    Logger.info(
+      `${request.method} ${request.nextUrl.pathname}${request.nextUrl.search}`
+    );
+  }
 
   // Not logged in and on dashboard page
   if (pathname.startsWith("/dashboard") && !sessionCookie) {
