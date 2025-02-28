@@ -1,4 +1,4 @@
-FROM oven/bun:1.2.2-slim AS base
+FROM oven/bun:1.2.4-slim AS base
 
 # Build stage
 FROM base AS builder
@@ -17,7 +17,7 @@ COPY package.json* bun.lock* ./
 RUN bun install --frozen-lockfile --production --quiet
 
 # Final smaller image with Alpine
-FROM oven/bun:1.2.2-alpine AS runner
+FROM oven/bun:1.2.4-alpine AS runner
 WORKDIR /usr/src/app
 
 # Install dependencies
