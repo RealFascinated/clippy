@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { ScreenSize, useIsScreenSize } from "@/hooks/use-mobile";
 import Request from "@/lib/request";
 import { cn } from "@/lib/utils/utils";
 import { Copy, Loader2, RefreshCw } from "lucide-react";
@@ -34,9 +35,11 @@ export default function ConfigSettings({ user }: { user: any }) {
 
 function UploadToken({ user }: { user: any }) {
   const router: AppRouterInstance = useRouter();
-  const hasUploadToken = !!user.uploadToken;
+  const isMobile = useIsScreenSize(ScreenSize.Small);
+  const hasUploadToken: boolean = !!user.uploadToken;
+  const [forceFieldVisible, setForceFieldVisible] = useState<boolean>(false);
 
-  async function resetToken(): Promise<void> {
+  async function resetToken() {
     await Request.post("/api/user/reset-upload-token");
     router.refresh();
     toast("Your upload token has been rotated!");
@@ -71,19 +74,31 @@ function UploadToken({ user }: { user: any }) {
       <span className="text-sm text-muted-foreground select-none">
         Upload Token
       </span>
-      <div className="relative">
-        <CodeBlock
-          className="group"
-          codeClassName={cn(
-            "text-sm",
-            hasUploadToken &&
-              "blur-xs group-hover:blur-none transition-all transform-gpu"
-          )}
-        >
-          <span>{user.uploadToken ?? noUploadToken}</span>
-        </CodeBlock>
+
+      <div className="flex gap-2 items-center">
+        {/* Token */}
+        <div className="w-full relative">
+          <CodeBlock
+            className={cn("group w-full", isMobile && "cursor-pointer")}
+            codeClassName={cn(
+              "text-sm",
+              hasUploadToken &&
+                "blur-xs group-hover:blur-none transition-all transform-gpu",
+              forceFieldVisible && "blur-none"
+            )}
+            onClick={() => {
+              if (isMobile) {
+                setForceFieldVisible((prev) => !prev);
+              }
+            }}
+          >
+            <span>{user.uploadToken ?? noUploadToken}</span>
+          </CodeBlock>
+        </div>
+
+        {/* Actions */}
         {hasUploadToken && (
-          <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2 flex gap-1.5 items-center">
+          <div className="flex gap-1.5 items-center justify-end sm:flex-shrink-0">
             {/* Reset Token */}
             <SimpleTooltip content="Rotate Upload Token">
               <div>
@@ -92,7 +107,7 @@ function UploadToken({ user }: { user: any }) {
             </SimpleTooltip>
 
             <Button
-              className="size-7 text-muted-foreground hover:text-muted-foreground/75 transition-all transform-gpu"
+              className="size-7 text-muted-foreground/70 border-muted-foreground/70 hover:text-muted-foreground/75 transition-all transform-gpu"
               variant="outline"
               onClick={copyToken}
             >
@@ -119,7 +134,7 @@ function ResetTokenDialog({ resetToken }: { resetToken: () => void }) {
     <Dialog>
       <DialogTrigger asChild>
         <Button
-          className="size-7 text-muted-foreground hover:text-muted-foreground/75 transition-all transform-gpu"
+          className="size-7 text-muted-foreground/70 border-muted-foreground/70 hover:text-muted-foreground/75 transition-all transform-gpu"
           variant="outline"
         >
           <RefreshCw className="size-4" />

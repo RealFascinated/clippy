@@ -54,7 +54,7 @@ export default async function Dashboard() {
       {/* Settings */}
       <Tabs defaultValue={tabs[0].id}>
         {/* Headers */}
-        <TabsList className="w-full h-full flex flex-wrap space-y--1 bg-transparent rounded-sm">
+        <TabsList className="w-full h-full flex flex-wrap bg-transparent rounded-sm">
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.id}
