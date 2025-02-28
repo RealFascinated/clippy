@@ -5,6 +5,7 @@ this readme is VERY wip
 # Usage
 
 Update the environment variables then run:
+
 ```bash
 docker compose up -d
 ```

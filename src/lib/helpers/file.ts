@@ -3,9 +3,9 @@ import { eq } from "drizzle-orm";
 import { db } from "../db/drizzle";
 import { UserType } from "../db/schemas/auth-schema";
 import { fileTable, FileType } from "../db/schemas/file";
-import { getThumbnail } from "../utils/thumbmail";
 import { getFileExtension } from "../utils/file";
 import { getFilePath, getFileThumbnailPath } from "../utils/paths";
+import { getThumbnail } from "../utils/thumbmail";
 import { randomString } from "../utils/utils";
 
 /**

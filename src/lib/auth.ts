@@ -43,7 +43,7 @@ export const auth = betterAuth({
     username({
       minUsernameLength: 3,
       maxUsernameLength: 12,
-      usernameValidator: (username) => {
+      usernameValidator: username => {
         // Disallow admin
         if (username === "admin") {
           return false;

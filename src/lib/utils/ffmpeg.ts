@@ -13,7 +13,7 @@ export function extractVideoThumbnail(inputFile: string, outputFile: string) {
       .input(inputFile)
       .output(outputFile)
       .outputOptions(["-ss 00:00:00.000", "-vframes 1"])
-      .on("error", (err) => {
+      .on("error", err => {
         console.error(
           `An error occurred while extracting the thumbnail for ${inputFile}: ${err.message}`
         );

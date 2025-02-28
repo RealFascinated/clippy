@@ -12,7 +12,7 @@ export function getFileName(file: FileType) {
 
 /**
  * Gets the extension for a file name
- * 
+ *
  * @param fileName the name of the file
  * @returns the file extension
  */

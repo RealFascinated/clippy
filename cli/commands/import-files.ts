@@ -1,9 +1,9 @@
+import { getFileById, uploadFile } from "@/lib/helpers/file";
 import { getUserByName } from "@/lib/helpers/user";
 import { type Props, print } from "bluebun";
 import fs from "fs/promises";
-import path from "path";
 import mime from "mime";
-import { getFileById, uploadFile } from "@/lib/helpers/file";
+import path from "path";
 
 export default {
   name: "import-files",
@@ -30,7 +30,7 @@ export default {
     }
 
     const resolvedPath = path.resolve(priovidedPath);
-    const stat = await fs.stat(resolvedPath).catch((err) => {
+    const stat = await fs.stat(resolvedPath).catch(err => {
       print(`The path ${priovidedPath} was not found.`, err);
       process.exit(1);
     });

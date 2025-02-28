@@ -1,7 +1,7 @@
 import { env } from "@/lib/env";
+import DummyStorage from "./impl/dummy";
 import S3Storage from "./impl/s3";
 import Storage from "./storage";
-import DummyStorage from "./impl/dummy";
 
 function createStorage(provider: "S3"): Storage {
   switch (provider) {

@@ -21,7 +21,7 @@ export default function UserFiles() {
     queryKey: ["userFiles", page],
     queryFn: async () =>
       (await request.get<Page<FileType>>(`/api/user/files/${page}`))!,
-    placeholderData: (data) => data,
+    placeholderData: data => data,
   });
 
   return (
@@ -65,7 +65,7 @@ export default function UserFiles() {
             totalItems={files.metadata.totalItems}
             itemsPerPage={files.metadata.itemsPerPage}
             loadingPage={isLoading || isRefetching ? page : undefined}
-            onPageChange={(newPage) => setPage(newPage)}
+            onPageChange={newPage => setPage(newPage)}
           />
         </>
       )}

@@ -2,8 +2,8 @@ import { FileType } from "@/lib/db/schemas/file";
 import { env } from "@/lib/env";
 import { uploadFile } from "@/lib/helpers/file";
 import { getUserByUploadToken } from "@/lib/helpers/user";
-import { validateMimeType } from "@/lib/utils/mime";
 import { getFileName } from "@/lib/utils/file";
+import { validateMimeType } from "@/lib/utils/mime";
 import { randomString } from "@/lib/utils/utils";
 import { ApiErrorResponse } from "@/type/api/responses";
 import { NextResponse } from "next/server";
@@ -85,7 +85,7 @@ export async function POST(
     }
 
     // Validate file types
-    if (!files.every((file) => file instanceof File)) {
+    if (!files.every(file => file instanceof File)) {
       return NextResponse.json(
         { message: "Invalid file format" },
         { status: 400 }

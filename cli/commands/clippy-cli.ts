@@ -1,4 +1,4 @@
-import { Props, print, commandHelp, blue, bold, gray } from "bluebun";
+import { Props, blue, bold, commandHelp, print } from "bluebun";
 
 export default {
   name: "help",

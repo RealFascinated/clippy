@@ -55,7 +55,7 @@ export default async function Dashboard() {
       <Tabs defaultValue={tabs[0].id}>
         {/* Headers */}
         <TabsList className="w-full h-full flex flex-wrap bg-transparent rounded-sm">
-          {tabs.map((tab) => (
+          {tabs.map(tab => (
             <TabsTrigger
               key={tab.id}
               className="flex-1 min-w-24 border-b border-border data-[state=active]:border-blue-500 data-[state=active]:text-blue-400 rounded-none hover:opacity-75 cursor-pointer transition-all transform-gpu"
@@ -67,7 +67,7 @@ export default async function Dashboard() {
         </TabsList>
 
         {/* Content */}
-        {tabs.map((tab) => (
+        {tabs.map(tab => (
           <TabsContent
             key={tab.id}
             className="p-4 flex flex-col gap-4 bg-background/70 rounded-md border border-muted"

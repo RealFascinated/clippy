@@ -88,7 +88,7 @@ function UploadToken({ user }: { user: any }) {
             )}
             onClick={() => {
               if (isMobile) {
-                setForceFieldVisible((prev) => !prev);
+                setForceFieldVisible(prev => !prev);
               }
             }}
           >

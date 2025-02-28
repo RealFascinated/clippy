@@ -22,7 +22,7 @@ export default class S3Storage extends Storage {
 
   /**
    * Creates the bucket if it's missing
-   * 
+   *
    * @param bucket the name of the bucket
    */
   async ensureBucket(bucket: string) {

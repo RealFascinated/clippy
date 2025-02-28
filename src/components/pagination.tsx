@@ -1,3 +1,4 @@
+import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { cn } from "@/lib/utils/utils";
 import {
   ChevronDoubleLeftIcon,
@@ -15,7 +16,6 @@ import {
   PaginationPrevious,
   Pagination as ShadCnPagination,
 } from "./ui/pagination";
-import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 
 type PaginationItemWrapperProps = {
   isLoadingPage: boolean;
@@ -93,7 +93,7 @@ export default function Pagination({
         <PaginationItemWrapper key="start" isLoadingPage={isLoading}>
           <PaginationLink
             href={generatePageUrl?.(1) || ""}
-            onClick={(e) => handleLinkClick(1, e)}
+            onClick={e => handleLinkClick(1, e)}
           >
             1
           </PaginationLink>
@@ -113,7 +113,7 @@ export default function Pagination({
           <PaginationLink
             isActive={i === currentPage}
             href={generatePageUrl?.(i) || ""}
-            onClick={(e) => handleLinkClick(i, e)}
+            onClick={e => handleLinkClick(i, e)}
           >
             {loadingPage === i ? (
               <ArrowPathIcon className="w-4 h-4 animate-spin" />
@@ -136,7 +136,7 @@ export default function Pagination({
         <PaginationItemWrapper key="end" isLoadingPage={isLoading}>
           <PaginationLink
             href={generatePageUrl?.(totalPages) || ""}
-            onClick={(e) => handleLinkClick(totalPages, e)}
+            onClick={e => handleLinkClick(totalPages, e)}
           >
             {totalPages}
           </PaginationLink>
@@ -175,7 +175,7 @@ export default function Pagination({
             <PaginationItemWrapper key="mobile-start" isLoadingPage={isLoading}>
               <PaginationLink
                 href={generatePageUrl?.(1) || ""}
-                onClick={(e) => handleLinkClick(1, e)}
+                onClick={e => handleLinkClick(1, e)}
                 className={clsx(currentPage === 1 && "cursor-not-allowed")}
               >
                 <ChevronDoubleLeftIcon className="h-4 w-4" />
@@ -187,7 +187,7 @@ export default function Pagination({
               href={
                 currentPage > 1 ? generatePageUrl?.(currentPage - 1) || "" : ""
               }
-              onClick={(e) => handleLinkClick(currentPage - 1, e)}
+              onClick={e => handleLinkClick(currentPage - 1, e)}
               aria-disabled={currentPage === 1}
               className={clsx(currentPage === 1 && "cursor-not-allowed", "p-3")}
             />
@@ -200,7 +200,7 @@ export default function Pagination({
                   ? generatePageUrl?.(currentPage + 1) || ""
                   : ""
               }
-              onClick={(e) => handleLinkClick(currentPage + 1, e)}
+              onClick={e => handleLinkClick(currentPage + 1, e)}
               aria-disabled={currentPage === totalPages}
               className={clsx(
                 currentPage === totalPages && "cursor-not-allowed",
@@ -212,7 +212,7 @@ export default function Pagination({
             <PaginationItemWrapper key="mobile-end" isLoadingPage={isLoading}>
               <PaginationLink
                 href={generatePageUrl?.(totalPages) || ""}
-                onClick={(e) => handleLinkClick(totalPages, e)}
+                onClick={e => handleLinkClick(totalPages, e)}
                 className={clsx(
                   currentPage === totalPages && "cursor-not-allowed"
                 )}
