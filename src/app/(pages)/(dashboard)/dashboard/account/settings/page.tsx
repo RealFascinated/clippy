@@ -4,6 +4,7 @@ import NotificationSettings from "@/components/dashboard/user/settings/notificat
 import UserSettings from "@/components/dashboard/user/settings/user-settings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getUser } from "@/lib/auth";
+import { UserType } from "@/lib/db/schemas/auth-schema";
 import { Metadata } from "next";
 
 const tabs = [
@@ -17,7 +18,7 @@ const tabs = [
     id: "config",
     name: "Config",
     description: "Manage your upload client configurations.",
-    content: (user: any) => <ConfigSettings user={user} />,
+    content: (user: UserType) => <ConfigSettings user={user} />,
   },
   {
     id: "notifications",
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
   title: "Account Settings",
 };
 
-export default async function Dashboard() {
+export default async function AccountSettingsPage() {
   const user = await getUser();
   return (
     <div className="mx-auto w-full max-w-5xl self-start flex flex-col gap-5">

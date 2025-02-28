@@ -19,6 +19,9 @@ export const metadata: Metadata = {
   },
   description: env.NEXT_PUBLIC_WEBSITE_DESCRIPTION,
   icons: [{ rel: "icon", url: env.NEXT_PUBLIC_WEBSITE_LOGO }],
+  openGraph: {
+    siteName: env.NEXT_PUBLIC_WEBSITE_NAME,
+  },
 };
 
 export default function RootLayout({

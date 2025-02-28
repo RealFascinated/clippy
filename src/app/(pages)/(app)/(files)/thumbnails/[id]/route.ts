@@ -1,6 +1,5 @@
 import { notFound } from "@/lib/api-commons";
 import { getFileByThumbnailId } from "@/lib/helpers/file";
-import { getUserById } from "@/lib/helpers/user";
 import { getFileThumbnailPath } from "@/lib/utils/paths";
 import { storage } from "@/storage/create-storage";
 import { NextRequest, NextResponse } from "next/server";

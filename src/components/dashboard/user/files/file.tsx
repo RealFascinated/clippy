@@ -1,6 +1,7 @@
 "use client";
 
 import FileExtensionIcon from "@/components/file-icon";
+import FileVideoPlayer from "@/components/file/video-player";
 import SimpleTooltip from "@/components/simple-tooltip";
 import { Button } from "@/components/ui/button";
 import { InlineCodeBlock } from "@/components/ui/code-block";
@@ -161,15 +162,7 @@ function FilePreview({ fileMeta }: { fileMeta: FileType }) {
           />
         )}
 
-        {isVideo && (
-          <ReactPlayer
-            url={url}
-            volume={0.25}
-            playing
-            controls
-            className="max-h-[70vh]"
-          />
-        )}
+        {isVideo && <FileVideoPlayer url={url} className="max-h-[70vh]" />}
       </DialogContent>
     </Dialog>
   );

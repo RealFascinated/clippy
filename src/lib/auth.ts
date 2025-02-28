@@ -15,7 +15,7 @@ import { env } from "./env";
  *
  * @returns the current user (wtf is the type? x.x)
  */
-export const getUser = async (): Promise<Session["user"]> => {
+export const getUser = async (): Promise<schema.UserType> => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -23,7 +23,7 @@ export const getUser = async (): Promise<Session["user"]> => {
   if (!session) {
     redirect("/");
   }
-  return session.user;
+  return session.user as schema.UserType;
 };
 
 export const auth = betterAuth({
