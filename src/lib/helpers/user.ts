@@ -97,6 +97,16 @@ export async function getUserFilesCount(id: string) {
 }
 
 /**
+ * Updates a user in the database
+ *
+ * @param id the user's id
+ * @param values the values to update
+ */
+export async function updateUser(id: string, values: Record<string, unknown>) {
+  await db.update(users).set(values).where(eq(users.id, id));
+}
+
+/**
  * Generates a new upload token for a user
  *
  * @returns the upload token
@@ -104,6 +114,7 @@ export async function getUserFilesCount(id: string) {
 export function generateUploadToken() {
   return randomString(32);
 }
+
 
 /**
  * Get the current user. If the user is not

@@ -53,7 +53,10 @@ export async function getThumbnail(
       );
     } finally {
       // Cleanup temporary files
-      await fs.rmdir(tempDir);
+      await fs.rm(tempDir, {
+        recursive: true,
+        force: true,
+      });
       Logger.warn(`Cleaning up thumbnail directory: ${tempDir}`);
     }
   } else if (mimeType.includes("image")) {

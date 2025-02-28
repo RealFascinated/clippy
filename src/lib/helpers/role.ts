@@ -1,6 +1,6 @@
 import { UserType } from "../db/schemas/auth-schema";
 
-type Roles = "admin" | "user";
+export type Roles = "admin" | "user";
 type Role = {
   name: string;
 };
@@ -18,7 +18,6 @@ const roles: Record<Roles, Role> = {
  */
 export function getUserRole(user: UserType): Role {
   let role = user.role as Roles;
-  console.log(user.role);
   if (!role) {
     role = "user"; // the default role
   }
@@ -34,4 +33,14 @@ export function getUserRole(user: UserType): Role {
  */
 export function hasUserRole(user: UserType, role: Roles): boolean {
   return getUserRole(user) === roles[role];
+}
+
+/**
+ * Checks if a role is valid.
+ *
+ * @param role the role to check
+ * @returns returns true if the role is a valid role, false otherwise
+ */
+export function roleExists(role: Roles): boolean {
+  return roles[role] !== undefined;
 }

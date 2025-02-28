@@ -1,6 +1,6 @@
 import { run } from "bluebun";
 
 run({
-  name: "clippy-cli",
+  name: "clippy",
   cliPath: __dirname,
 });

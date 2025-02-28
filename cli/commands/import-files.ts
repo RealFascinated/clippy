@@ -10,8 +10,8 @@ export default {
   description: "Migrates files from a directory to a users profile",
   run: async (props: Props) => {
     const { options } = props;
-    const userName = String(options["user"]);
-    const priovidedPath = String(options["path"]);
+    const userName = options["user"]?.toString();
+    const priovidedPath = options["path"]?.toString();
 
     // Validate options
     if (!userName) {
