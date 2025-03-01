@@ -7,35 +7,41 @@ import { ReactElement } from "react";
 import CountUp from "react-countup";
 
 type StatisticProps = {
-  name: string;
-  value: number;
-  format: "number" | "bytes";
-  icon: ReactElement;
-  tooltip?: string | ReactElement;
+	name: string;
+	value: number;
+	format: "number" | "bytes";
+	icon: ReactElement;
+	tooltip?: string | ReactElement;
 };
 
-export default function UserStatistic({ name, value, format, icon, tooltip }: StatisticProps) {
-  const base = (
-    <div className="p-2 bg-secondary/90 flex justify-between rounded-md border">
-      <div className="flex flex-col">
-        <span className="font-semibold">{name}</span>
-        <span className="text-muted-foreground">
-          <CountUp
-            end={value}
-            duration={1.5}
-            formattingFn={
-              format == "bytes" ? formatBytes : formatNumberWithCommas
-            }
-          />
-        </span>
-      </div>
-      {icon}
-    </div>
-  );
+export default function UserStatistic({
+	name,
+	value,
+	format,
+	icon,
+	tooltip,
+}: StatisticProps) {
+	const base = (
+		<div className="p-2 bg-background/70 flex justify-between rounded-md border border-muted">
+			<div className="flex flex-col">
+				<span className="font-semibold">{name}</span>
+				<span className="text-muted-foreground">
+					<CountUp
+						end={value}
+						duration={1.5}
+						formattingFn={
+							format == "bytes" ? formatBytes : formatNumberWithCommas
+						}
+					/>
+				</span>
+			</div>
+			{icon}
+		</div>
+	);
 
-  if (tooltip) {
-    return <SimpleTooltip content={tooltip}>{base}</SimpleTooltip>;
-  }
+	if (tooltip) {
+		return <SimpleTooltip content={tooltip}>{base}</SimpleTooltip>;
+	}
 
-  return base;
+	return base;
 }
