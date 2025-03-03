@@ -110,7 +110,10 @@ export async function POST(
       // Compression is enabled and file is an image
       if (env.COMPRESS_IMAGES && file.type.startsWith("image/")) {
         const before = Date.now();
-        content = await Sharp(content).webp({ quality: 90 }).toBuffer(); // Compress image
+        // Compress image
+        content = Buffer.from(
+          await Sharp(content).webp({ quality: 90 }).toBuffer()
+        );
 
         // Check if the new file is larger
         if (content.length > file.size) {
