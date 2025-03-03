@@ -88,6 +88,8 @@ export async function uploadFile(
   user: UserType,
   createdAt?: Date
 ): Promise<FileType> {
+  mimeType = mimeType.toLowerCase();
+  const before = Date.now();
   const extension = getFileExtension(fileName)?.toLowerCase();
   if (!extension) {
     throw new Error("File is missing an extension, unable to upload");
@@ -164,7 +166,7 @@ export async function uploadFile(
   await db.insert(fileTable).values(fileMeta);
 
   Logger.info(
-    `A new file has been uploaded "${getFileName(fileMeta)}" (${mimeType}, ${formatBytes(fileMeta.size)})`
+    `A new file has been uploaded "${getFileName(fileMeta)}" (${mimeType}, ${formatBytes(fileMeta.size)}, took: ${Date.now() - before}ms)`
   );
 
   return fileMeta;

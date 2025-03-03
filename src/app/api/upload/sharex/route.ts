@@ -2,11 +2,13 @@ import { FileType } from "@/lib/db/schemas/file";
 import { env } from "@/lib/env";
 import { uploadFile } from "@/lib/helpers/file";
 import { getUserByUploadToken } from "@/lib/helpers/user";
+import Logger from "@/lib/logger";
 import { getFileName } from "@/lib/utils/file";
 import { validateMimeType } from "@/lib/utils/mime";
-import { randomString } from "@/lib/utils/utils";
+import { formatBytes, randomString } from "@/lib/utils/utils";
 import { ApiErrorResponse } from "@/type/api/responses";
 import { NextResponse } from "next/server";
+import Sharp from "sharp";
 
 interface FileData {
   name: string;
@@ -85,7 +87,7 @@ export async function POST(
     }
 
     // Validate file types
-    if (!files.every(file => file instanceof File)) {
+    if (!files.every((file) => file instanceof File)) {
       return NextResponse.json(
         { message: "Invalid file format" },
         { status: 400 }
@@ -101,12 +103,39 @@ export async function POST(
           { status: 400 }
         );
       }
+
+      const fileId = randomString(env.FILE_ID_LENGTH);
+      let content = Buffer.from(file.content);
+
+      // Compression is enabled and file is an image
+      if (env.COMPRESS_IMAGES && file.type.startsWith("image/")) {
+        const before = Date.now();
+        content = await Sharp(content).webp({ quality: 90 }).toBuffer(); // Compress image
+
+        // Check if the new file is larger
+        if (content.length > file.size) {
+          Logger.info(
+            `Compressed file is larger than original file, using original file. (${formatBytes(file.size)} vs ${formatBytes(content.length)})`
+          );
+          content = Buffer.from(file.content);
+        } else {
+          file.type = "image/webp";
+          const nameParts = file.name.split(".");
+          nameParts.pop();
+          file.name = `${nameParts.join(".")}.webp`;
+
+          Logger.info(
+            `Compressed file "${fileId}.webp" (before: ${formatBytes(file.size)}, after: ${formatBytes(content.length)}, took: ${Date.now() - before}ms)`
+          );
+        }
+      }
+
       fileMeta = await uploadFile(
-        randomString(env.FILE_ID_LENGTH),
+        fileId,
         file.name,
-        file.size,
-        Buffer.from(file.content),
-        file.type.toLowerCase(),
+        content.length,
+        content,
+        file.type,
         user
       );
     } catch (err) {

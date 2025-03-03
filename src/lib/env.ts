@@ -18,8 +18,6 @@ export const env = createEnv({
     BETTER_AUTH_SECRET: z.string(),
 
     STORAGE_PROVIDER: z.enum(["S3"]),
-    FILE_ID_LENGTH: z.number().optional().default(8),
-
     STORAGE_S3_ENDPOINT: z.string(),
     STORAGE_S3_PORT: z.number(),
     STORAGE_S3_USE_SSL: z.boolean(),
@@ -28,6 +26,8 @@ export const env = createEnv({
     STORAGE_S3_BUCKET: z.string(),
 
     ALLOWED_MIME_TYPES: z.string().optional(),
+    FILE_ID_LENGTH: z.number().optional().default(8),
+    COMPRESS_IMAGES: z.boolean().optional().default(true),
   },
 
   /**
@@ -55,7 +55,6 @@ export const env = createEnv({
 
     // File Storage
     STORAGE_PROVIDER: process.env.STORAGE_PROVIDER,
-    FILE_ID_LENGTH: Number(process.env.FILE_ID_LENGTH ?? 8),
     STORAGE_S3_ENDPOINT: process.env.STORAGE_S3_ENDPOINT,
     STORAGE_S3_PORT: Number(process.env.STORAGE_S3_PORT),
     STORAGE_S3_USE_SSL: process.env.STORAGE_S3_USE_SSL === "true",
@@ -63,8 +62,10 @@ export const env = createEnv({
     STORAGE_S3_SECRET_KEY: process.env.STORAGE_S3_SECRET_KEY,
     STORAGE_S3_BUCKET: process.env.STORAGE_S3_BUCKET,
 
-    // Allowed file types
+    // Configuration
     ALLOWED_MIME_TYPES: process.env.ALLOWED_MIME_TYPES,
+    FILE_ID_LENGTH: Number(process.env.FILE_ID_LENGTH ?? 8),
+    COMPRESS_IMAGES: process.env.COMPRESS_IMAGES === "true",
   },
 
   /**
