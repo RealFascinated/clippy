@@ -9,36 +9,36 @@ import localFont from "next/font/local";
 import "./globals.css";
 
 const font: NextFont = localFont({
-  src: "../font/Satoshi.ttf",
+	src: "../font/Satoshi.ttf",
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: env.NEXT_PUBLIC_WEBSITE_NAME,
-    template: `%s | ${env.NEXT_PUBLIC_WEBSITE_NAME}`,
-  },
-  description: env.NEXT_PUBLIC_WEBSITE_DESCRIPTION,
-  icons: [{ rel: "icon", url: env.NEXT_PUBLIC_WEBSITE_LOGO }],
-  openGraph: {
-    siteName: env.NEXT_PUBLIC_WEBSITE_NAME,
-  },
+	title: {
+		default: env.NEXT_PUBLIC_WEBSITE_NAME,
+		template: `%s | ${env.NEXT_PUBLIC_WEBSITE_NAME}`,
+	},
+	description: env.NEXT_PUBLIC_WEBSITE_DESCRIPTION,
+	icons: [{ rel: "icon", url: env.NEXT_PUBLIC_WEBSITE_LOGO }],
+	openGraph: {
+		siteName: env.NEXT_PUBLIC_WEBSITE_NAME,
+	},
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className={`${font.className} antialiased`}>
-        <Toaster />
-        <Background />
-        <AppProvider>
-          <Navbar />
-          {children}
-        </AppProvider>
-      </body>
-    </html>
-  );
+	return (
+		<html lang="en">
+			<body className={`${font.className} antialiased`}>
+				<Toaster />
+				<Background />
+				<AppProvider>
+					<Navbar />
+					{children}
+				</AppProvider>
+			</body>
+		</html>
+	);
 }
