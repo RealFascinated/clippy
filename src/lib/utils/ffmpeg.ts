@@ -12,8 +12,13 @@ export function extractVideoThumbnail(inputFile: string, outputFile: string) {
     command
       .input(inputFile)
       .output(outputFile)
-      .outputOptions(["-ss 00:00:00.000", "-vframes 1"])
-      .on("error", err => {
+      .outputOptions([
+        "-vframes 1", // Get the first frame
+        "-q:v 2", // High-quality output
+        "-c:v mjpeg", // Use MJPEG for thumbnail
+        "-f image2", // Force image format
+      ])
+      .on("error", (err) => {
         console.error(
           `An error occurred while extracting the thumbnail for ${inputFile}: ${err.message}`
         );
