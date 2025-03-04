@@ -1,5 +1,5 @@
 {
-  "id": "a83d0bf1-0f61-4ca6-8223-426720a18216",
+  "id": "58860b4f-fd72-40e3-81dd-9ede3015e72e",
   "prevId": "db13ec9d-84d7-4139-a159-7a06731eb4ce",
   "version": "7",
   "dialect": "postgresql",
@@ -93,8 +93,12 @@
           "name": "accounts_user_id_users_id_fk",
           "tableFrom": "accounts",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -170,8 +174,12 @@
           "name": "sessions_user_id_users_id_fk",
           "tableFrom": "sessions",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -181,7 +189,9 @@
         "sessions_token_unique": {
           "name": "sessions_token_unique",
           "nullsNotDistinct": false,
-          "columns": ["token"]
+          "columns": [
+            "token"
+          ]
         }
       },
       "policies": {},
@@ -278,12 +288,16 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": [
+            "email"
+          ]
         },
         "users_username_unique": {
           "name": "users_username_unique",
           "nullsNotDistinct": false,
-          "columns": ["username"]
+          "columns": [
+            "username"
+          ]
         }
       },
       "policies": {},
@@ -411,8 +425,12 @@
           "name": "file_user_id_users_id_fk",
           "tableFrom": "file",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -437,17 +455,37 @@
           "name": "thumbnail_extension",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "thumbnail_size": {
           "name": "thumbnail_size",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "thumbnail_user_id_users_id_fk": {
+          "name": "thumbnail_user_id_users_id_fk",
+          "tableFrom": "thumbnail",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},

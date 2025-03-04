@@ -35,9 +35,10 @@ export default class GenerateThumbnailsTask extends Task {
     this.log(`Starting thumbnail generation for ${files.length} files...`);
     for (const fileMeta of files) {
       if (
-        !fileMeta.mimeType.startsWith("image/") ||
+        !fileMeta.mimeType.startsWith("image/") &&
         !fileMeta.mimeType.startsWith("video/")
       ) {
+        this.log(fileMeta.mimeType);
         continue;
       }
 
@@ -60,6 +61,7 @@ export default class GenerateThumbnailsTask extends Task {
         id: fileMeta.id,
         extension: "webp",
         size: thumbnail.size,
+        userId: fileMeta.userId,
       };
 
       const savedThumbnail = await storage.saveFile(

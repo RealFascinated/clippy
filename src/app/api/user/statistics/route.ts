@@ -1,6 +1,6 @@
 import { authError } from "@/lib/api-commons";
 import { auth } from "@/lib/auth";
-import { getUserFiles } from "@/lib/helpers/user";
+import { getUserFiles, getUserThumbnails } from "@/lib/helpers/user";
 import { ApiErrorResponse } from "@/type/api/responses";
 import { UserStatisticsResponse } from "@/type/api/user/statistics-response";
 import { headers } from "next/headers";
@@ -18,6 +18,8 @@ export async function GET(
   }
 
   const images = await getUserFiles(session.user.id);
+  const thumbnails = await getUserThumbnails(session.user.id);
+
   const statistics: UserStatisticsResponse = {
     totalUploads: 0,
     uploadsToday: 0,
@@ -26,6 +28,11 @@ export async function GET(
     thumbnailStorageUsed: 0,
     totalViews: 0,
   };
+
+  for (const thumbnail of thumbnails) {
+    statistics.thumbnailStorageUsed += thumbnail.size;
+    statistics.storageUsed += thumbnail.size;
+  }
 
   const currentDate = new Date();
   for (const image of images) {
@@ -44,11 +51,6 @@ export async function GET(
     statistics.storageUsed += image.size;
     statistics.filesStorageUsed += image.size;
     statistics.totalViews += image.views;
-
-    if (image.thumbnailSize) {
-      statistics.thumbnailStorageUsed += image.thumbnailSize;
-      statistics.storageUsed += image.thumbnailSize;
-    }
   }
 
   return NextResponse.json(statistics, { status: 200 });

@@ -6,6 +6,7 @@ import { auth } from "../auth";
 import { db } from "../db/drizzle";
 import { fileTable } from "../db/schemas/file";
 import { randomString } from "../utils/utils";
+import { thumbnailTable } from "../db/schemas/thumbnail";
 
 /**
  * Gets a user by their upload token
@@ -79,6 +80,19 @@ export async function getUserFiles(
   }
 
   return await query;
+}
+
+/**
+ * Gets all of the users thumbnails.
+ *
+ * @param id the id of the user
+ * @returns the thumbnails for the user.
+ */
+export async function getUserThumbnails(id: string) {
+  return await db
+    .select()
+    .from(thumbnailTable)
+    .where(eq(thumbnailTable.userId, id));
 }
 
 /**
