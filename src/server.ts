@@ -21,7 +21,7 @@ app.prepare().then(() => {
     // Log requests in production
     if (isProduction()) {
       Logger.info(
-        `${req.method} ${parsedUrl.pathname}${parsedUrl.search} in ${Date.now() - before}ms`
+        `${req.method} ${parsedUrl.pathname}${parsedUrl.search ?? ""} in ${Date.now() - before}ms`
       );
     }
   }).listen(port);
