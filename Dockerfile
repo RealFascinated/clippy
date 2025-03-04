@@ -34,6 +34,7 @@ COPY --from=builder /usr/src/app/.next ./.next
 COPY --from=builder /usr/src/app/drizzle ./drizzle
 COPY --from=builder /usr/src/app/drizzle.config.ts ./drizzle.config.ts
 COPY --from=builder /usr/src/app/next.config.ts ./next.config.ts
+COPY --from=builder /usr/src/app/tsconfig.json ./tsconfig.json
 COPY --from=builder /usr/src/app/cli ./cli
 COPY --from=builder /usr/src/app/src ./src
 COPY --from=builder /usr/src/app/public ./public
