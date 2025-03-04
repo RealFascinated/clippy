@@ -39,7 +39,6 @@ export default class GenerateThumbnailsTask extends Task {
         !fileMeta.mimeType.startsWith("image/") &&
         !fileMeta.mimeType.startsWith("video/")
       ) {
-        this.log(fileMeta.mimeType);
         continue;
       }
 
