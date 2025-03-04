@@ -2,13 +2,13 @@ import { db } from "@/lib/db/drizzle";
 import { fileTable, FileType } from "@/lib/db/schemas/file";
 import { thumbnailTable, ThumbnailType } from "@/lib/db/schemas/thumbnail";
 import { updateFile } from "@/lib/helpers/file";
+import Logger from "@/lib/logger";
 import { getFileName } from "@/lib/utils/file";
 import { getFilePath, getFileThumbnailPath } from "@/lib/utils/paths";
 import { getThumbnail } from "@/lib/utils/thumbmail";
 import { storage } from "@/storage/create-storage";
-import { eq } from "drizzle-orm";
+import { and, eq, like, or } from "drizzle-orm";
 import Task from "../task";
-import Logger from "@/lib/logger";
 
 export default class GenerateThumbnailsTask extends Task {
   constructor() {
@@ -16,7 +16,6 @@ export default class GenerateThumbnailsTask extends Task {
   }
 
   async run(): Promise<void> {
-    // todo: only get images and videos
     const files = await db
       .select({
         id: fileTable.id,
@@ -26,7 +25,15 @@ export default class GenerateThumbnailsTask extends Task {
         userId: fileTable.userId,
       })
       .from(fileTable)
-      .where(eq(fileTable.hasThumbnail, false));
+      .where(
+        and(
+          eq(fileTable.hasThumbnail, false),
+          or(
+            like(fileTable.mimeType, "image/%"),
+            like(fileTable.mimeType, "video/%")
+          )
+        )
+      );
 
     if (files.length <= 0) {
       this.log(`No files to generate thumbnails for`);
@@ -35,14 +42,15 @@ export default class GenerateThumbnailsTask extends Task {
 
     this.log(`Starting thumbnail generation for ${files.length} files...`);
     for (const fileMeta of files) {
+      const fileName = getFileName(fileMeta as FileType);
       if (
         !fileMeta.mimeType.startsWith("image/") &&
         !fileMeta.mimeType.startsWith("video/")
       ) {
+        this.log(`Skipping non image or video ${fileName}`);
         continue;
       }
 
-      const fileName = getFileName(fileMeta as FileType);
       try {
         const fileBuffer = await storage.getFile(
           getFilePath(fileMeta.userId, fileMeta as FileType)
