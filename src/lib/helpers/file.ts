@@ -3,10 +3,10 @@ import { eq } from "drizzle-orm";
 import { db } from "../db/drizzle";
 import { UserType } from "../db/schemas/auth-schema";
 import { fileTable, FileType } from "../db/schemas/file";
+import { thumbnailTable, ThumbnailType } from "../db/schemas/thumbnail";
 import Logger from "../logger";
 import { getFileExtension, getFileName } from "../utils/file";
-import { getFilePath, getFileThumbnailPath } from "../utils/paths";
-import { getThumbnail } from "../utils/thumbmail";
+import { getFilePath } from "../utils/paths";
 import { formatBytes, randomString } from "../utils/utils";
 
 /**
@@ -20,22 +20,6 @@ export async function getFileById(id: string) {
     id = id.split(".")[0];
   }
   return (await db.select().from(fileTable).where(eq(fileTable.id, id)))[0];
-}
-
-/**
- * Gets the file from the database
- * using it's thumbnail id
- *
- * @param id the id of the thumbnail
- * @returns the file, or undefined if not found
- */
-export async function getFileByThumbnailId(id: string) {
-  if (id.includes(".")) {
-    id = id.split(".")[0];
-  }
-  return (
-    await db.select().from(fileTable).where(eq(fileTable.thumbnailId, id))
-  )[0];
 }
 
 /**
@@ -108,59 +92,18 @@ export async function uploadFile(
     originalName: fileName,
     createdAt: createdAt ? createdAt : new Date(),
     userId: user.id,
-
-    // Thumbnail
-    thumbnailId: null,
-    thumbnailExtension: null,
-    thumbnailSize: null,
+    hasThumbnail: false,
   };
 
-  // Process thumbnail and main file save in parallel
-  const savePromises = [];
+  const result = await storage.saveFile(
+    getFilePath(user.id, fileMeta),
+    fileBuffer
+  );
 
-  if (mimeType.startsWith("image") || mimeType.startsWith("video")) {
-    const thumbnailPromise = (async () => {
-      const thumbnailId = randomString(16);
-      const thumbnailName = `${thumbnailId}.webp`;
-
-      // Start thumbnail generation early
-      const thumbnail = await getThumbnail(name, fileBuffer, mimeType);
-
-      fileMeta.thumbnailId = thumbnailId;
-      fileMeta.thumbnailExtension = "webp";
-      fileMeta.thumbnailSize = thumbnail.size;
-
-      const savedThumbnail = await storage.saveFile(
-        getFileThumbnailPath(user.id, fileMeta),
-        thumbnail.buffer
-      );
-
-      if (!savedThumbnail) {
-        await storage.deleteFile(thumbnailName);
-        throw new Error("An error occurred whilst generating the thumbnail");
-      }
-    })();
-
-    savePromises.push(thumbnailPromise);
+  if (!result) {
+    await storage.deleteFile(name);
+    throw new Error("An error occurred whilst saving your file");
   }
-
-  // Save the main file
-  const filePromise = (async () => {
-    const result = await storage.saveFile(
-      getFilePath(user.id, fileMeta),
-      fileBuffer
-    );
-
-    if (!result) {
-      await storage.deleteFile(name);
-      throw new Error("An error occurred whilst saving your file");
-    }
-  })();
-
-  savePromises.push(filePromise);
-
-  // Wait for all save operations to complete
-  await Promise.all(savePromises);
 
   // Insert into database
   await db.insert(fileTable).values(fileMeta);

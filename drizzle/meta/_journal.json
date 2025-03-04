@@ -15,6 +15,13 @@
       "when": 1740675287621,
       "tag": "0001_dusty_peter_parker",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1741047783448,
+      "tag": "0002_careless_vance_astro",
+      "breakpoints": true
     }
   ]
 }

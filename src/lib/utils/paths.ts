@@ -1,4 +1,5 @@
 import { FileType } from "../db/schemas/file";
+import { ThumbnailType } from "../db/schemas/thumbnail";
 
 /**
  * Gets the path for the file in storage
@@ -18,6 +19,6 @@ export function getFilePath(userId: string, file: FileType) {
  * @param file the file to get the thumbnail path for
  * @returns the path to the thumbnail file in storage
  */
-export function getFileThumbnailPath(userId: string, file: FileType) {
-  return `${userId}/thumbnails/${file.thumbnailId}.${file.thumbnailExtension}`;
+export function getFileThumbnailPath(userId: string, file: ThumbnailType) {
+  return `${userId}/thumbnails/${file.id}.${file.extension}`;
 }

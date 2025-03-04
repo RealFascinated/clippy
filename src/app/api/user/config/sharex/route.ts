@@ -38,7 +38,6 @@ export async function GET(
     },
     "FileFormName": "sharex",
     "URL": "{json:url}/{json:path}",
-    "ThumbnailURL": "{json:thumbnailUrl}",
     "DeletionURL": "{json:deletionUrl}",
     "ErrorMessage": "{json:message}"
     }`),

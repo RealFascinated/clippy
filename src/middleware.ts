@@ -1,7 +1,7 @@
 import { getSessionCookie } from "better-auth";
 import { NextRequest, NextResponse } from "next/server";
-import { isProduction } from "./lib/utils/utils";
 import Logger from "./lib/logger";
+import { isProduction } from "./lib/utils/utils";
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;

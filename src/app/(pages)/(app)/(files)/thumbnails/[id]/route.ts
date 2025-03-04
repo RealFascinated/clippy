@@ -1,5 +1,5 @@
 import { notFound } from "@/lib/api-commons";
-import { getFileByThumbnailId } from "@/lib/helpers/file";
+import { getFileById } from "@/lib/helpers/file";
 import { getFileThumbnailPath } from "@/lib/utils/paths";
 import { storage } from "@/storage/create-storage";
 import { NextRequest, NextResponse } from "next/server";
@@ -10,7 +10,7 @@ export async function GET(
 ): Promise<NextResponse | Response> {
   const { id } = await params;
 
-  const fileMeta = await getFileByThumbnailId(id);
+  const fileMeta = await getFileById(id);
   if (!fileMeta) {
     return notFound;
   }

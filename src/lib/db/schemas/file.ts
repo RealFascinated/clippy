@@ -1,4 +1,10 @@
-import { integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  integer,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 import { users } from "./auth-schema";
 
 export const fileTable = pgTable("file", {
@@ -14,9 +20,7 @@ export const fileTable = pgTable("file", {
     .references(() => users.id),
 
   // Thumbnail
-  thumbnailId: text("thumbnail_id").unique(),
-  thumbnailExtension: text("thumbnail_extension"),
-  thumbnailSize: integer("thumbnail_size"),
+  hasThumbnail: boolean("has_thumbnail").default(false),
 
   // Metrics
   views: integer("views").notNull(),

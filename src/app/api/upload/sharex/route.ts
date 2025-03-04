@@ -32,11 +32,6 @@ interface SuccessResponse {
    * The url to delete the file.
    */
   deletionUrl: string;
-
-  /**
-   * The url to the thumbmail.
-   */
-  thumbnailUrl?: string;
 }
 
 /**
@@ -87,7 +82,7 @@ export async function POST(
     }
 
     // Validate file types
-    if (!files.every((file) => file instanceof File)) {
+    if (!files.every(file => file instanceof File)) {
       return NextResponse.json(
         { message: "Invalid file format" },
         { status: 400 }
@@ -156,11 +151,6 @@ export async function POST(
       path: getFileName(fileMeta),
       url: env.NEXT_PUBLIC_WEBSITE_URL,
       deletionUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/file/delete/${fileMeta.deleteKey}`,
-      ...(fileMeta.thumbnailId
-        ? {
-            thumbnailUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/thumbnails/${fileMeta.thumbnailId}.${fileMeta.thumbnailExtension}`,
-          }
-        : {}),
     });
   } catch (error) {
     console.error("Error processing file upload:", error);

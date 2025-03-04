@@ -1,11 +1,11 @@
 import { users, UserType } from "@/lib/db/schemas/auth-schema";
 import { AnyColumn, asc, count, desc, eq } from "drizzle-orm";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { auth } from "../auth";
 import { db } from "../db/drizzle";
 import { fileTable } from "../db/schemas/file";
 import { randomString } from "../utils/utils";
-import { headers } from "next/headers";
-import { auth } from "../auth";
-import { redirect } from "next/navigation";
 
 /**
  * Gets a user by their upload token
@@ -114,7 +114,6 @@ export async function updateUser(id: string, values: Record<string, unknown>) {
 export function generateUploadToken() {
   return randomString(32);
 }
-
 
 /**
  * Get the current user. If the user is not

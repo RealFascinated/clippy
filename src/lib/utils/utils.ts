@@ -13,7 +13,6 @@ export function isProduction() {
   return env.NEXT_PUBLIC_APP_ENV === "production";
 }
 
-
 /**
  * Generates a secure random string of specified length
  * using a combination of uppercase, lowercase letters and numbers.
