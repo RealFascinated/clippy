@@ -8,6 +8,7 @@ import { getThumbnail } from "@/lib/utils/thumbmail";
 import { storage } from "@/storage/create-storage";
 import { eq } from "drizzle-orm";
 import Task from "../task";
+import Logger from "@/lib/logger";
 
 export default class GenerateThumbnailsTask extends Task {
   constructor() {
@@ -43,46 +44,49 @@ export default class GenerateThumbnailsTask extends Task {
       }
 
       const fileName = getFileName(fileMeta as FileType);
-
-      const fileBuffer = await storage.getFile(
-        getFilePath(fileMeta.userId, fileMeta as FileType)
-      );
-      if (fileBuffer == null) {
-        this.log(`Failed to get buffer for ${fileName}`);
-        continue;
-      }
-
-      const thumbnail = await getThumbnail(
-        fileName,
-        fileBuffer,
-        fileMeta.mimeType
-      );
-      const thumbnailMeta: ThumbnailType = {
-        id: fileMeta.id,
-        extension: "webp",
-        size: thumbnail.size,
-        userId: fileMeta.userId,
-      };
-
-      const savedThumbnail = await storage.saveFile(
-        getFileThumbnailPath(fileMeta.userId, thumbnailMeta),
-        thumbnail.buffer
-      );
-
-      if (!savedThumbnail) {
-        await storage.deleteFile(
-          getFileThumbnailPath(fileMeta.userId, thumbnailMeta)
+      try {
+        const fileBuffer = await storage.getFile(
+          getFilePath(fileMeta.userId, fileMeta as FileType)
         );
-        this.log("An error occurred whilst generating the thumbnail");
-        continue;
+        if (fileBuffer == null) {
+          this.log(`Failed to get buffer for ${fileName}`);
+          continue;
+        }
+
+        const thumbnail = await getThumbnail(
+          fileName,
+          fileBuffer,
+          fileMeta.mimeType
+        );
+        const thumbnailMeta: ThumbnailType = {
+          id: fileMeta.id,
+          extension: "webp",
+          size: thumbnail.size,
+          userId: fileMeta.userId,
+        };
+
+        const savedThumbnail = await storage.saveFile(
+          getFileThumbnailPath(fileMeta.userId, thumbnailMeta),
+          thumbnail.buffer
+        );
+
+        if (!savedThumbnail) {
+          await storage.deleteFile(
+            getFileThumbnailPath(fileMeta.userId, thumbnailMeta)
+          );
+          this.log("An error occurred whilst generating the thumbnail");
+          continue;
+        }
+
+        await db.insert(thumbnailTable).values(thumbnailMeta);
+        await updateFile(fileMeta.id, {
+          hasThumbnail: true,
+        });
+
+        this.log(`Generated thumbnail for ${fileName}`);
+      } catch (err) {
+        Logger.error(`Failed to generate thumbnail for ${fileName}`, err);
       }
-
-      await db.insert(thumbnailTable).values(thumbnailMeta);
-      await updateFile(fileMeta.id, {
-        hasThumbnail: true,
-      });
-
-      this.log(`Generated thumbnail for ${fileName}`);
     }
 
     this.log(`Finished generating thumbnails for ${files.length} files`);
