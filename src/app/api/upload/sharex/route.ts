@@ -102,8 +102,12 @@ export async function POST(
       const fileId = randomString(env.FILE_ID_LENGTH);
       let content = Buffer.from(file.content);
 
-      // Compression is enabled and file is an image
-      if (env.COMPRESS_IMAGES && file.type.startsWith("image/")) {
+      // Image compression
+      if (
+        env.COMPRESS_IMAGES && // Compression is enabled
+        file.type.startsWith("image/") && // Is an image
+        file.size > 51200 // Larger than 50kb
+      ) {
         const before = Date.now();
         // Compress image
         content = Buffer.from(
