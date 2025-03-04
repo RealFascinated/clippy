@@ -30,6 +30,7 @@ COPY --from=mwader/static-ffmpeg:7.1 /ffmpeg /usr/local/bin/
 COPY --from=prod-deps /usr/src/app/node_modules ./node_modules
 
 # Copy only necessary build artifacts
+COPY --from=builder /usr/src/app/.next ./.next
 COPY --from=builder /usr/src/app/drizzle ./drizzle
 COPY --from=builder /usr/src/app/drizzle.config.ts ./drizzle.config.ts
 COPY --from=builder /usr/src/app/next.config.ts ./next.config.ts
