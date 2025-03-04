@@ -33,6 +33,7 @@ COPY --from=prod-deps /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/.next/standalone ./
 COPY --from=builder /usr/src/app/.next/static ./.next/static
 COPY --from=builder /usr/src/app/.next/server ./.next/server
+COPY --from=builder /usr/src/app/src/server.ts ./src/server.ts
 COPY --from=builder /usr/src/app/public ./public
 COPY --from=builder /usr/src/app/drizzle ./drizzle
 COPY --from=builder /usr/src/app/drizzle.config.ts ./drizzle.config.ts
