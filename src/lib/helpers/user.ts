@@ -15,8 +15,18 @@ import { randomString } from "../utils/utils";
  * @param token the users upload token
  * @returns the user, or undefined if not found
  */
-export async function getUserByUploadToken(token: string) {
-	return (await db.select().from(users).where(eq(users.uploadToken, token)))[0];
+export async function getUserByUploadToken(
+	token: string
+): Promise<UserType | undefined> {
+	const user = (
+		await db.select().from(users).where(eq(users.uploadToken, token))
+	)[0];
+	return user
+		? {
+				...user,
+				preferences: await getUserPreferences(user.id),
+			}
+		: undefined;
 }
 
 /**
@@ -25,8 +35,14 @@ export async function getUserByUploadToken(token: string) {
  * @param id the users id
  * @returns the user, or undefined if not found
  */
-export async function getUserById(id: string) {
-	return (await db.select().from(users).where(eq(users.id, id)))[0];
+export async function getUserById(id: string): Promise<UserType | undefined> {
+	const user = (await db.select().from(users).where(eq(users.id, id)))[0];
+	return user
+		? {
+				...user,
+				preferences: await getUserPreferences(user.id),
+			}
+		: undefined;
 }
 
 /**
@@ -35,8 +51,18 @@ export async function getUserById(id: string) {
  * @param username the user's username
  * @returns the user, or undefined if not found
  */
-export async function getUserByName(username: string) {
-	return (await db.select().from(users).where(eq(users.username, username)))[0];
+export async function getUserByName(
+	username: string
+): Promise<UserType | undefined> {
+	const user = (
+		await db.select().from(users).where(eq(users.username, username))
+	)[0];
+	return user
+		? {
+				...user,
+				preferences: await getUserPreferences(user.id),
+			}
+		: undefined;
 }
 
 /**
