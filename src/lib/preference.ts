@@ -1,0 +1,52 @@
+import { db } from "@/lib/db/drizzle";
+import { preferencesTable, PreferencesType } from "@/lib/db/schemas/preference";
+import { AppCache, fetchWithCache } from "@/lib/utils/cache";
+import { eq } from "drizzle-orm";
+
+const userPreferencesCache = new AppCache({
+	ttl: 1000 * 60 * 60, // 1 hour
+	checkInterval: 1000 * 60 * 60, // 1 hour
+});
+
+/**
+ * Get the preferences for a user.
+ *
+ * @param userId the user's id
+ * @returns the user's preferences
+ */
+export async function getUserPreferences(
+	userId: string
+): Promise<PreferencesType> {
+	return await fetchWithCache(
+		userPreferencesCache,
+		`user-preferences:${userId}`,
+		async () =>
+			(
+				await db
+					.select()
+					.from(preferencesTable)
+					.where(eq(preferencesTable.userId, userId))
+			)?.[0]
+	);
+}
+
+/**
+ * Updates the preferences for a user.
+ *
+ * @param userId the user's id
+ * @param updates an object containing the preferences to update
+ */
+export async function updateUserPreferences(
+	userId: string,
+	updates: Partial<PreferencesType>
+) {
+	// First update the database, and then invalidate the in-memory cache
+	await db
+		.insert(preferencesTable)
+		.values({ userId: userId, ...updates })
+		.onConflictDoUpdate({
+			target: preferencesTable.userId,
+			set: updates,
+		});
+	userPreferencesCache.remove(`user-preferences:${userId}`);
+}
