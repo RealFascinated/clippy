@@ -99,9 +99,15 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
 
       {/* Stats */}
       <div className="flex gap-2 items-center justify-between w-full px-1.5 bg-zinc-800/65 py-1 rounded-bl-md rounded-br-md">
-        <span className="text-sm text-muted-foreground">
-          {formatBytes(fileMeta.size)}
-        </span>
+        <div className="flex flex-col 2xl:flex-row 2xl:divide-x-2 2xl:divide-card">
+          <span className="text-sm text-muted-foreground pr-2">
+            {formatBytes(fileMeta.size)}
+          </span>
+          <span className="text-sm text-muted-foreground 2xl:pl-2">
+            {formatNumberWithCommas(fileMeta.views)} View
+            {fileMeta.views == 1 ? "" : "s"}
+          </span>
+        </div>
 
         <div className="flex gap-2 items-center">
           <SimpleTooltip content="Copy URL">
@@ -120,7 +126,7 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
             </Link>
           </SimpleTooltip>
 
-          {!isMobile && <FileInfo fileMeta={fileMeta} />}
+          <FileInfo fileMeta={fileMeta} />
 
           {/* Delete File Button */}
           <DeleteFileDialog fileMeta={fileMeta} refetch={refetch} />
