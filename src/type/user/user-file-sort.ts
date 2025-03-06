@@ -1,6 +1,7 @@
-import { fileTable } from "@/lib/db/schemas/file";
+import { FileKeys } from "../file/file-keys";
+import { SortDirection } from "../sort-direction";
 
 export type UserFilesSort = {
-  key: keyof typeof fileTable.$inferSelect;
-  direction: "asc" | "desc";
+  key: FileKeys;
+  direction: SortDirection;
 };

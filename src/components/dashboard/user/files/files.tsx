@@ -13,18 +13,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScreenSize, useIsScreenSize } from "@/hooks/use-mobile";
-import { fileTable, FileType } from "@/lib/db/schemas/file";
+import { FileType } from "@/lib/db/schemas/file";
 import { Page } from "@/lib/pagination";
 import request from "@/lib/request";
+import { FileKeys } from "@/type/file/file-keys";
+import { SortDirection } from "@/type/sort-direction";
 import { UserFilesSort } from "@/type/user/user-file-sort";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowDown01, ArrowDown10 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UserFile from "./file";
 
 const sortNames: {
   name: string;
-  key: keyof typeof fileTable.$inferSelect;
+  key: FileKeys;
 }[] = [
   {
     name: "Upload Date",
@@ -48,6 +50,15 @@ export default function UserFiles() {
     direction: "desc",
   });
 
+  useEffect(() => {
+    setSort({
+      key: (localStorage.getItem("sortKey") as FileKeys) ?? sort.key,
+      direction:
+        (localStorage.getItem("sortDirection") as SortDirection) ??
+        sort.direction,
+    });
+  }, []);
+
   const {
     data: files,
     isLoading,
@@ -62,7 +73,7 @@ export default function UserFiles() {
           sortDirection: sort.direction,
         },
       }))!,
-    placeholderData: data => data,
+    placeholderData: (data) => data,
   });
 
   return (
@@ -79,16 +90,17 @@ export default function UserFiles() {
         <div className="flex gap-2 mr-2">
           {/* Sort By */}
           <Select
-            defaultValue={sortNames[0].key}
-            onValueChange={value => {
+            value={sort.key}
+            onValueChange={(value) => {
               setSort({
                 ...sort,
-                key: value as keyof typeof fileTable.$inferSelect,
+                key: value as FileKeys,
               });
+              localStorage.setItem("sortKey", value);
             }}
           >
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select a fruit" />
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
@@ -101,16 +113,17 @@ export default function UserFiles() {
               </SelectGroup>
             </SelectContent>
           </Select>
-
           {/* Sort Direction */}
           <Button
             variant="outline"
             className="border-input"
             onClick={() => {
+              const direction = sort.direction == "asc" ? "desc" : "asc";
               setSort({
                 ...sort,
-                direction: sort.direction == "asc" ? "desc" : "asc",
+                direction: direction,
               });
+              localStorage.setItem("sortDirection", direction);
             }}
           >
             {sort.direction == "asc" ? (
@@ -157,7 +170,7 @@ export default function UserFiles() {
             totalItems={files.metadata.totalItems}
             itemsPerPage={files.metadata.itemsPerPage}
             loadingPage={isLoading || isRefetching ? page : undefined}
-            onPageChange={newPage => setPage(newPage)}
+            onPageChange={(newPage) => setPage(newPage)}
           />
         </>
       )}
