@@ -73,12 +73,12 @@ export default function UserFiles() {
           sortDirection: sort.direction,
         },
       }))!,
-    placeholderData: data => data,
+    placeholderData: (data) => data,
   });
 
   return (
     <div className="flex flex-col gap-2 w-full bg-background/70 rounded-md p-2 border border-muted">
-      <div className="flex justify-between">
+      <div className="flex flex-col gap-2 justify-between sm:flex-row sm:items-center md:flex-col md:items-start lg:flex-row lg:items-center">
         <div className="flex flex-col gap-1">
           <span className="font-semibold">Uploads</span>
           <span className="text-muted-foreground">
@@ -91,7 +91,7 @@ export default function UserFiles() {
           {/* Sort By */}
           <Select
             value={sort.key}
-            onValueChange={value => {
+            onValueChange={(value) => {
               setSort({
                 ...sort,
                 key: value as FileKeys,
@@ -170,7 +170,7 @@ export default function UserFiles() {
             totalItems={files.metadata.totalItems}
             itemsPerPage={files.metadata.itemsPerPage}
             loadingPage={isLoading || isRefetching ? page : undefined}
-            onPageChange={newPage => setPage(newPage)}
+            onPageChange={(newPage) => setPage(newPage)}
           />
         </>
       )}
