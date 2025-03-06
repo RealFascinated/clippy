@@ -113,7 +113,7 @@ export default function AppSidebar() {
 
         {/* Social Links */}
         <SidebarFooter className={cn("gap-0", !isMobile && "pb-14")}>
-          {socials.map((item) => (
+          {socials.map(item => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
                 <Link

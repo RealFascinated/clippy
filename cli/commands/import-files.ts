@@ -1,5 +1,6 @@
 import { getFileById, uploadFile } from "@/lib/helpers/file";
 import { getUserByName } from "@/lib/helpers/user";
+import { thumbnailQueue } from "@/queue/queues";
 import { type Props, print } from "bluebun";
 import fs from "fs/promises";
 import mime from "mime";
@@ -70,7 +71,7 @@ const importFiles = {
       const createdAt = fileStat.mtime;
 
       try {
-        await uploadFile(
+        const fileMeta = await uploadFile(
           fileId,
           fileName,
           size,
@@ -79,6 +80,9 @@ const importFiles = {
           user,
           createdAt
         );
+
+        // Add to thumbnail queue
+        thumbnailQueue.add(fileMeta);
       } catch (err) {
         print(`Failed to migrate file ${filePath}`, err);
         continue;

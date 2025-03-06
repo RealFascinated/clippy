@@ -4,6 +4,7 @@ import { getUserPreferences } from "@/lib/preference";
 import request from "@/lib/request";
 import { DiscordEmbed } from "@/type/discord";
 import { UserFilesSort } from "@/type/user/user-file-sort";
+import { format } from "date-fns";
 import { AnyColumn, asc, count, desc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -12,7 +13,6 @@ import { db } from "../db/drizzle";
 import { fileTable } from "../db/schemas/file";
 import { thumbnailTable } from "../db/schemas/thumbnail";
 import { randomString } from "../utils/utils";
-import { format } from "date-fns";
 
 /**
  * Gets a user by their upload token
@@ -196,12 +196,14 @@ export async function dispatchWebhookEvent(
       avatar_url: logo.startsWith("/")
         ? `${env.NEXT_PUBLIC_WEBSITE_URL}${logo}`
         : logo,
-      embeds: [{
-        ...embed,
-        footer: {
-          text: format(new Date(), "MM/dd/yyyy HH:mm a"),
-        }
-      }],
+      embeds: [
+        {
+          ...embed,
+          footer: {
+            text: format(new Date(), "MM/dd/yyyy HH:mm a"),
+          },
+        },
+      ],
     },
   });
 }

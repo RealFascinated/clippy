@@ -4,6 +4,7 @@ import { parse } from "url";
 import { env } from "./lib/env";
 import Logger from "./lib/logger";
 import { isProduction } from "./lib/utils/utils";
+import { thumbnailQueue } from "./queue/queues";
 import TasksManager from "./tasks/tasks-manager";
 
 const port = parseInt(process.env.PORT || "3000", 10);
@@ -27,6 +28,7 @@ app.prepare().then(() => {
   }).listen(port);
 
   new TasksManager();
+  thumbnailQueue.loadFiles();
 
   console.log(
     `> Server listening at http://localhost:${port} as ${

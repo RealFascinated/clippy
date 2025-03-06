@@ -1,4 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import Logger from "./logger";
+import { isProduction } from "./utils/utils";
 
 type RequestReturns = "text" | "json" | "arraybuffer";
 
@@ -75,8 +77,8 @@ class Request {
     const rateLimit = response.headers["x-ratelimit-remaining"];
     if (rateLimit) {
       const remaining = Number(rateLimit);
-      if (remaining < 100) {
-        console.warn(`Rate limit for ${url} remaining: ${remaining}`);
+      if (remaining < 100 && !isProduction()) {
+        Logger.warn(`Rate limit for ${url} remaining: ${remaining}`);
       }
     }
   }
