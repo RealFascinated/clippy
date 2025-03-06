@@ -1,4 +1,4 @@
-import { boolean, integer, pgTable, serial, text } from "drizzle-orm/pg-core";
+import { boolean, pgTable, serial, text } from "drizzle-orm/pg-core";
 import { users } from "./auth-schema";
 
 export const preferencesTable = pgTable("preferences", {
@@ -13,4 +13,7 @@ export const preferencesTable = pgTable("preferences", {
 	webhookUrl: text("webhook_url"),
 });
 
-export type PreferencesType = typeof preferencesTable.$inferSelect;
+export type PreferencesType = Omit<
+	typeof preferencesTable.$inferSelect,
+	"id" | "userId"
+>;

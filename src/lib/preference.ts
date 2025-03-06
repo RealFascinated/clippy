@@ -4,6 +4,11 @@ import { preferencesTable, PreferencesType } from "@/lib/db/schemas/preference";
 import { fetchWithCache } from "@/lib/utils/cache";
 import { eq } from "drizzle-orm";
 
+const defaultPreferences: PreferencesType = {
+	showKitty: false,
+	webhookUrl: null,
+};
+
 /**
  * Get the preferences for a user.
  *
@@ -16,13 +21,16 @@ export async function getUserPreferences(
 	return await fetchWithCache(
 		userPreferencesCache,
 		`user-preferences:${userId}`,
-		async () =>
-			(
-				await db
-					.select()
-					.from(preferencesTable)
-					.where(eq(preferencesTable.userId, userId))
-			)?.[0]
+		async () => {
+			return (
+				(
+					await db
+						.select()
+						.from(preferencesTable)
+						.where(eq(preferencesTable.userId, userId))
+				)?.[0] ?? defaultPreferences
+			);
+		}
 	);
 }
 
