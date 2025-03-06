@@ -245,15 +245,4 @@ export async function fetchWithCache<T>(
 		cache.set(cacheKey, data);
 	}
 	return data;
-  if (cache == undefined) {
-    throw new Error(`Cache is not defined`);
-  }
-  if (cache.has(cacheKey)) {
-    return cache.get<T>(cacheKey)!;
-  }
-  const data = await fetchFn();
-  if (data) {
-    cache.set(cacheKey, data);
-  }
-  return data;
 }
