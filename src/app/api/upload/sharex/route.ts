@@ -1,6 +1,8 @@
+import { fileExceedsUploadLimit } from "@/lib/api-commons";
 import { FileType } from "@/lib/db/schemas/file";
 import { env } from "@/lib/env";
 import { uploadFile } from "@/lib/helpers/file";
+import { getUserRole } from "@/lib/helpers/role";
 import { getUserByUploadToken } from "@/lib/helpers/user";
 import Logger from "@/lib/logger";
 import { getFileName } from "@/lib/utils/file";
@@ -82,7 +84,7 @@ export async function POST(
     }
 
     // Validate file types
-    if (!files.every(file => file instanceof File)) {
+    if (!files.every((file) => file instanceof File)) {
       return NextResponse.json(
         { message: "Invalid file format" },
         { status: 400 }
@@ -130,6 +132,11 @@ export async function POST(
             `Compressed file "${fileId}.webp" (before: ${formatBytes(file.size)}, after: ${formatBytes(content.length)}, took: ${Date.now() - before}ms)`
           );
         }
+      }
+
+      const role = getUserRole(user);
+      if (role.uploadLimit !== -1 && content.length > role.uploadLimit) {
+        throw fileExceedsUploadLimit;
       }
 
       fileMeta = await uploadFile(
