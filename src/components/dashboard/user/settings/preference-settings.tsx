@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { UserType } from "@/lib/db/schemas/auth-schema";
+import { env } from "@/lib/env";
 import { cn } from "@/lib/utils/utils";
 import { usePreferences } from "@/providers/preferences-provider";
 import { Check, Loader2, XCircle } from "lucide-react";
@@ -28,7 +29,7 @@ export default function PreferenceSettings({ user }: { user: UserType }) {
       <InputPreference
         preferenceId="webhookUrl"
         header="Webhook URL"
-        description="The webhook URL to send Clippy events to."
+        description={`The webhook URL to send ${env.NEXT_PUBLIC_WEBSITE_NAME} events to.`}
         placeholder="https://discord.com/api/webhooks/..."
         valueRegex={
           /^https:\/\/discord\.com\/api\/webhooks\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+$/

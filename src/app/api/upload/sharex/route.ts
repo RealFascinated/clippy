@@ -3,7 +3,7 @@ import { FileType } from "@/lib/db/schemas/file";
 import { env } from "@/lib/env";
 import { uploadFile } from "@/lib/helpers/file";
 import { getUserRole } from "@/lib/helpers/role";
-import { getUserByUploadToken } from "@/lib/helpers/user";
+import { dispatchWebhookEvent, getUserByUploadToken } from "@/lib/helpers/user";
 import Logger from "@/lib/logger";
 import { getFileName } from "@/lib/utils/file";
 import { validateMimeType } from "@/lib/utils/mime";
@@ -147,6 +147,33 @@ export async function POST(
         file.type,
         user
       );
+
+      // Dispatch webhook event
+      await dispatchWebhookEvent(user, {
+        title: "File Uploaded",
+        description: `A file for \`${user.name}\` has been uploaded:`,
+        color: 0x55ff55,
+        fields: [
+          {
+            name: "File Name",
+            value: `\`${getFileName(fileMeta)}\``,
+            inline: true,
+          },
+          {
+            name: "Original File Name",
+            value: `\`${fileMeta.originalName ?? "Unknown"}\``,
+            inline: true,
+          },
+          {
+            name: "Type",
+            value: `\`${fileMeta.mimeType}\``,
+            inline: true,
+          },
+        ],
+        image: {
+          url: `${env.NEXT_PUBLIC_WEBSITE_URL}/${getFileName(fileMeta)}`,
+        },
+      });
     } catch (err) {
       return NextResponse.json(
         {

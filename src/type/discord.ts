@@ -11,4 +11,7 @@ export type DiscordEmbed = {
     value: string;
     inline?: boolean;
   }[];
+  image?: {
+    url: string;
+  };
 };
