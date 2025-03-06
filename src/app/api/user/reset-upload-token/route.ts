@@ -30,11 +30,13 @@ export async function POST(
       },
       headers: requestHeaders,
     });
-    await dispatchWebhookEvent(user, {
-      title: "Upload Token Reset",
-      description: `The upload token for \`${user.name}\` has been reset.`,
-      color: 0xaa0000,
-    });
+    if (user.preferences.notifications.resetUploadToken.sendWebhook) {
+      await dispatchWebhookEvent(user, {
+        title: "Upload Token Reset",
+        description: `The upload token for \`${user.name}\` has been reset.`,
+        color: 0xaa0000,
+      });
+    }
   } catch {
     return NextResponse.json(
       { message: "An error occured when resetting the upload token" },

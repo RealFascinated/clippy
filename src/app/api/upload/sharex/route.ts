@@ -150,36 +150,38 @@ export async function POST(
       );
 
       // Dispatch webhook event
-      await dispatchWebhookEvent(user, {
-        title: "File Uploaded",
-        description: `A file for \`${user.name}\` has been uploaded:`,
-        color: 0x55ff55,
-        fields: [
-          {
-            name: "File Name",
-            value: `\`${getFileName(fileMeta)}\``,
-            inline: true,
+      if (user.preferences.notifications.uploadFile.sendWebhook) {
+        await dispatchWebhookEvent(user, {
+          title: "File Uploaded",
+          description: `A file for \`${user.name}\` has been uploaded:`,
+          color: 0x55ff55,
+          fields: [
+            {
+              name: "File Name",
+              value: `\`${getFileName(fileMeta)}\``,
+              inline: true,
+            },
+            {
+              name: "Original File Name",
+              value: `\`${fileMeta.originalName ?? "Unknown"}\``,
+              inline: true,
+            },
+            {
+              name: "Type",
+              value: `\`${fileMeta.mimeType}\``,
+              inline: true,
+            },
+            {
+              name: "Size",
+              value: `\`${formatBytes(fileMeta.size)}\``,
+              inline: false,
+            },
+          ],
+          image: {
+            url: `${env.NEXT_PUBLIC_WEBSITE_URL}/${getFileName(fileMeta)}`,
           },
-          {
-            name: "Original File Name",
-            value: `\`${fileMeta.originalName ?? "Unknown"}\``,
-            inline: true,
-          },
-          {
-            name: "Type",
-            value: `\`${fileMeta.mimeType}\``,
-            inline: true,
-          },
-          {
-            name: "Size",
-            value: `\`${formatBytes(fileMeta.size)}\``,
-            inline: false,
-          },
-        ],
-        image: {
-          url: `${env.NEXT_PUBLIC_WEBSITE_URL}/${getFileName(fileMeta)}`,
-        },
-      });
+        });
+      }
     } catch (err) {
       return NextResponse.json(
         {

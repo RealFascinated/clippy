@@ -40,7 +40,7 @@ export async function GET(
     await removeFile(file.id);
 
     // Dispatch webhook event
-    if (user) {
+    if (user && user.preferences.notifications.deleteFile.sendWebhook) {
       await dispatchWebhookEvent(user, {
         title: "File Deleted",
         description: `A file for \`${user.name}\` has been deleted:`,

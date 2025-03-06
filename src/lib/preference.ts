@@ -1,12 +1,17 @@
 import { userPreferencesCache } from "@/lib/caches";
 import { db } from "@/lib/db/drizzle";
-import { preferencesTable, PreferencesType } from "@/lib/db/schemas/preference";
+import {
+  defaultNotifications,
+  preferencesTable,
+  PreferencesType,
+} from "@/lib/db/schemas/preference";
 import { fetchWithCache } from "@/lib/utils/cache";
 import { eq } from "drizzle-orm";
 
 const defaultPreferences: PreferencesType = {
   showKitty: false,
   webhookUrl: null,
+  notifications: defaultNotifications,
 };
 
 /**
@@ -22,14 +27,15 @@ export async function getUserPreferences(
     userPreferencesCache,
     `user-preferences:${userId}`,
     async () => {
-      return (
-        (
+      return {
+        ...defaultPreferences,
+        ...(
           await db
             .select()
             .from(preferencesTable)
             .where(eq(preferencesTable.userId, userId))
-        )?.[0] ?? defaultPreferences
-      );
+        )?.[0],
+      };
     }
   );
 }

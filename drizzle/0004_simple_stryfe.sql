@@ -1,0 +1,1 @@
+ALTER TABLE "preferences" ADD COLUMN "notifications" jsonb DEFAULT '{"uploadFile":{"sendWebhook":true},"deleteFile":{"sendWebhook":true},"resetUploadToken":{"sendWebhook":true}}'::jsonb NOT NULL;
