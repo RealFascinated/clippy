@@ -108,7 +108,8 @@ export async function POST(
       if (
         env.COMPRESS_IMAGES && // Compression is enabled
         file.type.startsWith("image/") && // Is an image
-        file.size > 51200 // Larger than 50kb
+        file.size > 51200 && // Larger than 50kb
+        !file.type.startsWith("image/gif") // ignore gifs
       ) {
         const before = Date.now();
         // Compress image
