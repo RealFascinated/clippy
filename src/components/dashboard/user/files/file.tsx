@@ -38,6 +38,7 @@ type UserFileProps = {
 };
 
 export default function UserFile({ fileMeta, refetch }: UserFileProps) {
+  const url = `/${getFileName(fileMeta)}`;
   const isMobile = useIsScreenSize(ScreenSize.Small);
   const hasThumbnail =
     fileMeta.mimeType.startsWith("video") ||
@@ -66,7 +67,13 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
       <div className="h-full p-2 flex flex-col gap-1">
         <div className="flex flex-col items-center select-none">
           {/* File Name */}
-          <span>{getFileName(fileMeta)}</span>
+          <Link
+            href={url}
+            className="hover:opacity-80 cursor-pointer transition-all transform-gpu"
+            target="_blank"
+          >
+            {getFileName(fileMeta)}
+          </Link>
 
           {/* Upload Date */}
           <SimpleTooltip content={`Uploaded on ${exactDate}`}>
