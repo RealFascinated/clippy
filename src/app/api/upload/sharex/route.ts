@@ -3,8 +3,9 @@ import { FileType } from "@/lib/db/schemas/file";
 import { env } from "@/lib/env";
 import { uploadFile } from "@/lib/helpers/file";
 import { getUserRole } from "@/lib/helpers/role";
-import { dispatchWebhookEvent, getUserByUploadToken } from "@/lib/helpers/user";
+import { getUserByUploadToken } from "@/lib/helpers/user";
 import Logger from "@/lib/logger";
+import { Notifications } from "@/lib/notification";
 import { getFileName } from "@/lib/utils/file";
 import { validateMimeType } from "@/lib/utils/mime";
 import { formatBytes, randomString } from "@/lib/utils/utils";
@@ -85,7 +86,7 @@ export async function POST(
     }
 
     // Validate file types
-    if (!files.every(file => file instanceof File)) {
+    if (!files.every((file) => file instanceof File)) {
       return NextResponse.json(
         { message: "Invalid file format" },
         { status: 400 }
@@ -153,39 +154,7 @@ export async function POST(
       // Add to thumbnail queue
       thumbnailQueue.add(fileMeta);
 
-      // Dispatch webhook event
-      if (user.preferences.notifications.uploadFile.sendWebhook) {
-        await dispatchWebhookEvent(user, {
-          title: "File Uploaded",
-          description: `A file for \`${user.name}\` has been uploaded:`,
-          color: 0x55ff55,
-          fields: [
-            {
-              name: "File Name",
-              value: `\`${getFileName(fileMeta)}\``,
-              inline: true,
-            },
-            {
-              name: "Original File Name",
-              value: `\`${fileMeta.originalName ?? "Unknown"}\``,
-              inline: true,
-            },
-            {
-              name: "Type",
-              value: `\`${fileMeta.mimeType}\``,
-              inline: true,
-            },
-            {
-              name: "Size",
-              value: `\`${formatBytes(fileMeta.size)}\``,
-              inline: false,
-            },
-          ],
-          image: {
-            url: `${env.NEXT_PUBLIC_WEBSITE_URL}/${getFileName(fileMeta)}`,
-          },
-        });
-      }
+      Notifications.sendUploadFileNotification(user, fileMeta);
     } catch (err) {
       return NextResponse.json(
         {

@@ -1,8 +1,9 @@
 import { authError } from "@/lib/api-commons";
 import { auth } from "@/lib/auth";
 import { UserType } from "@/lib/db/schemas/auth-schema";
-import { dispatchWebhookEvent, generateUploadToken } from "@/lib/helpers/user";
+import { generateUploadToken } from "@/lib/helpers/user";
 import Logger from "@/lib/logger";
+import { Notifications } from "@/lib/notification";
 import { getUserPreferences } from "@/lib/preference";
 import { ApiErrorResponse, ApiSuccessResponse } from "@/type/api/responses";
 import { headers } from "next/headers";
@@ -30,13 +31,8 @@ export async function POST(
       },
       headers: requestHeaders,
     });
-    if (user.preferences.notifications.resetUploadToken.sendWebhook) {
-      await dispatchWebhookEvent(user, {
-        title: "Upload Token Reset",
-        description: `The upload token for \`${user.name}\` has been reset.`,
-        color: 0xaa0000,
-      });
-    }
+
+    Notifications.sendResetUploadTokenNotification(user);
   } catch {
     return NextResponse.json(
       { message: "An error occured when resetting the upload token" },
