@@ -59,5 +59,5 @@ export const verifications = pgTable("verifications", {
 });
 
 export type UserType = typeof users.$inferSelect & {
-	preferences: PreferencesType;
+  preferences: PreferencesType;
 };

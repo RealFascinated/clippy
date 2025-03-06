@@ -14,6 +14,6 @@ export const preferencesTable = pgTable("preferences", {
 });
 
 export type PreferencesType = Omit<
-	typeof preferencesTable.$inferSelect,
-	"id" | "userId"
+  typeof preferencesTable.$inferSelect,
+  "id" | "userId"
 >;

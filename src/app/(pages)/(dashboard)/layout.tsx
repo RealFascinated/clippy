@@ -4,7 +4,11 @@ import { SidebarInset } from "@/components/ui/sidebar";
 import { getUser } from "@/lib/helpers/user";
 import PreferencesProvider from "@/providers/preferences-provider";
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const user = await getUser();
   return (
     <div className="flex flex-1">

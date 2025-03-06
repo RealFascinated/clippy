@@ -1,4 +1,3 @@
-import { env } from "@/lib/env";
 import { isProduction } from "@/lib/utils/utils";
 
 type DebugOptions = {
@@ -234,15 +233,15 @@ export async function fetchWithCache<T>(
   cacheKey: string,
   fetchFn: () => Promise<T>
 ): Promise<T> {
-	if (cache == undefined) {
-		throw new Error(`Cache is not defined`);
-	}
-	if (isProduction() && cache.has(cacheKey)) {
-		return cache.get<T>(cacheKey)!;
-	}
-	const data = await fetchFn();
-	if (data) {
-		cache.set(cacheKey, data);
-	}
-	return data;
+  if (cache == undefined) {
+    throw new Error(`Cache is not defined`);
+  }
+  if (isProduction() && cache.has(cacheKey)) {
+    return cache.get<T>(cacheKey)!;
+  }
+  const data = await fetchFn();
+  if (data) {
+    cache.set(cacheKey, data);
+  }
+  return data;
 }

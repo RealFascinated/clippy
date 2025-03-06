@@ -87,9 +87,9 @@ const spriteSets: Record<SpriteName, number[][]> = {
 };
 
 export default function OnekoKitty() {
-	const { preferences } = usePreferences();
-	const showKitty = !useIsScreenSize() && preferences?.showKitty;
-	const nekoElRef = useRef<HTMLDivElement | null>(null);
+  const { preferences } = usePreferences();
+  const showKitty = !useIsScreenSize() && preferences?.showKitty;
+  const nekoElRef = useRef<HTMLDivElement | null>(null);
 
   function init() {
     // Get initial mouse position from current cursor location

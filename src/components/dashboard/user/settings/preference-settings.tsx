@@ -37,27 +37,27 @@ function BooleanPreference({
   header: string;
   description: string;
 }) {
-	const { preferences, updatePreferences } = usePreferences();
-	const [value, setValue] = useState<boolean>(
-		(preferences as any)?.[preferenceId] ?? false
-	);
-	const [status, setStatus] = useState<
-		"loading" | "success" | "failed" | undefined
-	>(undefined);
+  const { preferences, updatePreferences } = usePreferences();
+  const [value, setValue] = useState<boolean>(
+    (preferences as any)?.[preferenceId] ?? false
+  );
+  const [status, setStatus] = useState<
+    "loading" | "success" | "failed" | undefined
+  >(undefined);
 
   const handleToggle = async (checked: boolean) => {
     setValue(checked);
     setStatus("loading");
 
-		try {
-			updatePreferences({ [preferenceId]: checked });
-			setStatus("success");
-		} catch (error) {
-			console.error("Failed to update preference:", error);
-			setValue(!checked);
-			setStatus("failed");
-		}
-	};
+    try {
+      updatePreferences({ [preferenceId]: checked });
+      setStatus("success");
+    } catch (error) {
+      console.error("Failed to update preference:", error);
+      setValue(!checked);
+      setStatus("failed");
+    }
+  };
 
   return (
     <Preference header={header} description={description} inline>

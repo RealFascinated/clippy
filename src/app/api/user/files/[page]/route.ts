@@ -39,7 +39,7 @@ export async function GET(
 
   const paginatedPage = await pagination.getPage(
     Number(page),
-    async (fetchItems) => {
+    async fetchItems => {
       const files = await getUserFiles(session.user.id, {
         limit: ITEMS_PER_PAGE,
         offset: fetchItems.start,
