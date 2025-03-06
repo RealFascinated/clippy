@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "dev": "bun ./src/server.ts --watch",
-    "dev:next": "next dev --turbopack",
     "build": "next build",
     "start": "bun ./src/server.ts",
     "cli": "bun ./cli/index.ts",

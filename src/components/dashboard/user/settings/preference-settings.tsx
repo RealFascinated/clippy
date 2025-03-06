@@ -3,7 +3,6 @@
 import { SensitiveInput } from "@/components/sensitive-input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import { UserType } from "@/lib/db/schemas/auth-schema";
 import { env } from "@/lib/env";
 import { cn } from "@/lib/utils/utils";
@@ -142,7 +141,7 @@ function InputPreference({
     <Preference header={header} description={description}>
       <form
         className="w-full flex gap-0 items-center"
-        onSubmit={async (event) => {
+        onSubmit={async event => {
           event.preventDefault();
           toast.promise(handleSave(), {
             loading: "Saving...",

@@ -73,7 +73,7 @@ export default function UserFiles() {
           sortDirection: sort.direction,
         },
       }))!,
-    placeholderData: (data) => data,
+    placeholderData: data => data,
   });
 
   return (
@@ -91,7 +91,7 @@ export default function UserFiles() {
           {/* Sort By */}
           <Select
             value={sort.key}
-            onValueChange={(value) => {
+            onValueChange={value => {
               setSort({
                 ...sort,
                 key: value as FileKeys,
@@ -170,7 +170,7 @@ export default function UserFiles() {
             totalItems={files.metadata.totalItems}
             itemsPerPage={files.metadata.itemsPerPage}
             loadingPage={isLoading || isRefetching ? page : undefined}
-            onPageChange={(newPage) => setPage(newPage)}
+            onPageChange={newPage => setPage(newPage)}
           />
         </>
       )}

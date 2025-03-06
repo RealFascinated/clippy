@@ -8,6 +8,7 @@ import Logger from "@/lib/logger";
 import { getFileName } from "@/lib/utils/file";
 import { validateMimeType } from "@/lib/utils/mime";
 import { formatBytes, randomString } from "@/lib/utils/utils";
+import { thumbnailQueue } from "@/queue/queues";
 import { ApiErrorResponse } from "@/type/api/responses";
 import { NextResponse } from "next/server";
 import Sharp from "sharp";
@@ -84,7 +85,7 @@ export async function POST(
     }
 
     // Validate file types
-    if (!files.every((file) => file instanceof File)) {
+    if (!files.every(file => file instanceof File)) {
       return NextResponse.json(
         { message: "Invalid file format" },
         { status: 400 }
@@ -148,6 +149,9 @@ export async function POST(
         file.type,
         user
       );
+
+      // Add to thumbnail queue
+      thumbnailQueue.add(fileMeta);
 
       // Dispatch webhook event
       if (user.preferences.notifications.uploadFile.sendWebhook) {

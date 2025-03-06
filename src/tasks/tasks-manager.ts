@@ -1,14 +1,11 @@
 import Logger from "@/lib/logger";
 import cron from "node-cron";
-import GenerateThumbnailsTask from "./impl/generate-thumbnails";
 import Task from "./task";
 
 export default class TasksManager {
   tasks: Task[] = [];
 
   constructor() {
-    this.registerTask(new GenerateThumbnailsTask());
-
     this.tasks.forEach(task => {
       cron.schedule(
         task.cron,
