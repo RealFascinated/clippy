@@ -79,7 +79,7 @@ export default function UserFiles() {
   return (
     <div className="flex flex-col gap-2 w-full bg-background/70 rounded-md p-2 border border-muted">
       <div className="flex flex-col gap-2 justify-between sm:flex-row sm:items-center md:flex-col md:items-start lg:flex-row lg:items-center">
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 select-none">
           <span className="font-semibold">Uploads</span>
           <span className="text-muted-foreground">
             All files associated with your account
@@ -87,7 +87,7 @@ export default function UserFiles() {
         </div>
 
         {/* File Sorting */}
-        <div className="flex gap-2 mr-2">
+        <div className="flex gap-2 mr-2 select-none">
           {/* Sort By */}
           <Select
             value={sort.key}

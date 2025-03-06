@@ -174,6 +174,7 @@ function FilePreview({ fileMeta }: { fileMeta: FileType }) {
             src={url}
             alt={`Image for ${getFileName(fileMeta)}`}
             className="max-h-[70vh]"
+            draggable={false}
           />
         )}
 

@@ -74,7 +74,7 @@ export default function AppSidebar() {
     <div className="h-[90vh] overflow-hidden">
       <Sidebar className="top-[var(--header-height)] select-none">
         {/* Groups */}
-        <SidebarContent className="gap-0 justify-be">
+        <SidebarContent className="gap-0">
           {groups.map((group, index) => {
             return (
               <SidebarGroup key={index}>
@@ -95,6 +95,7 @@ export default function AppSidebar() {
                               )}
                               href={item.url}
                               prefetch={false}
+                              draggable={false}
                             >
                               <span className="*:size-4">{item.icon}</span>
                               <span>{item.title}</span>
@@ -115,7 +116,12 @@ export default function AppSidebar() {
           {socials.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
-                <Link href={item.url} target="_blank" prefetch={false}>
+                <Link
+                  href={item.url}
+                  target="_blank"
+                  prefetch={false}
+                  draggable={false}
+                >
                   <span className="*:size-4">{item.icon}</span>
                   <span>{item.title}</span>
                 </Link>

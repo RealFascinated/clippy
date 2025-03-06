@@ -25,7 +25,7 @@ export default function WelcomeBanner({ username }: WelcomeBannerProps) {
   }, []);
 
   return (
-    <span className="text-2xl">
+    <span className="text-2xl select-none">
       Good {greeting}, <span className="font-bold">{username}</span>!
     </span>
   );
