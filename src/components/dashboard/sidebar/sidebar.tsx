@@ -12,15 +12,16 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils/utils";
-import { Cog, Home } from "lucide-react";
+import { SiGithub } from "@icons-pack/react-simple-icons";
+import { Cog, Home, NotebookText } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FC } from "react";
+import { ReactElement } from "react";
 
 type Item = {
   title: string;
   url: string;
-  icon: FC<React.SVGProps<SVGSVGElement>>;
+  icon: ReactElement;
 };
 
 type Group = {
@@ -35,7 +36,7 @@ const groups: Group[] = [
       {
         title: "Home",
         url: "/dashboard",
-        icon: Home,
+        icon: <Home />,
       },
     ],
   },
@@ -45,7 +46,7 @@ const groups: Group[] = [
       {
         title: "Settings",
         url: "/dashboard/account/settings",
-        icon: Cog,
+        icon: <Cog />,
       },
     ],
   },
@@ -55,12 +56,12 @@ const socials: Item[] = [
   {
     title: "GitHub",
     url: "https://github.com/RealFascinated/clippy",
-    icon: Cog,
+    icon: <SiGithub />,
   },
   {
     title: "Documentation",
     url: "https://github.com/RealFascinated/clippy/wiki",
-    icon: Cog,
+    icon: <NotebookText />,
   },
 ];
 
@@ -92,7 +93,7 @@ export default function AppSidebar() {
                               href={item.url}
                               prefetch={false}
                             >
-                              <item.icon />
+                              <span className="*:size-4">{item.icon}</span>
                               <span>{item.title}</span>
                             </Link>
                           </SidebarMenuButton>
@@ -112,7 +113,7 @@ export default function AppSidebar() {
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
                 <Link href={item.url} target="_blank" prefetch={false}>
-                  <item.icon />
+                  <span className="*:size-4">{item.icon}</span>
                   <span>{item.title}</span>
                 </Link>
               </SidebarMenuButton>
