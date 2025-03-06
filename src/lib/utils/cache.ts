@@ -1,3 +1,6 @@
+import { env } from "@/lib/env";
+import { isProduction } from "@/lib/utils/utils";
+
 type DebugOptions = {
 	added?: boolean;
 	removed?: boolean;
@@ -234,7 +237,7 @@ export async function fetchWithCache<T>(
 	if (cache == undefined) {
 		throw new Error(`Cache is not defined`);
 	}
-	if (cache.has(cacheKey)) {
+	if (isProduction() && cache.has(cacheKey)) {
 		return cache.get<T>(cacheKey)!;
 	}
 	const data = await fetchFn();
