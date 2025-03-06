@@ -40,18 +40,17 @@ export default class ThumbnailQueue extends Queue<FileType> {
   }
 
   async process(file: FileType) {
-    Logger.info(`Processing thumbnail for file ${file.id}`);
-
-    const before = performance.now();
-    const fileName = getFileName(file);
+    // Skip if file is not an image or video
     if (
       !file.mimeType.startsWith("image/") &&
       !file.mimeType.startsWith("video/")
     ) {
-      Logger.info(`Skipping non image or video ${fileName}`);
       return;
     }
 
+    const before = performance.now();
+    const fileName = getFileName(file);
+    Logger.info(`Processing thumbnail for file ${file.id}`);
     try {
       const fileBuffer = await storage.getFile(getFilePath(file.userId, file));
       if (fileBuffer == null) {
