@@ -2,8 +2,8 @@
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { UserType } from "@/lib/db/schemas/auth-schema";
-import request from "@/lib/request";
 import { cn } from "@/lib/utils/utils";
+import { usePreferences } from "@/providers/preferences-provider";
 import { Check, Loader2, XCircle } from "lucide-react";
 import { ReactNode, useState } from "react";
 
@@ -37,30 +37,27 @@ function BooleanPreference({
   header: string;
   description: string;
 }) {
-  const [value, setValue] = useState<boolean>(
-    (user.preferences as any)?.[preferenceId] ?? false
-  );
-  const [status, setStatus] = useState<
-    "loading" | "success" | "failed" | undefined
-  >(undefined);
+	const { preferences, updatePreferences } = usePreferences();
+	const [value, setValue] = useState<boolean>(
+		(preferences as any)?.[preferenceId] ?? false
+	);
+	const [status, setStatus] = useState<
+		"loading" | "success" | "failed" | undefined
+	>(undefined);
 
   const handleToggle = async (checked: boolean) => {
     setValue(checked);
     setStatus("loading");
 
-    try {
-      await request.post("/api/user/update-preference", {
-        data: {
-          [preferenceId]: checked,
-        },
-      });
-      setStatus("success");
-    } catch (error) {
-      console.error("Failed to update preference:", error);
-      setValue(!checked);
-      setStatus("failed");
-    }
-  };
+		try {
+			updatePreferences({ [preferenceId]: checked });
+			setStatus("success");
+		} catch (error) {
+			console.error("Failed to update preference:", error);
+			setValue(!checked);
+			setStatus("failed");
+		}
+	};
 
   return (
     <Preference header={header} description={description} inline>

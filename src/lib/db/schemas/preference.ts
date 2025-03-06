@@ -13,4 +13,7 @@ export const preferencesTable = pgTable("preferences", {
   webhookUrl: text("webhook_url"),
 });
 
-export type PreferencesType = typeof preferencesTable.$inferSelect;
+export type PreferencesType = Omit<
+	typeof preferencesTable.$inferSelect,
+	"id" | "userId"
+>;
