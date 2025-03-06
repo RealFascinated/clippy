@@ -1,15 +1,13 @@
 "use client";
 
+import DeleteFileDialog from "@/components/dashboard/user/files/delete-file-dialog";
+import FileContextMenu from "@/components/dashboard/user/files/file-context-menu";
 import FileExtensionIcon from "@/components/file-icon";
 import FileVideoPlayer from "@/components/file/video-player";
 import SimpleTooltip from "@/components/simple-tooltip";
-import { Button } from "@/components/ui/button";
-import { InlineCodeBlock } from "@/components/ui/code-block";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -18,7 +16,6 @@ import Loader from "@/components/ui/loader";
 import { ScreenSize, useIsScreenSize } from "@/hooks/use-mobile";
 import { FileType } from "@/lib/db/schemas/file";
 import { env } from "@/lib/env";
-import request from "@/lib/request";
 import { getFileName } from "@/lib/utils/file";
 import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { formatBytes } from "@/lib/utils/utils";
@@ -32,7 +29,7 @@ import { toast } from "sonner";
 
 const ReactPlayer = dynamic(() => import("react-player"));
 
-type UserFileProps = {
+export type UserFileProps = {
   fileMeta: FileType;
   refetch: () => Promise<void>;
 };
@@ -63,78 +60,85 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
   }
 
   return (
-    <div className="bg-card h-full flex flex-col items-center rounded-md">
-      <div className="h-full p-2 flex flex-col gap-1">
-        <div className="flex flex-col items-center select-none">
-          {/* File Name */}
-          <Link
-            href={url}
-            className="hover:opacity-80 cursor-pointer transition-all transform-gpu"
-            target="_blank"
-            prefetch={false}
-          >
-            {getFileName(fileMeta)}
-          </Link>
-
-          {/* Upload Date */}
-          <SimpleTooltip content={`Uploaded on ${exactDate}`}>
-            <span className="text-sm text-muted-foreground">
-              {formattedDate}
-            </span>
-          </SimpleTooltip>
-        </div>
-
-        {/* Preview */}
-        <div className="flex-1 flex items-center w-full justify-center">
-          {hasThumbnail ? (
-            <FilePreview fileMeta={fileMeta} />
-          ) : (
-            <div className="flex justify-center items-center">
-              <div className="w-16">
-                <FileExtensionIcon extension={fileMeta.extension} />
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="flex gap-2 items-center justify-between w-full px-1.5 bg-zinc-800/65 py-1 rounded-bl-md rounded-br-md">
-        <div className="flex flex-col 2xl:flex-row 2xl:divide-x-2 2xl:divide-card">
-          <span className="text-sm text-muted-foreground pr-2">
-            {formatBytes(fileMeta.size)}
-          </span>
-          <span className="text-sm text-muted-foreground 2xl:pl-2">
-            {formatNumberWithCommas(fileMeta.views)} View
-            {fileMeta.views == 1 ? "" : "s"}
-          </span>
-        </div>
-
-        <div className="flex gap-2 items-center">
-          <SimpleTooltip content="Copy URL">
-            <button className="cursor-pointer" onClick={() => copyUrl()}>
-              <LinkIcon className="size-4.5 hover:opacity-80 transition-all transform-gpu" />
-            </button>
-          </SimpleTooltip>
-
-          {/* Download File */}
-          <SimpleTooltip content="Download File">
+    <FileContextMenu fileMeta={fileMeta} refetch={refetch}>
+      <div className="bg-card h-full flex flex-col items-center rounded-md">
+        <div className="h-full p-2 flex flex-col gap-1">
+          <div className="flex flex-col items-center select-none">
+            {/* File Name */}
             <Link
-              href={`/${getFileName(fileMeta)}?incrementviews=false&download=true`}
+              href={url}
+              className="hover:opacity-80 cursor-pointer transition-all transform-gpu"
+              target="_blank"
               prefetch={false}
-              draggable={false}
             >
-              <DownloadIcon className="size-4.5 hover:opacity-80 transition-all transform-gpu" />
+              {getFileName(fileMeta)}
             </Link>
-          </SimpleTooltip>
 
-          <FileInfo fileMeta={fileMeta} />
+            {/* Upload Date */}
+            <SimpleTooltip content={`Uploaded on ${exactDate}`}>
+              <span className="text-sm text-muted-foreground">
+                {formattedDate}
+              </span>
+            </SimpleTooltip>
+          </div>
 
-          {/* Delete File Button */}
-          <DeleteFileDialog fileMeta={fileMeta} refetch={refetch} />
+          {/* Preview */}
+          <div className="flex-1 flex items-center w-full justify-center">
+            {hasThumbnail ? (
+              <FilePreview fileMeta={fileMeta} />
+            ) : (
+              <div className="flex justify-center items-center">
+                <div className="w-16">
+                  <FileExtensionIcon extension={fileMeta.extension} />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="flex gap-2 items-center justify-between w-full px-1.5 bg-zinc-800/65 py-1 rounded-bl-md rounded-br-md">
+          <div className="flex flex-col 2xl:flex-row 2xl:divide-x-2 2xl:divide-card">
+            <span className="text-sm text-muted-foreground pr-2">
+              {formatBytes(fileMeta.size)}
+            </span>
+            <span className="text-sm text-muted-foreground 2xl:pl-2">
+              {formatNumberWithCommas(fileMeta.views)} View
+              {fileMeta.views == 1 ? "" : "s"}
+            </span>
+          </div>
+
+          {/* Buttons */}
+          <div className="lg:hidden flex gap-2 items-center">
+            <SimpleTooltip content="Copy URL">
+              <button className="cursor-pointer" onClick={() => copyUrl()}>
+                <LinkIcon className="size-4.5 hover:opacity-80 transition-all transform-gpu" />
+              </button>
+            </SimpleTooltip>
+
+            {/* Download File */}
+            <SimpleTooltip content="Download File">
+              <Link
+                href={`/${getFileName(fileMeta)}?incrementviews=false&download=true`}
+                prefetch={false}
+                draggable={false}
+              >
+                <DownloadIcon className="size-4.5 hover:opacity-80 transition-all transform-gpu" />
+              </Link>
+            </SimpleTooltip>
+
+            <FileInfo fileMeta={fileMeta} />
+
+            {/* Delete File Button */}
+            <DeleteFileDialog fileMeta={fileMeta} refetch={refetch}>
+              <SimpleTooltip className="bg-destructive" content="Delete File">
+                <TrashIcon className="size-4 text-red-400 hover:opacity-80 cursor-pointer transition-all transform-gpu" />
+              </SimpleTooltip>
+            </DeleteFileDialog>
+          </div>
         </div>
       </div>
-    </div>
+    </FileContextMenu>
   );
 }
 
@@ -180,59 +184,6 @@ function FilePreview({ fileMeta }: { fileMeta: FileType }) {
         )}
 
         {isVideo && <FileVideoPlayer url={url} className="max-h-[70vh]" />}
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-function DeleteFileDialog({ fileMeta, refetch }: UserFileProps) {
-  const [deleteConfirm, setDeleteConfirm] = useState<boolean>(false);
-
-  /**
-   * Deletes a file
-   *
-   * @param fileMeta the file to delete
-   */
-  async function deleteFile(fileMeta: FileType) {
-    try {
-      await request.get(`/api/user/file/delete/${fileMeta.deleteKey}`, {
-        throwOnError: true,
-        withCredentials: true, // use cookies
-      });
-      await refetch();
-      toast(`Successfully deleted ${getFileName(fileMeta)}!`);
-    } catch {
-      toast(`Failed to delete ${getFileName(fileMeta)}`);
-    }
-    setDeleteConfirm(false);
-  }
-
-  return (
-    <Dialog open={deleteConfirm} onOpenChange={setDeleteConfirm}>
-      <DialogTrigger>
-        <SimpleTooltip className="bg-destructive" content="Delete File">
-          <TrashIcon className="size-4 text-red-400 hover:opacity-80 cursor-pointer transition-all transform-gpu" />
-        </SimpleTooltip>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This will delete the file{" "}
-            <InlineCodeBlock>{getFileName(fileMeta)}</InlineCodeBlock>, this
-            action cannot be undone.
-          </DialogDescription>
-        </DialogHeader>
-
-        <DialogFooter>
-          <Button
-            className="w-fit"
-            variant="destructive"
-            onClick={() => deleteFile(fileMeta)}
-          >
-            Delete
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
