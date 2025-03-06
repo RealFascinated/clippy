@@ -6,4 +6,9 @@ export type DiscordEmbed = {
     text: string;
     icon_url?: string;
   };
+  fields?: {
+    name: string;
+    value: string;
+    inline?: boolean;
+  }[];
 };

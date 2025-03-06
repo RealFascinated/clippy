@@ -1,5 +1,7 @@
 import { notFound } from "@/lib/api-commons";
+import { UserType } from "@/lib/db/schemas/auth-schema";
 import { getFileByDeleteKey, removeFile } from "@/lib/helpers/file";
+import { dispatchWebhookEvent, getUserById } from "@/lib/helpers/user";
 import Logger from "@/lib/logger";
 import { getFileName } from "@/lib/utils/file";
 import { getFileThumbnailPath } from "@/lib/utils/paths";
@@ -16,6 +18,7 @@ export async function GET(
   if (!file) {
     return notFound;
   }
+  const user: UserType | undefined = await getUserById(file.userId);
 
   try {
     const deletedFile = await storage.deleteFile(getFileName(file));
@@ -35,6 +38,37 @@ export async function GET(
       );
     }
     await removeFile(file.id);
+
+    // Dispatch webhook event
+    if (user) {
+      await dispatchWebhookEvent(user, {
+        title: "File Deleted",
+        description: `A file for \`${user.name}\` has been deleted:`,
+        color: 0xaa0000,
+        fields: [
+          {
+            name: "File Name",
+            value: `\`${getFileName(file)}\``,
+            inline: true,
+          },
+          {
+            name: "Original File Name",
+            value: `\`${file.originalName ?? "Unknown"}\``,
+            inline: true,
+          },
+          {
+            name: "Type",
+            value: `\`${file.mimeType}\``,
+            inline: true,
+          },
+          {
+            name: "Uploaded",
+            value: `<t:${Math.floor(file.createdAt.getTime() / 1000)}:R>`,
+            inline: true,
+          },
+        ],
+      });
+    }
   } catch {
     return NextResponse.json(
       {
