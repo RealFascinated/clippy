@@ -113,7 +113,7 @@ export async function POST(
         const before = Date.now();
         // Compress image
         content = Buffer.from(
-          await Sharp(content).webp({ quality: 90 }).toBuffer()
+          await Sharp(content).webp({ quality: 95 }).toBuffer()
         );
 
         // Check if the new file is larger
@@ -168,6 +168,11 @@ export async function POST(
             name: "Type",
             value: `\`${fileMeta.mimeType}\``,
             inline: true,
+          },
+          {
+            name: "Size",
+            value: `\`${formatBytes(fileMeta.size)}\``,
+            inline: false,
           },
         ],
         image: {
