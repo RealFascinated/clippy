@@ -71,6 +71,7 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
             href={url}
             className="hover:opacity-80 cursor-pointer transition-all transform-gpu"
             target="_blank"
+            prefetch={false}
           >
             {getFileName(fileMeta)}
           </Link>

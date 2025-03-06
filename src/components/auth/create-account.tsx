@@ -118,7 +118,7 @@ export default function CreateAccount() {
                         <Input
                           placeholder="username"
                           {...field}
-                          onChange={event => {
+                          onChange={(event) => {
                             event.target.value =
                               event.target.value.toLowerCase();
                             field.onChange(event);
@@ -169,6 +169,7 @@ export default function CreateAccount() {
                 <Link
                   href="/auth/login"
                   className="text-muted-foreground text-center hover:opacity-80 transition-all transform-gpu"
+                  prefetch={false}
                 >
                   <span>Already have an account</span>
                 </Link>
