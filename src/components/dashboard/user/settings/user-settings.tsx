@@ -1,10 +1,9 @@
 import AvatarInitials from "@/components/avatar-initials";
+import { UserType } from "@/lib/db/schemas/auth-schema";
 import { getUserRole } from "@/lib/helpers/role";
-import { getUser } from "@/lib/helpers/user";
 import { format } from "date-fns";
 
-export default async function UserSettings() {
-  const user = await getUser();
+export default function UserSettings({ user }: { user: UserType }) {
   return (
     <div className="flex flex-col gap-4">
       <UserDetails user={user} />
