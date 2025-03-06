@@ -10,6 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils/utils";
 import { SiGithub } from "@icons-pack/react-simple-icons";
@@ -67,6 +68,8 @@ const socials: Item[] = [
 
 export default function AppSidebar() {
   const path: string = usePathname();
+  const { isMobile } = useSidebar();
+
   return (
     <div className="h-[90vh] overflow-hidden">
       <Sidebar className="top-[var(--header-height)] select-none">
@@ -108,7 +111,7 @@ export default function AppSidebar() {
         </SidebarContent>
 
         {/* Social Links */}
-        <SidebarFooter className="pb-14 gap-0">
+        <SidebarFooter className={cn("gap-0", !isMobile && "pb-14")}>
           {socials.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
