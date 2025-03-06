@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Sidebar,
   SidebarContent,
@@ -9,8 +11,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils/utils";
 import { Cog, Home } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { FC } from "react";
 
 type Item = {
@@ -61,6 +65,7 @@ const socials: Item[] = [
 ];
 
 export default function AppSidebar() {
+  const path: string = usePathname();
   return (
     <div className="h-[90vh] overflow-hidden">
       <Sidebar className="top-[var(--header-height)] select-none">
@@ -74,16 +79,26 @@ export default function AppSidebar() {
                 )}
                 <SidebarGroupContent>
                   <SidebarMenu>
-                    {group.items.map((item, index) => (
-                      <SidebarMenuItem key={index}>
-                        <SidebarMenuButton asChild>
-                          <Link href={item.url} prefetch={false}>
-                            <item.icon />
-                            <span>{item.title}</span>
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))}
+                    {group.items.map((item, index) => {
+                      const active: boolean = path === item.url;
+                      return (
+                        <SidebarMenuItem key={index}>
+                          <SidebarMenuButton asChild>
+                            <Link
+                              className={cn(
+                                active &&
+                                  "bg-sidebar-accent text-sidebar-accent-foreground"
+                              )}
+                              href={item.url}
+                              prefetch={false}
+                            >
+                              <item.icon />
+                              <span>{item.title}</span>
+                            </Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      );
+                    })}
                   </SidebarMenu>
                 </SidebarGroupContent>
               </SidebarGroup>
@@ -91,11 +106,12 @@ export default function AppSidebar() {
           })}
         </SidebarContent>
 
-        <SidebarFooter className="pb-20 gap-0">
-          {socials.map(item => (
+        {/* Social Links */}
+        <SidebarFooter className="pb-14 gap-0">
+          {socials.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
-                <Link href={item.url} prefetch={false}>
+                <Link href={item.url} target="_blank" prefetch={false}>
                   <item.icon />
                   <span>{item.title}</span>
                 </Link>
