@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 export type PreferenceProps = {
   className?: string;
   header: string;
+  badge?: ReactNode;
   description: string;
   inline?: boolean;
   children: ReactNode;
@@ -12,6 +13,7 @@ export type PreferenceProps = {
 export default function Preference({
   className,
   header,
+  badge,
   description,
   inline,
   children,
@@ -24,9 +26,12 @@ export default function Preference({
       )}
     >
       <div className="flex flex-col select-none">
-        <h1 className="text-base xs:text-lg font-bold transition-all transform-gpu">
-          {header}
-        </h1>
+        <div className="flex gap-3 items-center">
+          <h1 className="text-base xs:text-lg font-bold transition-all transform-gpu">
+            {header}
+          </h1>
+          {badge}
+        </div>
         <p className="max-w-md text-xs xs:text-sm text-muted-foreground transition-all transform-gpu">
           {description}
         </p>

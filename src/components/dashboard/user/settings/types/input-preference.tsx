@@ -2,18 +2,20 @@ import Preference from "@/components/dashboard/user/settings/types/preference";
 import { SensitiveInput } from "@/components/sensitive-input";
 import { Button } from "@/components/ui/button";
 import { usePreferences } from "@/providers/preferences-provider";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function InputPreference({
   preferenceId,
   header,
+  badge,
   description,
   placeholder,
   valueRegex,
 }: {
   preferenceId: string;
   header: string;
+  badge?: ReactNode;
   description: string;
   placeholder: string;
   valueRegex?: RegExp;
@@ -48,7 +50,7 @@ export default function InputPreference({
   };
 
   return (
-    <Preference header={header} description={description}>
+    <Preference header={header} badge={badge} description={description}>
       <form
         className="w-full flex gap-0 items-center"
         onSubmit={async (event) => {
