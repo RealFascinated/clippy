@@ -3,11 +3,18 @@ import { UserType } from "../db/schemas/auth-schema";
 export type Roles = "admin" | "user";
 type Role = {
   name: string;
+  uploadLimit: number;
 };
 
 const roles: Record<Roles, Role> = {
-  admin: { name: "Admin" },
-  user: { name: "User" },
+  admin: {
+    name: "Admin",
+    uploadLimit: -1,
+  },
+  user: {
+    name: "User",
+    uploadLimit: 8388608, // 8MB
+  },
 };
 
 /**
