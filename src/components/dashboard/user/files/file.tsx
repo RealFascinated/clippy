@@ -13,7 +13,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Loader from "@/components/ui/loader";
-import { ScreenSize, useIsScreenSize } from "@/hooks/use-mobile";
 import { FileType } from "@/lib/db/schemas/file";
 import { env } from "@/lib/env";
 import { getFileName } from "@/lib/utils/file";
@@ -22,12 +21,9 @@ import { formatBytes } from "@/lib/utils/utils";
 import { InformationCircleIcon } from "@heroicons/react/16/solid";
 import { format, formatDistance } from "date-fns";
 import { DownloadIcon, LinkIcon, PlayIcon, TrashIcon } from "lucide-react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
-
-const ReactPlayer = dynamic(() => import("react-player"));
 
 export type UserFileProps = {
   fileMeta: FileType;
@@ -36,7 +32,6 @@ export type UserFileProps = {
 
 export default function UserFile({ fileMeta, refetch }: UserFileProps) {
   const url = `/${getFileName(fileMeta)}`;
-  const isMobile = useIsScreenSize(ScreenSize.Small);
   const hasThumbnail =
     fileMeta.mimeType.startsWith("video") ||
     fileMeta.mimeType.startsWith("image");
@@ -118,11 +113,7 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
 
             {/* Download File */}
             <SimpleTooltip content="Download File">
-              <Link
-                href={`/${getFileName(fileMeta)}?incrementviews=false&download=true`}
-                prefetch={false}
-                draggable={false}
-              >
+              <Link href={url} prefetch={false} draggable={false}>
                 <DownloadIcon className="size-4.5 hover:opacity-80 transition-all transform-gpu" />
               </Link>
             </SimpleTooltip>
@@ -143,7 +134,7 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
 }
 
 function FilePreview({ fileMeta }: { fileMeta: FileType }) {
-  const url = `/${getFileName(fileMeta)}`;
+  const url = `/${getFileName(fileMeta)}?incrementviews=false&download=true`;
   const isImage = fileMeta.mimeType.startsWith("image");
   const isVideo = fileMeta.mimeType.startsWith("video");
 

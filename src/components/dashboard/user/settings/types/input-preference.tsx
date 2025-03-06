@@ -53,7 +53,7 @@ export default function InputPreference({
     <Preference header={header} badge={badge} description={description}>
       <form
         className="w-full flex gap-0 items-center"
-        onSubmit={async (event) => {
+        onSubmit={async event => {
           event.preventDefault();
           toast.promise(handleSave(), {
             loading: "Saving...",
