@@ -87,3 +87,22 @@
   /* Breakpoints */
   --breakpoint-xs: 30rem;
 }
+
+/* Scrollbar (Firefox) */
+* {
+  scrollbar-color: var(--accent) var(--background);
+  scrollbar-width: thin;
+}
+
+/* Scrollbar (Chrome & Safari) */
+::-webkit-scrollbar {
+  @apply w-1.5;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-inherit;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-accent rounded-3xl;
+}
