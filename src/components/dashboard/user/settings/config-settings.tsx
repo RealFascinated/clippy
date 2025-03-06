@@ -1,8 +1,8 @@
 "use client";
 
+import { SensitiveInput } from "@/components/sensitive-input";
 import SimpleTooltip from "@/components/simple-tooltip";
 import { Button } from "@/components/ui/button";
-import { CodeBlock } from "@/components/ui/code-block";
 import {
   Dialog,
   DialogClose,
@@ -37,7 +37,6 @@ function UploadToken({ user }: { user: any }) {
   const router: AppRouterInstance = useRouter();
   const isMobile = useIsScreenSize(ScreenSize.Small);
   const hasUploadToken: boolean = !!user.uploadToken;
-  const [forceFieldVisible, setForceFieldVisible] = useState<boolean>(false);
 
   async function resetToken() {
     await Request.post("/api/user/reset-upload-token");
@@ -78,22 +77,7 @@ function UploadToken({ user }: { user: any }) {
       <div className="flex gap-2 items-center">
         {/* Token */}
         <div className="w-full relative">
-          <CodeBlock
-            className={cn("group w-full", isMobile && "cursor-pointer")}
-            codeClassName={cn(
-              "text-sm",
-              hasUploadToken &&
-                "blur-xs group-hover:blur-none transition-all transform-gpu",
-              forceFieldVisible && "blur-none"
-            )}
-            onClick={() => {
-              if (isMobile) {
-                setForceFieldVisible(prev => !prev);
-              }
-            }}
-          >
-            <span>{user.uploadToken ?? noUploadToken}</span>
-          </CodeBlock>
+          <SensitiveInput value={user.uploadToken ?? noUploadToken} readOnly />
         </div>
 
         {/* Actions */}

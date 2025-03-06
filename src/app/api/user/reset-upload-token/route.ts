@@ -1,7 +1,9 @@
 import { authError } from "@/lib/api-commons";
 import { auth } from "@/lib/auth";
-import { generateUploadToken } from "@/lib/helpers/user";
+import { UserType } from "@/lib/db/schemas/auth-schema";
+import { dispatchWebhookEvent, generateUploadToken } from "@/lib/helpers/user";
 import Logger from "@/lib/logger";
+import { getUserPreferences } from "@/lib/preference";
 import { ApiErrorResponse, ApiSuccessResponse } from "@/type/api/responses";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -16,6 +18,10 @@ export async function POST(
   if (!session) {
     return authError;
   }
+  const user = {
+    ...session.user,
+    preferences: await getUserPreferences(session.user.id),
+  } as UserType;
 
   try {
     await auth.api.updateUser({
@@ -23,6 +29,11 @@ export async function POST(
         uploadToken: generateUploadToken(),
       },
       headers: requestHeaders,
+    });
+    await dispatchWebhookEvent(user, {
+      title: "Upload Token Reset",
+      description: `The upload token for \`${user.name}\` has been reset.`,
+      color: 0xaa0000,
     });
   } catch {
     return NextResponse.json(

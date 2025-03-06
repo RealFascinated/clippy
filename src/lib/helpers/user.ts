@@ -1,5 +1,8 @@
 import { users, UserType } from "@/lib/db/schemas/auth-schema";
+import { env } from "@/lib/env";
 import { getUserPreferences } from "@/lib/preference";
+import request from "@/lib/request";
+import { DiscordEmbed } from "@/type/discord";
 import { UserFilesSort } from "@/type/user/user-file-sort";
 import { AnyColumn, asc, count, desc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
@@ -9,6 +12,7 @@ import { db } from "../db/drizzle";
 import { fileTable } from "../db/schemas/file";
 import { thumbnailTable } from "../db/schemas/thumbnail";
 import { randomString } from "../utils/utils";
+import { format } from "date-fns";
 
 /**
  * Gets a user by their upload token
@@ -172,4 +176,32 @@ export async function getUser(): Promise<UserType> {
     ...(session.user as UserType),
     preferences: await getUserPreferences(session.user.id),
   };
+}
+
+/**
+ * Dispatch a webhook event to the user's webhook url.
+ *
+ * @param user the user to dispatch the event to
+ * @param embed the embed to send to the webhook
+ */
+export async function dispatchWebhookEvent(
+  user: UserType,
+  embed: DiscordEmbed
+) {
+  if (!user.preferences?.webhookUrl) return;
+  const logo: string = env.NEXT_PUBLIC_WEBSITE_LOGO;
+  await request.post(user.preferences.webhookUrl, {
+    data: {
+      username: env.NEXT_PUBLIC_WEBSITE_NAME,
+      avatar_url: logo.startsWith("/")
+        ? `${env.NEXT_PUBLIC_WEBSITE_URL}${logo}`
+        : logo,
+      embeds: [{
+        ...embed,
+        footer: {
+          text: format(new Date(), "MM/dd/yyyy HH:mm a"),
+        }
+      }],
+    },
+  });
 }
