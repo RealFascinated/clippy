@@ -100,6 +100,7 @@ async function sendResetUploadTokenNotification(user: UserType) {
     });
   }
 }
+
 export const Notifications = {
   sendUploadFileNotification,
   sendDeleteFileNotification,

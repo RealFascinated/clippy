@@ -134,7 +134,7 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
 }
 
 function FilePreview({ fileMeta }: { fileMeta: FileType }) {
-  const url = `/${getFileName(fileMeta)}?incrementviews=false&download=true`;
+  const url = `/${getFileName(fileMeta)}?incrementviews=false`;
   const isImage = fileMeta.mimeType.startsWith("image");
   const isVideo = fileMeta.mimeType.startsWith("video");
 
