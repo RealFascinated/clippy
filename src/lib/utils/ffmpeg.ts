@@ -18,7 +18,7 @@ export function extractVideoThumbnail(inputFile: string, outputFile: string) {
         "-c:v mjpeg", // Use MJPEG for thumbnail
         "-f image2", // Force image format
       ])
-      .on("error", (err) => {
+      .on("error", err => {
         console.error(
           `An error occurred while extracting the thumbnail for ${inputFile}: ${err.message}`
         );

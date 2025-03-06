@@ -6,16 +6,16 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(
-	request: Request
+  request: Request
 ): Promise<NextResponse<ApiSuccessResponse | ApiErrorResponse>> {
-	const requestHeaders = await headers();
-	const session = await auth.api.getSession({
-		headers: requestHeaders,
-	});
-	if (!session) {
-		return authError;
-	}
-	const { showKitty, webhookUrl } = await request.json();
-	await updateUserPreferences(session.user.id, { showKitty, webhookUrl });
-	return NextResponse.json({ message: "Preference Update" }, { status: 200 });
+  const requestHeaders = await headers();
+  const session = await auth.api.getSession({
+    headers: requestHeaders,
+  });
+  if (!session) {
+    return authError;
+  }
+  const { showKitty, webhookUrl } = await request.json();
+  await updateUserPreferences(session.user.id, { showKitty, webhookUrl });
+  return NextResponse.json({ message: "Preference Update" }, { status: 200 });
 }

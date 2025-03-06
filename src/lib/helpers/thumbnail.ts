@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { thumbnailTable } from "../db/schemas/thumbnail";
 import { db } from "../db/drizzle";
+import { thumbnailTable } from "../db/schemas/thumbnail";
 
 /**
  * Gets the thumbnail from the database

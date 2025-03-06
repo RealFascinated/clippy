@@ -1,5 +1,6 @@
 import { users, UserType } from "@/lib/db/schemas/auth-schema";
 import { getUserPreferences } from "@/lib/preference";
+import { UserFilesSort } from "@/type/user/user-file-sort";
 import { AnyColumn, asc, count, desc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -16,17 +17,17 @@ import { randomString } from "../utils/utils";
  * @returns the user, or undefined if not found
  */
 export async function getUserByUploadToken(
-	token: string
+  token: string
 ): Promise<UserType | undefined> {
-	const user = (
-		await db.select().from(users).where(eq(users.uploadToken, token))
-	)[0];
-	return user
-		? {
-				...user,
-				preferences: await getUserPreferences(user.id),
-			}
-		: undefined;
+  const user = (
+    await db.select().from(users).where(eq(users.uploadToken, token))
+  )[0];
+  return user
+    ? {
+        ...user,
+        preferences: await getUserPreferences(user.id),
+      }
+    : undefined;
 }
 
 /**
@@ -36,13 +37,13 @@ export async function getUserByUploadToken(
  * @returns the user, or undefined if not found
  */
 export async function getUserById(id: string): Promise<UserType | undefined> {
-	const user = (await db.select().from(users).where(eq(users.id, id)))[0];
-	return user
-		? {
-				...user,
-				preferences: await getUserPreferences(user.id),
-			}
-		: undefined;
+  const user = (await db.select().from(users).where(eq(users.id, id)))[0];
+  return user
+    ? {
+        ...user,
+        preferences: await getUserPreferences(user.id),
+      }
+    : undefined;
 }
 
 /**
@@ -52,17 +53,17 @@ export async function getUserById(id: string): Promise<UserType | undefined> {
  * @returns the user, or undefined if not found
  */
 export async function getUserByName(
-	username: string
+  username: string
 ): Promise<UserType | undefined> {
-	const user = (
-		await db.select().from(users).where(eq(users.username, username))
-	)[0];
-	return user
-		? {
-				...user,
-				preferences: await getUserPreferences(user.id),
-			}
-		: undefined;
+  const user = (
+    await db.select().from(users).where(eq(users.username, username))
+  )[0];
+  return user
+    ? {
+        ...user,
+        preferences: await getUserPreferences(user.id),
+      }
+    : undefined;
 }
 
 /**
@@ -73,40 +74,37 @@ export async function getUserByName(
  * @returns the files for the user.
  */
 export async function getUserFiles(
-	id: string,
-	options?: {
-		sort?: {
-			key: keyof typeof fileTable.$inferSelect;
-			direction: "asc" | "desc";
-		};
-		limit?: number;
-		offset?: number;
-	}
+  id: string,
+  options?: {
+    sort?: UserFilesSort;
+    limit?: number;
+    offset?: number;
+  }
 ) {
-	const query = db.select().from(fileTable).where(eq(fileTable.userId, id));
+  const query = db.select().from(fileTable).where(eq(fileTable.userId, id));
 
-	if (options?.limit) {
-		query.limit(options.limit);
-	}
+  if (options?.limit) {
+    query.limit(options.limit);
+  }
 
-	if (options?.offset) {
-		query.offset(options.offset);
-	}
+  if (options?.offset) {
+    query.offset(options.offset);
+  }
 
-	if (options?.sort) {
-		const { key, direction } = options.sort;
+  if (options?.sort) {
+    const { key, direction } = options.sort;
 
-		// Ensure the key is a valid column from fileTable
-		const column = fileTable[key as keyof typeof fileTable] as AnyColumn;
-		if (!column) {
-			throw new Error(`Column "${key}" on ${fileTable._.name} was not found.`);
-		}
+    // Ensure the key is a valid column from fileTable
+    const column = fileTable[key as keyof typeof fileTable] as AnyColumn;
+    if (!column) {
+      throw new Error(`Column "${key}" on ${fileTable._.name} was not found.`);
+    }
 
-		// Apply sorting based on the direction
-		query.orderBy(direction === "asc" ? asc(column) : desc(column));
-	}
+    // Apply sorting based on the direction
+    query.orderBy(direction === "asc" ? asc(column) : desc(column));
+  }
 
-	return await query;
+  return await query;
 }
 
 /**
@@ -116,10 +114,10 @@ export async function getUserFiles(
  * @returns the thumbnails for the user.
  */
 export async function getUserThumbnails(id: string) {
-	return await db
-		.select()
-		.from(thumbnailTable)
-		.where(eq(thumbnailTable.userId, id));
+  return await db
+    .select()
+    .from(thumbnailTable)
+    .where(eq(thumbnailTable.userId, id));
 }
 
 /**
@@ -130,11 +128,11 @@ export async function getUserThumbnails(id: string) {
  * @returns the amount of files uploaded
  */
 export async function getUserFilesCount(id: string) {
-	const query = await db
-		.select({ count: count() })
-		.from(fileTable)
-		.where(eq(fileTable.userId, id));
-	return query[0].count ?? undefined;
+  const query = await db
+    .select({ count: count() })
+    .from(fileTable)
+    .where(eq(fileTable.userId, id));
+  return query[0].count ?? undefined;
 }
 
 /**
@@ -144,7 +142,7 @@ export async function getUserFilesCount(id: string) {
  * @param values the values to update
  */
 export async function updateUser(id: string, values: Record<string, unknown>) {
-	await db.update(users).set(values).where(eq(users.id, id));
+  await db.update(users).set(values).where(eq(users.id, id));
 }
 
 /**
@@ -153,7 +151,7 @@ export async function updateUser(id: string, values: Record<string, unknown>) {
  * @returns the upload token
  */
 export function generateUploadToken() {
-	return randomString(32);
+  return randomString(32);
 }
 
 /**
@@ -163,15 +161,15 @@ export function generateUploadToken() {
  * @returns the current user (wtf is the type? x.x)
  */
 export async function getUser(): Promise<UserType> {
-	const session = await auth.api.getSession({
-		headers: await headers(),
-	});
-	// This shouldn't happen
-	if (!session) {
-		redirect("/");
-	}
-	return {
-		...(session.user as UserType),
-		preferences: await getUserPreferences(session.user.id),
-	};
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  // This shouldn't happen
+  if (!session) {
+    redirect("/");
+  }
+  return {
+    ...(session.user as UserType),
+    preferences: await getUserPreferences(session.user.id),
+  };
 }

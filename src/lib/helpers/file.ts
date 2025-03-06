@@ -3,7 +3,6 @@ import { eq } from "drizzle-orm";
 import { db } from "../db/drizzle";
 import { UserType } from "../db/schemas/auth-schema";
 import { fileTable, FileType } from "../db/schemas/file";
-import { thumbnailTable, ThumbnailType } from "../db/schemas/thumbnail";
 import Logger from "../logger";
 import { getFileExtension, getFileName } from "../utils/file";
 import { getFilePath } from "../utils/paths";

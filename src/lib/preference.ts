@@ -11,19 +11,19 @@ import { eq } from "drizzle-orm";
  * @returns the user's preferences
  */
 export async function getUserPreferences(
-	userId: string
+  userId: string
 ): Promise<PreferencesType> {
-	return await fetchWithCache(
-		userPreferencesCache,
-		`user-preferences:${userId}`,
-		async () =>
-			(
-				await db
-					.select()
-					.from(preferencesTable)
-					.where(eq(preferencesTable.userId, userId))
-			)?.[0]
-	);
+  return await fetchWithCache(
+    userPreferencesCache,
+    `user-preferences:${userId}`,
+    async () =>
+      (
+        await db
+          .select()
+          .from(preferencesTable)
+          .where(eq(preferencesTable.userId, userId))
+      )?.[0]
+  );
 }
 
 /**
@@ -33,16 +33,16 @@ export async function getUserPreferences(
  * @param updates an object containing the preferences to update
  */
 export async function updateUserPreferences(
-	userId: string,
-	updates: Partial<PreferencesType>
+  userId: string,
+  updates: Partial<PreferencesType>
 ) {
-	// First update the database, and then invalidate the in-memory cache
-	userPreferencesCache.remove(`user-preferences:${userId}`);
-	await db
-		.insert(preferencesTable)
-		.values({ userId: userId, ...updates })
-		.onConflictDoUpdate({
-			target: preferencesTable.userId,
-			set: updates,
-		});
+  // First update the database, and then invalidate the in-memory cache
+  userPreferencesCache.remove(`user-preferences:${userId}`);
+  await db
+    .insert(preferencesTable)
+    .values({ userId: userId, ...updates })
+    .onConflictDoUpdate({
+      target: preferencesTable.userId,
+      set: updates,
+    });
 }
