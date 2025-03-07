@@ -92,7 +92,7 @@ export default class ThumbnailQueue extends Queue<FileType> {
     Logger.info(
       `Finished processing thumbnail for ${fileName} in ${(
         performance.now() - before
-      ).toFixed(2)}ms`
+      ).toFixed(2)}ms (${this.queue.length} files remaining)`
     );
   }
 }
