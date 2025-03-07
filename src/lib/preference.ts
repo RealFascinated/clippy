@@ -8,7 +8,7 @@ import {
 import { fetchWithCache } from "@/lib/utils/cache";
 import { eq } from "drizzle-orm";
 
-const defaultPreferences: PreferencesType = {
+export const defaultPreferences: PreferencesType = {
   showKitty: false,
   webhookUrl: null,
   notifications: defaultNotifications,

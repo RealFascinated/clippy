@@ -13,7 +13,7 @@ export const defaultNotifications: Notifications = {
   },
 };
 
-type NotificationState = {
+export type NotificationState = {
   sendWebhook: boolean;
 };
 

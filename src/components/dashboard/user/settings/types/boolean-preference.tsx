@@ -1,15 +1,9 @@
-import Preference from "@/components/dashboard/user/settings/types/preference";
+import Preference, { statusIcons } from "@/components/dashboard/user/settings/types/preference";
 import { Checkbox } from "@/components/ui/checkbox";
 import { usePreferences } from "@/providers/preferences-provider";
 import { Check, Loader2, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-
-const statusIcons = {
-  loading: <Loader2 className="size-4 text-muted-foreground animate-spin" />,
-  success: <Check className="size-4 text-green-500" />,
-  failed: <XCircle className="size-4 text-destructive" />,
-};
 
 export default function BooleanPreference({
   preferenceId,

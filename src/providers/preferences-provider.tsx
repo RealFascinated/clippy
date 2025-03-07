@@ -2,6 +2,7 @@
 
 import { UserType } from "@/lib/db/schemas/auth-schema";
 import { PreferencesType } from "@/lib/db/schemas/preference";
+import { defaultPreferences } from "@/lib/preference";
 import request from "@/lib/request";
 import { createContext, ReactNode, useContext, useState } from "react";
 
@@ -27,7 +28,7 @@ type PreferencesContextProps = {
   /**
    * The preferences for the user.
    */
-  preferences: PreferencesType | undefined;
+  preferences: PreferencesType;
 
   /**
    * Update the preferences.
@@ -41,7 +42,7 @@ type PreferencesContextProps = {
  * The current context of the socket.
  */
 const PreferencesContext = createContext<PreferencesContextProps>({
-  preferences: undefined,
+  preferences: {} as PreferencesType,
 
   updatePreferences: () => {
     throw new Error("PreferencesContext is not defined.");
@@ -61,7 +62,7 @@ const PreferencesProvider = ({ user, children }: PreferencesProviderProps) => {
   );
 
   const updatePreferences = async (updates: Partial<PreferencesType>) => {
-    setPreferences(prev => ({ ...prev, ...updates }));
+    setPreferences((prev) => ({ ...prev, ...updates }));
     await request.post("/api/user/update-preference", {
       data: updates,
     });

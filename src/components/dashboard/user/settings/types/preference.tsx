@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils/utils";
+import { Check, Loader2, XCircle } from "lucide-react";
 import { ReactNode } from "react";
 
 export type PreferenceProps = {
@@ -8,6 +9,12 @@ export type PreferenceProps = {
   description: string;
   inline?: boolean;
   children: ReactNode;
+};
+
+export const statusIcons = {
+  loading: <Loader2 className="size-4 text-muted-foreground animate-spin" />,
+  success: <Check className="size-4 text-green-500" />,
+  failed: <XCircle className="size-4 text-destructive" />,
 };
 
 export default function Preference({
@@ -32,7 +39,7 @@ export default function Preference({
           </h1>
           {badge}
         </div>
-        <p className="max-w-md text-xs xs:text-sm text-muted-foreground transition-all transform-gpu">
+        <p className="max-w-sm md:max-w-lg text-xs xs:text-sm text-muted-foreground transition-all transform-gpu">
           {description}
         </p>
       </div>

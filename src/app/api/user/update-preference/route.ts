@@ -15,7 +15,11 @@ export async function POST(
   if (!session) {
     return authError;
   }
-  const { showKitty, webhookUrl } = await request.json();
-  await updateUserPreferences(session.user.id, { showKitty, webhookUrl });
+  const { showKitty, webhookUrl, notifications } = await request.json();
+  await updateUserPreferences(session.user.id, {
+    showKitty,
+    webhookUrl,
+    notifications,
+  });
   return NextResponse.json({ message: "Preference Update" }, { status: 200 });
 }
