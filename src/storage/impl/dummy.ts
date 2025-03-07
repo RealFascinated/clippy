@@ -29,4 +29,8 @@ export default class DummyStorage extends Storage {
   ): Promise<internal.Readable | null> {
     return null;
   }
+
+  async renameFile(oldName: string, newName: string): Promise<boolean> {
+    return false;
+  }
 }
