@@ -164,7 +164,7 @@ function FilePreview({ fileMeta }: { fileMeta: FileType }) {
           <PlayIcon className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 size-10" />
         )}
       </DialogTrigger>
-      <DialogContent className="flex flex-col items-center w-full sm:w-fit lg:max-w-4xl">
+      <DialogContent className="flex flex-col items-center w-full sm:w-fit lg:max-w-4xl min-w-80">
         <DialogHeader>
           <DialogTitle>{getFileName(fileMeta)}</DialogTitle>
         </DialogHeader>
