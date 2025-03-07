@@ -4,17 +4,21 @@ import { users } from "./auth-schema";
 export const defaultNotifications: Notifications = {
   uploadFile: {
     sendWebhook: true,
+    sendMail: true,
   },
   deleteFile: {
     sendWebhook: true,
+    sendMail: true,
   },
   resetUploadToken: {
     sendWebhook: true,
+    sendMail: true,
   },
 };
 
 export type NotificationState = {
   sendWebhook: boolean;
+  sendMail: boolean;
 };
 
 export type Notifications = {

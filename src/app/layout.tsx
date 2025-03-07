@@ -36,7 +36,7 @@ export default function RootLayout({
           position="bottom-center"
           toastOptions={{
             classNames: {
-              toast: "!w-fit !rounded-3xl",
+              toast: "!w-fit !rounded-3xl select-none",
               success: "!text-green-500",
               error: "!text-red-500",
               content: "!text-white/95",

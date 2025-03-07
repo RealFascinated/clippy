@@ -1,7 +1,8 @@
-import Preference, { statusIcons } from "@/components/dashboard/user/settings/types/preference";
+import Preference, {
+  statusIcons,
+} from "@/components/dashboard/user/settings/types/preference";
 import { Checkbox } from "@/components/ui/checkbox";
 import { usePreferences } from "@/providers/preferences-provider";
-import { Check, Loader2, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 

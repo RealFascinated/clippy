@@ -3,6 +3,7 @@
 import Preference, {
   statusIcons,
 } from "@/components/dashboard/user/settings/types/preference";
+import SimpleTooltip from "@/components/simple-tooltip";
 import { Button } from "@/components/ui/button";
 import { Notifications, NotificationState } from "@/lib/db/schemas/preference";
 import { cn } from "@/lib/utils/utils";
@@ -35,22 +36,31 @@ export default function NotificationPreference({
   return (
     <Preference header={header} description={description} inline>
       {status && statusIcons[status]}
-      <NotificationToggle
-        notificationId={notificationId}
-        header={header}
-        stateId="sendWebhook"
-        icon={<Webhook />}
-        status={status}
-        setStatus={setStatus}
-      />
-      <NotificationToggle
-        notificationId={notificationId}
-        header={header}
-        stateId="sendWebhook"
-        icon={<Mail />}
-        status={status}
-        setStatus={setStatus}
-      />
+
+      <SimpleTooltip content="Toggle Webhook Notifications">
+        <div>
+          <NotificationToggle
+            notificationId={notificationId}
+            header={header}
+            stateId="sendWebhook"
+            icon={<Webhook />}
+            status={status}
+            setStatus={setStatus}
+          />
+        </div>
+      </SimpleTooltip>
+      <SimpleTooltip content="Toggle Email Notifications">
+        <div>
+          <NotificationToggle
+            notificationId={notificationId}
+            header={header}
+            stateId="sendMail"
+            icon={<Mail />}
+            status={status}
+            setStatus={setStatus}
+          />
+        </div>
+      </SimpleTooltip>
     </Preference>
   );
 }
