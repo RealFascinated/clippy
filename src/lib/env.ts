@@ -11,6 +11,7 @@ export const env = createEnv({
 
   shared: {
     NEXT_PUBLIC_APP_ENV: z.string(),
+    NEXT_PUBLIC_ALLOW_REGISTRATIONS: z.boolean().optional().default(true),
   },
 
   server: {
@@ -45,6 +46,8 @@ export const env = createEnv({
 
     // Shared
     NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV ?? "development",
+    NEXT_PUBLIC_ALLOW_REGISTRATIONS:
+      process.env.NEXT_PUBLIC_ALLOW_REGISTRATIONS === "true",
 
     // Postgres
     DATABASE_URL: process.env.DATABASE_URL,

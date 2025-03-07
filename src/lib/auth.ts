@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
+import { createAuthMiddleware } from "better-auth/plugins";
 import { admin } from "better-auth/plugins/admin";
 import { username } from "better-auth/plugins/username";
 import { db } from "./db/drizzle";
@@ -51,6 +52,30 @@ export const auth = betterAuth({
         required: false,
       },
     },
+  },
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      const allowRegistrations = env.NEXT_PUBLIC_ALLOW_REGISTRATIONS;
+
+      switch (ctx.path) {
+        case "/callback/:id": {
+          if (!allowRegistrations) {
+            throw ctx.error("BAD_REQUEST", {
+              message: "Registering is currently not allowed",
+            });
+          }
+          break;
+        }
+        case "/sign-up/email": {
+          if (!allowRegistrations) {
+            throw ctx.error("BAD_REQUEST", {
+              message: "Registering is currently not allowed",
+            });
+          }
+          break;
+        }
+      }
+    }),
   },
 });
 export type Session = typeof auth.$Infer.Session;
