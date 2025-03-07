@@ -9,10 +9,13 @@ import TasksManager from "./tasks/tasks-manager";
 
 const port = parseInt(process.env.PORT || "3000", 10);
 const dev = env.NEXT_PUBLIC_APP_ENV !== "production";
+
 const app = next({ dev, turbopack: true });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
+  Logger.info("Starting server...");
+
   createServer(async (req, res) => {
     const parsedUrl = parse(req.url!, true);
 
@@ -30,7 +33,7 @@ app.prepare().then(() => {
   new TasksManager();
   thumbnailQueue.loadFiles();
 
-  console.log(
+  Logger.info(
     `> Server listening at http://localhost:${port} as ${
       dev ? "development" : env.NEXT_PUBLIC_APP_ENV
     }`
