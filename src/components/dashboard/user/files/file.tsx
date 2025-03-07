@@ -2,6 +2,7 @@
 
 import DeleteFileDialog from "@/components/dashboard/user/files/delete-file-dialog";
 import FileContextMenu from "@/components/dashboard/user/files/file-context-menu";
+import FileInfo from "@/components/dashboard/user/files/file-info-dialog";
 import FileExtensionIcon from "@/components/file-icon";
 import FileVideoPlayer from "@/components/file/video-player";
 import SimpleTooltip from "@/components/simple-tooltip";
@@ -14,16 +15,15 @@ import {
 } from "@/components/ui/dialog";
 import Loader from "@/components/ui/loader";
 import { FileType } from "@/lib/db/schemas/file";
-import { env } from "@/lib/env";
+import { copyFileUrl } from "@/lib/file";
 import { getFileName } from "@/lib/utils/file";
 import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { formatBytes } from "@/lib/utils/utils";
-import { InformationCircleIcon } from "@heroicons/react/16/solid";
+import { InformationCircleIcon } from "@heroicons/react/24/solid";
 import { format, formatDistance } from "date-fns";
 import { DownloadIcon, LinkIcon, PlayIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { toast } from "sonner";
 
 export type UserFileProps = {
   fileMeta: FileType;
@@ -45,14 +45,6 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
     difference > 86400000 // 24 hours in milliseconds
       ? format(uploadedDate, "MM/dd/yyyy HH:mm a")
       : formatDistance(uploadedDate, currentDate) + " ago";
-
-  function copyUrl() {
-    navigator.clipboard.writeText(
-      `${env.NEXT_PUBLIC_WEBSITE_URL}/${getFileName(fileMeta)}`
-    );
-
-    toast(`Copied the url for ${getFileName(fileMeta)} to your clipboard`);
-  }
 
   return (
     <FileContextMenu fileMeta={fileMeta} refetch={refetch}>
@@ -106,7 +98,10 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
           {/* Buttons */}
           <div className="lg:hidden flex gap-2 items-center">
             <SimpleTooltip content="Copy URL">
-              <button className="cursor-pointer" onClick={() => copyUrl()}>
+              <button
+                className="cursor-pointer"
+                onClick={() => copyFileUrl(fileMeta)}
+              >
                 <LinkIcon className="size-4.5 hover:opacity-80 transition-all transform-gpu" />
               </button>
             </SimpleTooltip>
@@ -118,13 +113,19 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
               </Link>
             </SimpleTooltip>
 
-            <FileInfo fileMeta={fileMeta} />
+            <FileInfo fileMeta={fileMeta}>
+              <SimpleTooltip content="File Info">
+                <InformationCircleIcon className="size-4.5 cursor-pointer hover:opacity-80 transition-all transform-gpu" />
+              </SimpleTooltip>
+            </FileInfo>
 
             {/* Delete File Button */}
             <DeleteFileDialog fileMeta={fileMeta} refetch={refetch}>
-              <SimpleTooltip className="bg-destructive" content="Delete File">
-                <TrashIcon className="size-4 text-red-400 hover:opacity-80 cursor-pointer transition-all transform-gpu" />
-              </SimpleTooltip>
+              <div>
+                <SimpleTooltip className="bg-destructive" content="Delete File">
+                  <TrashIcon className="size-4 text-red-400 hover:opacity-80 cursor-pointer transition-all transform-gpu" />
+                </SimpleTooltip>
+              </div>
             </DeleteFileDialog>
           </div>
         </div>
@@ -175,59 +176,6 @@ function FilePreview({ fileMeta }: { fileMeta: FileType }) {
         )}
 
         {isVideo && <FileVideoPlayer url={url} className="max-h-[70vh]" />}
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-function FileInfo({ fileMeta }: { fileMeta: FileType }) {
-  return (
-    <Dialog>
-      <DialogTrigger>
-        <SimpleTooltip content="File Info">
-          <InformationCircleIcon className="size-4.5 cursor-pointer hover:opacity-80 transition-all transform-gpu" />
-        </SimpleTooltip>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>File Information</DialogTitle>
-        </DialogHeader>
-
-        <div className="flex flex-col">
-          {/* File Name */}
-          <span>
-            <span className="font-semibold">Name:</span> {getFileName(fileMeta)}
-          </span>
-
-          {/* Original File Name */}
-          <span>
-            <span className="font-semibold">Original Name:</span>{" "}
-            {fileMeta.originalName ?? "Unknown"}
-          </span>
-
-          {/* File Size */}
-          <span>
-            <span className="font-semibold">Size:</span>{" "}
-            {formatBytes(fileMeta.size)}
-          </span>
-
-          {/* Mime Type */}
-          <span>
-            <span className="font-semibold">Mimetype:</span> {fileMeta.mimeType}
-          </span>
-
-          {/* Views */}
-          <span>
-            <span className="font-semibold">Views:</span>{" "}
-            {formatNumberWithCommas(fileMeta.views)}
-          </span>
-
-          {/* Upload Date */}
-          <span>
-            <span className="font-semibold">Uploaded Date:</span>{" "}
-            {format(fileMeta.createdAt, "dd/MM/yyyy - HH:mm a")}
-          </span>
-        </div>
       </DialogContent>
     </Dialog>
   );

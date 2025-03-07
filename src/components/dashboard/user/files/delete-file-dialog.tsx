@@ -8,16 +8,15 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { FileType } from "@/lib/db/schemas/file";
 import request from "@/lib/request";
 import { getFileName } from "@/lib/utils/file";
-import { ReactNode, useState } from "react";
+import { cloneElement, ReactElement, useState } from "react";
 import { toast } from "sonner";
 
 type DeleteFileDialogProps = UserFileProps & {
-  children: ReactNode;
+  children: ReactElement<{ onClick?: (e: React.MouseEvent) => void }>;
 };
 
 export default function DeleteFileDialog({
@@ -46,9 +45,26 @@ export default function DeleteFileDialog({
     setDeleteConfirm(false);
   }
 
+  // Create a modified version of children that opens the dialog when clicked
+  const triggerElement = cloneElement(children, {
+    onClick: (e: React.MouseEvent) => {
+      // Prevent default behavior
+      e.preventDefault();
+      // Stop propagation to prevent context menu from closing
+      e.stopPropagation();
+      // Open the dialog
+      setDeleteConfirm(true);
+
+      // Call the original onClick if it exists
+      if (children.props.onClick) {
+        children.props.onClick(e);
+      }
+    },
+  });
+
   return (
     <Dialog open={deleteConfirm} onOpenChange={setDeleteConfirm}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      {triggerElement}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Are you absolutely sure?</DialogTitle>

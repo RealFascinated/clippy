@@ -1,4 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
+import { ReactNode } from "react";
+import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 import { env } from "../env";
 
@@ -64,3 +66,25 @@ export function formatBytes(bytes: number): string {
 
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 }
+
+/**
+ * Copy text to clipboard.
+ *
+ * @param text the text to copy
+ * @param toastText the text to display in the toast
+ */
+export const copyWithToast = async (
+  text: string,
+  toastText: string | ReactNode
+) => {
+  await copyToClipboard(text);
+  toast.success(toastText);
+};
+
+/**
+ * Copy text to the clipboard.
+ *
+ * @param text the text to copy
+ */
+export const copyToClipboard = async (text: string) =>
+  await navigator.clipboard.writeText(text);
