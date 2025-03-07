@@ -74,6 +74,9 @@ function NotificationToggle({
   const notification: Notifications[keyof Notifications] =
     preferences.notifications[notificationId as keyof Notifications];
   const [state, setState] = useState<boolean>(notification[stateId]);
+  const cleanNotificationName: string = header
+    .toLowerCase()
+    .substring(0, header.length - 1);
 
   const handleToggle = async () => {
     setState(!state);
@@ -107,8 +110,8 @@ function NotificationToggle({
         toast.promise(handleToggle(), {
           loading: "Saving...",
           success: () =>
-            `Your ${header} notifications have been ${!state ? "enabled" : "disabled"}!`,
-          error: `Failed to update your ${header} notifications!`,
+            `Your ${cleanNotificationName} notifications have been ${!state ? "enabled" : "disabled"}!`,
+          error: `Failed to update your ${cleanNotificationName} notifications!`,
         });
       }}
     >

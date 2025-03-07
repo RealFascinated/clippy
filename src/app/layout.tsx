@@ -32,7 +32,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${font.className} antialiased`}>
-        <Toaster />
+        <Toaster
+          position="bottom-center"
+          toastOptions={{
+            classNames: {
+              toast: "!w-fit !rounded-3xl",
+              success: "!text-green-500",
+              error: "!text-red-500",
+              content: "!text-white/95",
+            },
+          }}
+        />
         <Background />
         <AppProvider>
           <Navbar />
