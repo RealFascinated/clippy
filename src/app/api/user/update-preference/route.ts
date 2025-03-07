@@ -1,25 +1,15 @@
-import { authError } from "@/lib/api-commons";
-import { auth } from "@/lib/auth";
+import { handleApiRequestWithUser } from "@/lib/api-commons";
 import { updateUserPreferences } from "@/lib/preference";
-import { ApiErrorResponse, ApiSuccessResponse } from "@/type/api/responses";
-import { headers } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(
-  request: Request
-): Promise<NextResponse<ApiSuccessResponse | ApiErrorResponse>> {
-  const requestHeaders = await headers();
-  const session = await auth.api.getSession({
-    headers: requestHeaders,
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  return handleApiRequestWithUser(async (user) => {
+    const { showKitty, webhookUrl, notifications } = await request.json();
+    await updateUserPreferences(user.id, {
+      showKitty,
+      webhookUrl,
+      notifications,
+    });
+    return NextResponse.json({ message: "Preference Update" }, { status: 200 });
   });
-  if (!session) {
-    return authError;
-  }
-  const { showKitty, webhookUrl, notifications } = await request.json();
-  await updateUserPreferences(session.user.id, {
-    showKitty,
-    webhookUrl,
-    notifications,
-  });
-  return NextResponse.json({ message: "Preference Update" }, { status: 200 });
 }

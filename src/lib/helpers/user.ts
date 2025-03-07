@@ -13,6 +13,7 @@ import { db } from "../db/drizzle";
 import { fileTable } from "../db/schemas/file";
 import { thumbnailTable } from "../db/schemas/thumbnail";
 import { randomString } from "../utils/utils";
+import { authError } from "../api-commons";
 
 /**
  * Gets a user by their upload token
@@ -162,7 +163,7 @@ export function generateUploadToken() {
  * Get the current user. If the user is not
  * logged in, redirect to the main page.
  *
- * @returns the current user (wtf is the type? x.x)
+ * @returns the current user
  */
 export async function getUser(): Promise<UserType> {
   const session = await auth.api.getSession({
@@ -171,6 +172,24 @@ export async function getUser(): Promise<UserType> {
   // This shouldn't happen
   if (!session) {
     redirect("/");
+  }
+  return {
+    ...(session.user as UserType),
+    preferences: await getUserPreferences(session.user.id),
+  };
+}
+
+/**
+ * Gets the user from the api headers.
+ *
+ * @returns the user
+ */
+export async function getApiUser(): Promise<UserType> {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) {
+    throw authError;
   }
   return {
     ...(session.user as UserType),
