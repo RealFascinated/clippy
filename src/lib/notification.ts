@@ -13,7 +13,7 @@ import { formatBytes } from "./utils/utils";
  */
 async function sendUploadFileNotification(user: UserType, file: FileType) {
   // Send webhook if enabled
-  if (!user.preferences.notifications.uploadFile.sendWebhook) {
+  if (user.preferences.notifications.uploadFile.sendWebhook) {
     await dispatchWebhookEvent(user, {
       title: "File Uploaded",
       description: `A file for \`${user.name}\` has been uploaded:`,
