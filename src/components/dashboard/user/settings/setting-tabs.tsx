@@ -1,8 +1,8 @@
 "use client";
 
+import AppearanceSettings from "@/components/dashboard/user/settings/appearance-settings";
 import ConfigSettings from "@/components/dashboard/user/settings/config-settings";
 import NotificationSettings from "@/components/dashboard/user/settings/notification-settings";
-import PreferenceSettings from "@/components/dashboard/user/settings/preference-settings";
 import UserSettings from "@/components/dashboard/user/settings/user-settings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserType } from "@/lib/db/schemas/auth-schema";
@@ -29,10 +29,10 @@ const tabs = [
     content: () => <NotificationSettings />,
   },
   {
-    id: "preferences",
-    name: "Preferences",
-    description: "Manage your website preference settings.",
-    content: (user: UserType) => <PreferenceSettings user={user} />,
+    id: "appearance",
+    name: "Appearance",
+    description: "Manage your website appearance settings.",
+    content: (user: UserType) => <AppearanceSettings user={user} />,
   },
 ];
 

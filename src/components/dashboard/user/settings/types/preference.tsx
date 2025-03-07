@@ -49,3 +49,20 @@ export default function Preference({
     </div>
   );
 }
+
+export function PreferenceCategory({
+  name,
+  children,
+}: {
+  name: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <h2 className="text-sm xs:text-base text-muted-foreground font-medium transition-all transform-gpu">
+        {name}
+      </h2>
+      {children}
+    </div>
+  );
+}
