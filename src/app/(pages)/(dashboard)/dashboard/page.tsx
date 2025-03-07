@@ -15,7 +15,7 @@ export default async function DashboardPage() {
       <WelcomeBanner username={user.name} />
 
       <UserStatistics />
-      <UserFiles />
+      <UserFiles user={user} />
     </div>
   );
 }

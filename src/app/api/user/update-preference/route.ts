@@ -3,7 +3,7 @@ import { updateUserPreferences } from "@/lib/preference";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  return handleApiRequestWithUser(async (user) => {
+  return handleApiRequestWithUser(async user => {
     const { showKitty, webhookUrl, notifications } = await request.json();
     await updateUserPreferences(user.id, {
       showKitty,

@@ -7,7 +7,7 @@ import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  return handleApiRequestWithUser(async (user) => {
+  return handleApiRequestWithUser(async user => {
     const requestHeaders = await headers();
     try {
       await auth.api.updateUser({

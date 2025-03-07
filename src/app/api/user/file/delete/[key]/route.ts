@@ -5,7 +5,7 @@ import { getUserById } from "@/lib/helpers/user";
 import Logger from "@/lib/logger";
 import { Notifications } from "@/lib/notification";
 import { getFileName } from "@/lib/utils/file";
-import { getFileThumbnailPath } from "@/lib/utils/paths";
+import { getFilePath, getFileThumbnailPath } from "@/lib/utils/paths";
 import { storage } from "@/storage/create-storage";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -25,7 +25,9 @@ export async function GET(
     }
 
     try {
-      const deletedFile = await storage.deleteFile(getFileName(file));
+      const deletedFile = await storage.deleteFile(
+        getFilePath(file.userId, file)
+      );
       if (!deletedFile) {
         return NextResponse.json(
           { message: "Unable to delete the file, please contact an admin" },

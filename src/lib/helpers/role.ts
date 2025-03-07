@@ -6,7 +6,7 @@ type Role = {
   uploadLimit: number;
 };
 
-const roles: Record<Roles, Role> = {
+export const roles: Record<Roles, Role> = {
   admin: {
     name: "Admin",
     uploadLimit: -1,

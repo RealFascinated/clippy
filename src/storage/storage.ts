@@ -26,6 +26,14 @@ export default abstract class Storage {
    */
   abstract getFileStream(name: string): Promise<internal.Readable | null>;
 
+  /**
+   * Gets a file stream from the storage.
+   *
+   * @param name the name of the file to get
+   * @param start the start of the range
+   * @param end the end of the range
+   * @returns the file, or null if not found
+   */
   abstract getFileStreamRange(
     name: string,
     start: number,
@@ -39,4 +47,13 @@ export default abstract class Storage {
    * @returns true if deleted, false if an error occured
    */
   abstract deleteFile(name: string): Promise<boolean>;
+
+  /**
+   * Renames a file in the storage.
+   *
+   * @param oldName the old name of the file
+   * @param newName the new name of the file
+   * @returns true if renamed, false if an error occured
+   */
+  abstract renameFile(oldName: string, newName: string): Promise<boolean>;
 }

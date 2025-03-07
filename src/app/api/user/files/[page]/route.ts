@@ -14,7 +14,7 @@ export async function GET(
     params: Promise<{ page: string }>;
   }
 ): Promise<NextResponse | Response> {
-  return handleApiRequestWithUser(async (user) => {
+  return handleApiRequestWithUser(async user => {
     const { page } = await params;
 
     const searchParams = request.nextUrl.searchParams;
@@ -32,7 +32,7 @@ export async function GET(
 
     const paginatedPage = await pagination.getPage(
       Number(page),
-      async (fetchItems) => {
+      async fetchItems => {
         const files = await getUserFiles(user.id, {
           limit: ITEMS_PER_PAGE,
           offset: fetchItems.start,

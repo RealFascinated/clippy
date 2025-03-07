@@ -46,7 +46,8 @@ export default class S3Storage extends Storage {
     try {
       const file = await this.client.getObject(env.STORAGE_S3_BUCKET, name);
       return readableToBuffer(file);
-    } catch {
+    } catch (err) {
+      Logger.error(err);
       return null;
     }
   }
@@ -54,7 +55,8 @@ export default class S3Storage extends Storage {
   async getFileStream(name: string): Promise<internal.Readable | null> {
     try {
       return await this.client.getObject(env.STORAGE_S3_BUCKET, name);
-    } catch {
+    } catch (err) {
+      Logger.error(err);
       return null;
     }
   }
@@ -81,8 +83,28 @@ export default class S3Storage extends Storage {
         start,
         end - start + 1
       );
-    } catch {
+    } catch (err) {
+      Logger.error(err);
       return null;
+    }
+  }
+
+  async renameFile(oldName: string, newName: string): Promise<boolean> {
+    console.log({
+      oldName,
+      newName,
+    });
+    try {
+      await this.client.copyObject(
+        env.STORAGE_S3_BUCKET,
+        newName,
+        `/${env.STORAGE_S3_BUCKET}/${oldName}`
+      );
+      await this.deleteFile(oldName);
+      return true;
+    } catch (err) {
+      Logger.error(err);
+      return false;
     }
   }
 }

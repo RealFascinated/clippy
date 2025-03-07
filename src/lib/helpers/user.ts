@@ -8,12 +8,12 @@ import { format } from "date-fns";
 import { AnyColumn, asc, count, desc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { authError } from "../api-commons";
 import { auth } from "../auth";
 import { db } from "../db/drizzle";
 import { fileTable } from "../db/schemas/file";
 import { thumbnailTable } from "../db/schemas/thumbnail";
 import { randomString } from "../utils/utils";
-import { authError } from "../api-commons";
 
 /**
  * Gets a user by their upload token

@@ -7,9 +7,52 @@ import * as React from "react";
 import { cn } from "@/lib/utils/utils";
 
 function Dialog({
+  children,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="dialog" {...props} />;
+}: React.ComponentProps<typeof DialogPrimitive.Root> & {
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = React.useState(false);
+
+  // Find the trigger element among children
+  const childrenArray = React.Children.toArray(children);
+  const triggerElement = childrenArray.find(
+    child => React.isValidElement(child) && child.type === DialogTrigger
+  ) as
+    | React.ReactElement<{ onClick?: (e: React.MouseEvent) => void }>
+    | undefined;
+
+  const otherChildren = childrenArray.filter(
+    child => React.isValidElement(child) && child.type !== DialogTrigger
+  );
+
+  // Create a modified version of the trigger that handles state
+  const modifiedTrigger = triggerElement
+    ? React.cloneElement(triggerElement, {
+        onClick: (e: React.MouseEvent) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setOpen(true);
+
+          // Call the original onClick if it exists
+          if (triggerElement.props.onClick) {
+            triggerElement.props.onClick(e);
+          }
+        },
+      } as Partial<{ onClick: (e: React.MouseEvent) => void }>)
+    : null;
+
+  return (
+    <DialogPrimitive.Root
+      data-slot="dialog"
+      open={open}
+      onOpenChange={setOpen}
+      {...props}
+    >
+      {modifiedTrigger}
+      {otherChildren}
+    </DialogPrimitive.Root>
+  );
 }
 
 function DialogTrigger({

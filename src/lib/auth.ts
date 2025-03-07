@@ -25,7 +25,7 @@ export const auth = betterAuth({
     username({
       minUsernameLength: 3,
       maxUsernameLength: 12,
-      usernameValidator: (username) => {
+      usernameValidator: username => {
         // Disallow admin
         if (username === "admin") {
           return false;
@@ -54,7 +54,7 @@ export const auth = betterAuth({
     },
   },
   hooks: {
-    before: createAuthMiddleware(async (ctx) => {
+    before: createAuthMiddleware(async ctx => {
       const allowRegistrations = env.NEXT_PUBLIC_ALLOW_REGISTRATIONS;
 
       switch (ctx.path) {

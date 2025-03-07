@@ -4,7 +4,7 @@ import { UserStatisticsResponse } from "@/type/api/user/statistics-response";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  return handleApiRequestWithUser(async (user) => {
+  return handleApiRequestWithUser(async user => {
     const images = await getUserFiles(user.id);
     const thumbnails = await getUserThumbnails(user.id);
 

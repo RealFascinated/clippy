@@ -70,7 +70,7 @@ export default function CreateAccount() {
           router.push("/dashboard");
           router.refresh();
         },
-        onError: (error) => {
+        onError: error => {
           console.log({ error });
           setError(error.error.message);
         },
@@ -121,7 +121,7 @@ export default function CreateAccount() {
                         <Input
                           placeholder="username"
                           {...field}
-                          onChange={(event) => {
+                          onChange={event => {
                             event.target.value =
                               event.target.value.toLowerCase();
                             field.onChange(event);

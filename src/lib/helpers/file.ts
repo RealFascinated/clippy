@@ -14,7 +14,7 @@ import { formatBytes, randomString } from "../utils/utils";
  * @param id the id of the file
  * @returns the file, or undefined if not found
  */
-export async function getFileById(id: string) {
+export async function getFileById(id: string): Promise<FileType | undefined> {
   if (id.includes(".")) {
     id = id.split(".")[0];
   }
@@ -27,7 +27,9 @@ export async function getFileById(id: string) {
  * @param id the delete key of the file
  * @returns the file, or undefined if not found
  */
-export async function getFileByDeleteKey(deleteKey: string) {
+export async function getFileByDeleteKey(
+  deleteKey: string
+): Promise<FileType | undefined> {
   return (
     await db.select().from(fileTable).where(eq(fileTable.deleteKey, deleteKey))
   )[0];

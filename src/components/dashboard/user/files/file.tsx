@@ -14,6 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Loader from "@/components/ui/loader";
+import { UserType } from "@/lib/db/schemas/auth-schema";
 import { FileType } from "@/lib/db/schemas/file";
 import { copyFileUrl } from "@/lib/file";
 import { getFileName } from "@/lib/utils/file";
@@ -26,11 +27,12 @@ import Link from "next/link";
 import { useState } from "react";
 
 export type UserFileProps = {
+  user: UserType;
   fileMeta: FileType;
   refetch: () => Promise<void>;
 };
 
-export default function UserFile({ fileMeta, refetch }: UserFileProps) {
+export default function UserFile({ user, fileMeta, refetch }: UserFileProps) {
   const url = `/${getFileName(fileMeta)}`;
   const hasThumbnail =
     fileMeta.mimeType.startsWith("video") ||
@@ -47,7 +49,7 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
       : formatDistance(uploadedDate, currentDate) + " ago";
 
   return (
-    <FileContextMenu fileMeta={fileMeta} refetch={refetch}>
+    <FileContextMenu user={user} fileMeta={fileMeta} refetch={refetch}>
       <div className="bg-card h-full flex flex-col items-center rounded-md">
         <div className="h-full p-2 flex flex-col gap-1">
           <div className="flex flex-col items-center select-none">
@@ -120,7 +122,7 @@ export default function UserFile({ fileMeta, refetch }: UserFileProps) {
             </FileInfo>
 
             {/* Delete File Button */}
-            <DeleteFileDialog fileMeta={fileMeta} refetch={refetch}>
+            <DeleteFileDialog user={user} fileMeta={fileMeta} refetch={refetch}>
               <div>
                 <SimpleTooltip className="bg-destructive" content="Delete File">
                   <TrashIcon className="size-4 text-red-400 hover:opacity-80 cursor-pointer transition-all transform-gpu" />

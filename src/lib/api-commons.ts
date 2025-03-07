@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { UserType } from "./db/schemas/auth-schema";
 import { getApiUser } from "./helpers/user";
 

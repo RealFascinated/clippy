@@ -1,4 +1,3 @@
-import SimpleTooltip from "@/components/simple-tooltip";
 import {
   Dialog,
   DialogContent,
@@ -10,16 +9,21 @@ import { FileType } from "@/lib/db/schemas/file";
 import { getFileName } from "@/lib/utils/file";
 import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { formatBytes } from "@/lib/utils/utils";
-import { InformationCircleIcon } from "@heroicons/react/16/solid";
 import { format } from "date-fns";
 import { ReactNode } from "react";
 
-export default function FileInfo({ fileMeta, children }: { fileMeta: FileType, children: ReactNode }) {
+type FileInfoDialogProps = {
+  fileMeta: FileType;
+  children: ReactNode;
+};
+
+export default function FileInfoDialog({
+  fileMeta,
+  children,
+}: FileInfoDialogProps) {
   return (
     <Dialog>
-      <DialogTrigger>
-        {children}
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>File Information</DialogTitle>

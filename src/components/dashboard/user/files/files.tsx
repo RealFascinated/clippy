@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScreenSize, useIsScreenSize } from "@/hooks/use-mobile";
+import { UserType } from "@/lib/db/schemas/auth-schema";
 import { FileType } from "@/lib/db/schemas/file";
 import { Page } from "@/lib/pagination";
 import request from "@/lib/request";
@@ -42,7 +43,7 @@ const sortNames: {
   },
 ];
 
-export default function UserFiles() {
+export default function UserFiles({ user }: { user: UserType }) {
   const isMobile = useIsScreenSize(ScreenSize.Small);
   const [page, setPage] = useState<number>(1);
   const [sort, setSort] = useState<UserFilesSort>({
@@ -149,6 +150,7 @@ export default function UserFiles() {
               <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-2 items-center">
                 {files.items.map((fileMeta, index) => (
                   <UserFile
+                    user={user}
                     key={fileMeta.id}
                     fileMeta={fileMeta}
                     refetch={async () => {
