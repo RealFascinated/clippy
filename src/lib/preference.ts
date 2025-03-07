@@ -29,12 +29,12 @@ export async function getUserPreferences(
     async () => {
       return {
         ...defaultPreferences,
-        ...(
-          await db
-            .select()
-            .from(preferencesTable)
-            .where(eq(preferencesTable.userId, userId))
-        )?.[0],
+        // ...(
+        //   await db
+        //     .select()
+        //     .from(preferencesTable)
+        //     .where(eq(preferencesTable.userId, userId))
+        // )?.[0],
       };
     }
   );
