@@ -60,21 +60,30 @@ async function getFileMetadata(
     "Content-Type": mimeType,
   });
 
-  // Add specific headers based on file type
-  if (isVideo) {
-    headers.set("Accept-Ranges", "bytes");
-  } else if (isImage) {
-    headers.set("Cache-Control", "public, max-age=43200"); // 12 hours
-  }
-
-  // Download file, or is not image and is not video
-  if (download || (!isVideo && !isImage)) {
+  // Download file
+  if (download) {
     headers.set(
       "Content-Disposition",
-      `inline; filename="${getFileName(fileMeta)}"`
+      `attachment; filename="${getFileName(fileMeta)}"`
     );
-    // Prevent caching for downloads
-    headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+    // Stream file
+  } else {
+    // Add specific headers based on file type
+    if (isVideo) {
+      headers.set("Accept-Ranges", "bytes");
+    } else if (isImage) {
+      headers.set("Cache-Control", "public, max-age=43200"); // 12 hours
+    }
+
+    // Download file, or is not image and is not video
+    if (!isVideo && !isImage) {
+      headers.set(
+        "Content-Disposition",
+        `inline; filename="${getFileName(fileMeta)}"`
+      );
+      // Prevent caching for downloads
+      headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+    }
   }
 
   return { fileMeta, user, isVideo, isImage, headers };
