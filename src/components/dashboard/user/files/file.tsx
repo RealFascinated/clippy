@@ -36,7 +36,6 @@ export type UserFileProps = {
 
 export default function UserFile({ fileMeta, refetch }: UserFileProps) {
   const url = `/${getFileName(fileMeta)}`;
-  const isMobile = useIsScreenSize(ScreenSize.Small);
   const hasThumbnail =
     fileMeta.mimeType.startsWith("video") ||
     fileMeta.mimeType.startsWith("image");
