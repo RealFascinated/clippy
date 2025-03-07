@@ -1,9 +1,9 @@
 import { UserType } from "./db/schemas/auth-schema";
 import { FileType } from "./db/schemas/file";
-import { formatBytes } from "./utils/utils";
 import { env } from "./env";
 import { dispatchWebhookEvent } from "./helpers/user";
 import { getFileName } from "./utils/file";
+import { formatBytes } from "./utils/utils";
 
 /**
  * Send a notification to the user when a file is uploaded.
@@ -97,6 +97,7 @@ async function sendResetUploadTokenNotification(user: UserType) {
     await dispatchWebhookEvent(user, {
       title: "Upload Token Reset",
       description: `The upload token for \`${user.name}\` has been reset.`,
+      color: 0xffaa00,
     });
   }
 }
