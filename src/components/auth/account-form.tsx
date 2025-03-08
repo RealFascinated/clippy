@@ -187,7 +187,7 @@ export default function AccountForm({ type }: AccountFormProps) {
                       setError(undefined);
                     }}
                   >
-                    Don't have an account? Register
+                    Don&apos;t have an account? Register
                   </Button>
                 </div>
               </form>
@@ -230,7 +230,7 @@ export default function AccountForm({ type }: AccountFormProps) {
                             type="text"
                             autoComplete="username"
                             {...field}
-                            onChange={event => {
+                            onChange={(event) => {
                               event.target.value =
                                 event.target.value.toLowerCase();
                               field.onChange(event);
