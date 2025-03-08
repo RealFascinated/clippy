@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "bun ./src/server.ts --watch",
+    "dev": "bun --bun ./src/server.ts",
     "build": "next build",
-    "start": "bun ./src/server.ts",
+    "start": "bun --bun ./src/server.ts",
     "cli": "bun ./cli/index.ts",
     "database:generate": "bunx drizzle-kit generate",
     "database:migrate": "bunx drizzle-kit migrate",
