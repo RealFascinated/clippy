@@ -22,6 +22,7 @@ export async function GET(
       key: searchParams.get("sortKey") ?? "createdAt",
       direction: searchParams.get("sortDirection") ?? "desc",
     } as UserFilesSort;
+    const search = searchParams.get("search") ?? "";
 
     // todo: validate the sort query
 
@@ -32,11 +33,12 @@ export async function GET(
 
     const paginatedPage = await pagination.getPage(
       Number(page),
-      async fetchItems => {
+      async (fetchItems) => {
         const files = await getUserFiles(user.id, {
           limit: ITEMS_PER_PAGE,
           offset: fetchItems.start,
           sort: sort,
+          search: search,
         });
 
         return files;

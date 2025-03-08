@@ -5,7 +5,7 @@ import request from "@/lib/request";
 import { DiscordEmbed } from "@/type/discord";
 import { UserFilesSort } from "@/type/user/user-file-sort";
 import { format } from "date-fns";
-import { AnyColumn, asc, count, desc, eq } from "drizzle-orm";
+import { AnyColumn, and, asc, count, desc, eq, like, or } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { authError } from "../api-commons";
@@ -84,9 +84,24 @@ export async function getUserFiles(
     sort?: UserFilesSort;
     limit?: number;
     offset?: number;
+    search?: string;
   }
 ) {
-  const query = db.select().from(fileTable).where(eq(fileTable.userId, id));
+  const query = db
+    .select()
+    .from(fileTable)
+    .where(
+      and(
+        eq(fileTable.userId, id),
+        options?.search
+          ? or(
+              like(fileTable.id, `%${options.search}%`),
+              like(fileTable.extension, `%${options.search}%`),
+              like(fileTable.mimeType, `%${options.search}%`)
+            )
+          : undefined
+      )
+    );
 
   if (options?.limit) {
     query.limit(options.limit);

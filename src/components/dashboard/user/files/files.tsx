@@ -21,9 +21,17 @@ import { FileKeys } from "@/type/file/file-keys";
 import { SortDirection } from "@/type/sort-direction";
 import { UserFilesSort } from "@/type/user/user-file-sort";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowDown01, ArrowDown10 } from "lucide-react";
+import {
+  ArrowDown01,
+  ArrowDown10,
+  ArrowDownWideNarrow,
+  ArrowUpNarrowWide,
+  X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import UserFile from "./file";
+import { Input } from "@/components/ui/input";
+import { useDebounce } from "@uidotdev/usehooks";
 
 const sortNames: {
   name: string;
@@ -46,10 +54,13 @@ const sortNames: {
 export default function UserFiles({ user }: { user: UserType }) {
   const isMobile = useIsScreenSize(ScreenSize.Small);
   const [page, setPage] = useState<number>(1);
+  const [search, setSearch] = useState<string>("");
   const [sort, setSort] = useState<UserFilesSort>({
     key: "createdAt",
     direction: "desc",
   });
+
+  const debouncedSearch = useDebounce(search, 500);
 
   useEffect(() => {
     setSort({
@@ -60,21 +71,26 @@ export default function UserFiles({ user }: { user: UserType }) {
     });
   }, []);
 
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch]);
+
   const {
     data: files,
     isLoading,
     isRefetching,
     refetch,
   } = useQuery<Page<FileType>>({
-    queryKey: ["userFiles", page, sort],
+    queryKey: ["userFiles", page, sort, debouncedSearch],
     queryFn: async () =>
       (await request.get<Page<FileType>>(`/api/user/files/${page}`, {
         searchParams: {
           sortKey: sort.key,
           sortDirection: sort.direction,
+          ...(debouncedSearch && { search: debouncedSearch }),
         },
       }))!,
-    placeholderData: data => data,
+    placeholderData: (data) => data,
   });
 
   return (
@@ -88,11 +104,29 @@ export default function UserFiles({ user }: { user: UserType }) {
         </div>
 
         {/* File Sorting */}
-        <div className="flex gap-2 mr-2 select-none">
+        <div className="flex gap-2 sm:mr-2 select-none">
+          {/* Search */}
+          <div className="relative flex-1 w-full">
+            <Input
+              placeholder="Query..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pr-8"
+            />
+            {search && (
+              <button
+                className="absolute right-0 top-0 h-full w-6.5 p-0"
+                onClick={() => setSearch("")}
+              >
+                <X className="size-4" />
+              </button>
+            )}
+          </div>
+
           {/* Sort By */}
           <Select
             value={sort.key}
-            onValueChange={value => {
+            onValueChange={(value) => {
               setSort({
                 ...sort,
                 key: value as FileKeys,
@@ -100,7 +134,7 @@ export default function UserFiles({ user }: { user: UserType }) {
               localStorage.setItem("sortKey", value);
             }}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[140px]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -114,6 +148,7 @@ export default function UserFiles({ user }: { user: UserType }) {
               </SelectGroup>
             </SelectContent>
           </Select>
+
           {/* Sort Direction */}
           <Button
             variant="outline"
@@ -128,9 +163,9 @@ export default function UserFiles({ user }: { user: UserType }) {
             }}
           >
             {sort.direction == "asc" ? (
-              <ArrowDown01 className="size-5" />
+              <ArrowUpNarrowWide className="size-5" />
             ) : (
-              <ArrowDown10 className="size-5" />
+              <ArrowDownWideNarrow className="size-5" />
             )}
           </Button>
         </div>
@@ -172,7 +207,7 @@ export default function UserFiles({ user }: { user: UserType }) {
             totalItems={files.metadata.totalItems}
             itemsPerPage={files.metadata.itemsPerPage}
             loadingPage={isLoading || isRefetching ? page : undefined}
-            onPageChange={newPage => setPage(newPage)}
+            onPageChange={(newPage) => setPage(newPage)}
           />
         </>
       )}
