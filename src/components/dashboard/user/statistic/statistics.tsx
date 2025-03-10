@@ -1,7 +1,8 @@
+import { UserMetricsType } from "@/lib/db/schemas/metrics";
 import { env } from "@/lib/env";
 import request from "@/lib/request";
+import { getValueFromKey } from "@/lib/utils/object";
 import { formatBytes } from "@/lib/utils/utils";
-import { UserStatisticsResponse } from "@/type/api/user/statistics-response";
 import { ClockIcon, EyeIcon, FileIcon, ServerIcon } from "lucide-react";
 import { headers } from "next/headers";
 import { ReactElement } from "react";
@@ -9,28 +10,28 @@ import UserStatistic from "./statistic";
 
 type Format = "number" | "bytes";
 type Statistic = {
-  key: keyof UserStatisticsResponse;
+  key: string;
   name: string;
   format: Format;
   icon: ReactElement;
-  tooltip?: (statistics: UserStatisticsResponse) => string | ReactElement;
+  tooltip?: (statistics: UserMetricsType) => string | ReactElement;
 };
 
 const statistics: Statistic[] = [
   {
-    key: "totalUploads",
+    key: "userMetrics.uploads",
     name: "Total Uploads",
     format: "number",
     icon: <FileIcon className="size-5" />,
   },
   {
-    key: "uploadsToday",
+    key: "userMetrics.dailyUploads",
     name: "Uploads Today",
     format: "number",
     icon: <ClockIcon className="size-5" />,
   },
   {
-    key: "storageUsed",
+    key: "storageMetrics.usedStorage",
     name: "Storage Used",
     format: "bytes",
     icon: <ServerIcon className="size-5" />,
@@ -39,12 +40,14 @@ const statistics: Statistic[] = [
         <div className="flex flex-col gap-2">
           <div className="flex flex-col">
             <span className="font-semibold">File Usage</span>
-            <span>{formatBytes(statistics.filesStorageUsed)}</span>
+            <span>{formatBytes(statistics.storageMetrics?.usedStorage!)}</span>
           </div>
 
           <div className="flex flex-col">
             <span className="font-semibold">Thumbnail Usage</span>
-            <span>{formatBytes(statistics.thumbnailStorageUsed)}</span>
+            <span>
+              {formatBytes(statistics.storageMetrics?.thumbnailStorage!)}
+            </span>
           </div>
         </div>
       );
@@ -59,7 +62,7 @@ const statistics: Statistic[] = [
 ];
 
 export default async function UserStatistics() {
-  const statisticsResponse = await request.get<UserStatisticsResponse>(
+  const statisticsResponse = await request.get<UserMetricsType>(
     `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/statistics`,
     {
       headers: {
@@ -75,7 +78,8 @@ export default async function UserStatistics() {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full justify-between gap-4 items-center select-none">
       {statistics.map((statistic, index) => {
-        const value = statisticsResponse?.[statistic.key];
+        const value = getValueFromKey(statisticsResponse, statistic.key);
+
         return (
           <UserStatistic
             key={index}

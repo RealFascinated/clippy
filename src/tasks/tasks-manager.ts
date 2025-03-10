@@ -1,11 +1,14 @@
 import Logger from "@/lib/logger";
 import cron from "node-cron";
+import UserMetricsTask from "./impl/user-metrics-task";
 import Task from "./task";
 
 export default class TasksManager {
   tasks: Task[] = [];
 
   constructor() {
+    this.registerTask(new UserMetricsTask());
+
     this.tasks.forEach(task => {
       cron.schedule(
         task.cron,
