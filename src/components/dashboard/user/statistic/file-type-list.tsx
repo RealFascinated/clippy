@@ -1,4 +1,5 @@
 import { MimetypeDistribution } from "@/type/api/user/mimetype-distrubution";
+import Link from "next/link";
 
 type FileTypeListProps = {
   mimetypeDistribution: MimetypeDistribution;
@@ -12,13 +13,12 @@ export default function FileTypeList({
       <span className="font-semibold">File Types</span>
       <ul className="grid grid-cols-1">
         {Object.entries(mimetypeDistribution).map(([key, value]) => (
-          <li
-            key={key}
-            className="flex justify-between items-center px-1 py-1 rounded-sm hover:bg-muted/50"
-          >
-            <span className="font-medium">{key}</span>
-            <span className="text-muted-foreground">{value}</span>
-          </li>
+          <Link href={`/dashboard/files?search=${key}`} key={key}>
+            <li className="flex justify-between items-center px-1 py-1 rounded-sm hover:bg-muted/50">
+              <span className="font-medium">{key}</span>
+              <span className="text-muted-foreground">{value}</span>
+            </li>
+          </Link>
         ))}
       </ul>
     </div>
