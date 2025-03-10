@@ -14,11 +14,15 @@ import {
   LineElement,
   PointElement,
   Tooltip,
+  LineController,
+  BarController,
 } from "chart.js";
 import { format } from "date-fns";
 import { Chart } from "react-chartjs-2";
 
 ChartJS.register(
+  LineController,
+  BarController,
   LineElement,
   PointElement,
   LinearScale,
