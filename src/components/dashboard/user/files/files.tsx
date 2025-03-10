@@ -75,7 +75,7 @@ export default function UserFiles({
 
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, sort]);
 
   const {
     data: files,
