@@ -15,6 +15,7 @@ export const fileTable = pgTable("file", {
   mimeType: text("mime_type").notNull(),
   originalName: text("original_name"),
   createdAt: timestamp("created_at").notNull(),
+  favorited: boolean("favorited").default(false),
   userId: text("user_id")
     .notNull()
     .references(() => users.id),

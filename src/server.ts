@@ -1,13 +1,12 @@
 import express, { Request, Response } from "express";
-import { createServer } from "http";
 import next from "next";
 import { parse } from "url";
+import nextConfig from "../next.config";
 import { env } from "./lib/env";
 import Logger from "./lib/logger";
 import { isProduction } from "./lib/utils/utils";
 import { thumbnailQueue } from "./queue/queues";
 import TasksManager from "./tasks/tasks-manager";
-import nextConfig from "../next.config";
 
 const port = parseInt(process.env.PORT || "3000", 10);
 const dev = env.NEXT_PUBLIC_APP_ENV !== "production";

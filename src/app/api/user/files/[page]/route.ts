@@ -1,5 +1,9 @@
 import { handleApiRequestWithUser } from "@/lib/api-commons";
-import { getUserFiles, getUserFilesCount } from "@/lib/helpers/user";
+import {
+  getUserFiles,
+  getUserFilesCount,
+  UserFilesOptions,
+} from "@/lib/helpers/user";
 import { Pagination } from "@/lib/pagination";
 import { UserFilesSort } from "@/type/user/user-file-sort";
 import { NextRequest, NextResponse } from "next/server";
@@ -23,22 +27,28 @@ export async function GET(
       direction: searchParams.get("sortDirection") ?? "desc",
     } as UserFilesSort;
     const search = searchParams.get("search") ?? "";
+    const favorited = (searchParams.get("favorited") ?? "false") === "true";
 
     // todo: validate the sort query
 
-    const totalFiles = await getUserFilesCount(user.id);
+    const options: UserFilesOptions = {
+      limit: ITEMS_PER_PAGE,
+      sort: sort,
+      search: search,
+      favorited: favorited,
+    };
+
+    const totalFiles = await getUserFilesCount(user.id, options);
     const pagination = new Pagination();
     pagination.setItemsPerPage(ITEMS_PER_PAGE);
     pagination.setTotalItems(totalFiles);
 
     const paginatedPage = await pagination.getPage(
       Number(page),
-      async (fetchItems) => {
+      async fetchItems => {
         const files = await getUserFiles(user.id, {
-          limit: ITEMS_PER_PAGE,
+          ...options,
           offset: fetchItems.start,
-          sort: sort,
-          search: search,
         });
 
         return files;

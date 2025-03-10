@@ -43,6 +43,13 @@
       "when": 1741357506784,
       "tag": "0005_exotic_gamora",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1741617489218,
+      "tag": "0006_quick_ogun",
+      "breakpoints": true
     }
   ]
 }

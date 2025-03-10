@@ -5,7 +5,7 @@ import request from "@/lib/request";
 import { DiscordEmbed } from "@/type/discord";
 import { UserFilesSort } from "@/type/user/user-file-sort";
 import { format } from "date-fns";
-import { AnyColumn, and, asc, count, desc, eq, like, or } from "drizzle-orm";
+import { and, AnyColumn, asc, count, desc, eq, like, or } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { authError } from "../api-commons";
@@ -14,6 +14,14 @@ import { db } from "../db/drizzle";
 import { fileTable } from "../db/schemas/file";
 import { thumbnailTable } from "../db/schemas/thumbnail";
 import { randomString } from "../utils/utils";
+
+export type UserFilesOptions = {
+  sort?: UserFilesSort;
+  limit?: number;
+  offset?: number;
+  search?: string;
+  favorited?: boolean;
+};
 
 /**
  * Gets a user by their upload token
@@ -78,21 +86,16 @@ export async function getUserByName(
  * @param options the options to fetch the files with
  * @returns the files for the user.
  */
-export async function getUserFiles(
-  id: string,
-  options?: {
-    sort?: UserFilesSort;
-    limit?: number;
-    offset?: number;
-    search?: string;
-  }
-) {
+export async function getUserFiles(id: string, options?: UserFilesOptions) {
   const query = db
     .select()
     .from(fileTable)
     .where(
       and(
         eq(fileTable.userId, id),
+        options?.favorited
+          ? eq(fileTable.favorited, options.favorited)
+          : undefined,
         options?.search
           ? or(
               like(fileTable.id, `%${options.search}%`),
@@ -147,11 +150,28 @@ export async function getUserThumbnails(id: string) {
  * @param id the id of the user
  * @returns the amount of files uploaded
  */
-export async function getUserFilesCount(id: string) {
+export async function getUserFilesCount(
+  id: string,
+  options?: UserFilesOptions
+) {
   const query = await db
     .select({ count: count() })
     .from(fileTable)
-    .where(eq(fileTable.userId, id));
+    .where(
+      and(
+        eq(fileTable.userId, id),
+        options?.favorited
+          ? eq(fileTable.favorited, options.favorited)
+          : undefined,
+        options?.search
+          ? or(
+              like(fileTable.id, `%${options.search}%`),
+              like(fileTable.extension, `%${options.search}%`),
+              like(fileTable.mimeType, `%${options.search}%`)
+            )
+          : undefined
+      )
+    );
   return query[0].count ?? undefined;
 }
 

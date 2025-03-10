@@ -1,8 +1,6 @@
 "use client";
 
-import DeleteFileDialog from "@/components/dashboard/user/files/delete-file-dialog";
 import FileContextMenu from "@/components/dashboard/user/files/file-context-menu";
-import FileInfo from "@/components/dashboard/user/files/file-info-dialog";
 import FileExtensionIcon from "@/components/file-icon";
 import FileVideoPlayer from "@/components/file/video-player";
 import SimpleTooltip from "@/components/simple-tooltip";
@@ -16,13 +14,11 @@ import {
 import Loader from "@/components/ui/loader";
 import { UserType } from "@/lib/db/schemas/auth-schema";
 import { FileType } from "@/lib/db/schemas/file";
-import { copyFileUrl } from "@/lib/file";
 import { getFileName } from "@/lib/utils/file";
 import { formatNumberWithCommas } from "@/lib/utils/number-utils";
-import { formatBytes } from "@/lib/utils/utils";
-import { InformationCircleIcon } from "@heroicons/react/24/solid";
+import { cn, formatBytes } from "@/lib/utils/utils";
 import { format, formatDistance } from "date-fns";
-import { DownloadIcon, LinkIcon, PlayIcon, TrashIcon } from "lucide-react";
+import { HeartIcon, PlayIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -47,6 +43,19 @@ export default function UserFile({ user, fileMeta, refetch }: UserFileProps) {
     difference > 86400000 // 24 hours in milliseconds
       ? format(uploadedDate, "MM/dd/yyyy HH:mm a")
       : formatDistance(uploadedDate, currentDate) + " ago";
+
+  async function favoriteFile() {
+    const response = await fetch(
+      `/api/user/file/favorite/${getFileName(fileMeta)}`,
+      {
+        method: fileMeta.favorited ? "DELETE" : "POST",
+      }
+    );
+
+    if (response.ok) {
+      refetch();
+    }
+  }
 
   return (
     <FileContextMenu user={user} fileMeta={fileMeta} refetch={refetch}>
@@ -87,48 +96,28 @@ export default function UserFile({ user, fileMeta, refetch }: UserFileProps) {
 
         {/* Stats */}
         <div className="flex gap-2 items-center justify-between w-full px-1.5 bg-zinc-800/65 py-1 rounded-bl-md rounded-br-md">
-          <div className="flex flex-col 2xl:flex-row 2xl:divide-x-2 2xl:divide-card">
+          <div className="flex flex-row divide-x-2 divide-card">
             <span className="text-sm text-muted-foreground pr-2">
               {formatBytes(fileMeta.size)}
             </span>
-            <span className="text-sm text-muted-foreground 2xl:pl-2">
+            <span className="text-sm text-muted-foreground pl-2">
               {formatNumberWithCommas(fileMeta.views)} View
               {fileMeta.views == 1 ? "" : "s"}
             </span>
           </div>
 
-          {/* Buttons */}
-          <div className="lg:hidden flex gap-2 items-center">
-            <SimpleTooltip content="Copy URL">
-              <button
-                className="cursor-pointer"
-                onClick={() => copyFileUrl(fileMeta)}
-              >
-                <LinkIcon className="size-4.5 hover:opacity-80 transition-all transform-gpu" />
-              </button>
-            </SimpleTooltip>
-
-            {/* Download File */}
-            <SimpleTooltip content="Download File">
-              <Link href={url} prefetch={false} draggable={false}>
-                <DownloadIcon className="size-4.5 hover:opacity-80 transition-all transform-gpu" />
-              </Link>
-            </SimpleTooltip>
-
-            <FileInfo fileMeta={fileMeta}>
-              <SimpleTooltip content="File Info">
-                <InformationCircleIcon className="size-4.5 cursor-pointer hover:opacity-80 transition-all transform-gpu" />
-              </SimpleTooltip>
-            </FileInfo>
-
-            {/* Delete File Button */}
-            <DeleteFileDialog user={user} fileMeta={fileMeta} refetch={refetch}>
-              <div>
-                <SimpleTooltip className="bg-destructive" content="Delete File">
-                  <TrashIcon className="size-4 text-red-400 hover:opacity-80 cursor-pointer transition-all transform-gpu" />
-                </SimpleTooltip>
-              </div>
-            </DeleteFileDialog>
+          <div className="flex items-center gap-2">
+            <button
+              className="text-sm text-muted-foreground"
+              onClick={favoriteFile}
+            >
+              <HeartIcon
+                className={cn(
+                  fileMeta.favorited ? "text-red-500" : "text-muted-foreground",
+                  "size-4"
+                )}
+              />
+            </button>
           </div>
         </div>
       </div>

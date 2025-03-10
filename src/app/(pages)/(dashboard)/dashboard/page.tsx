@@ -1,4 +1,3 @@
-import UserFiles from "@/components/dashboard/user/files/files";
 import UserStatistics from "@/components/dashboard/user/statistic/statistics";
 import WelcomeBanner from "@/components/dashboard/user/welcome-banner";
 import { getUser } from "@/lib/helpers/user";
@@ -15,7 +14,8 @@ export default async function DashboardPage() {
       <WelcomeBanner username={user.name} />
 
       <UserStatistics />
-      <UserFiles user={user} />
+
+      <span className="text-muted-foreground">Graphs will go here</span>
     </div>
   );
 }

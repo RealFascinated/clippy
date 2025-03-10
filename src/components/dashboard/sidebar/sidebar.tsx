@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils/utils";
 import { SiGithub } from "@icons-pack/react-simple-icons";
-import { Cog, Home, NotebookText } from "lucide-react";
+import { Cog, File, Heart, Home, NotebookText } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactElement } from "react";
@@ -38,6 +38,21 @@ const groups: Group[] = [
         title: "Home",
         url: "/dashboard",
         icon: <Home />,
+      },
+    ],
+  },
+  {
+    title: "Files",
+    items: [
+      {
+        title: "Files",
+        url: "/dashboard/files",
+        icon: <File />,
+      },
+      {
+        title: "Favorited Files",
+        url: "/dashboard/files/favorited",
+        icon: <Heart />,
       },
     ],
   },

@@ -2,6 +2,7 @@
 
 import Pagination from "@/components/pagination";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import Loader from "@/components/ui/loader";
 import {
   Select,
@@ -21,17 +22,10 @@ import { FileKeys } from "@/type/file/file-keys";
 import { SortDirection } from "@/type/sort-direction";
 import { UserFilesSort } from "@/type/user/user-file-sort";
 import { useQuery } from "@tanstack/react-query";
-import {
-  ArrowDown01,
-  ArrowDown10,
-  ArrowDownWideNarrow,
-  ArrowUpNarrowWide,
-  X,
-} from "lucide-react";
+import { useDebounce } from "@uidotdev/usehooks";
+import { ArrowDownWideNarrow, ArrowUpNarrowWide, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import UserFile from "./file";
-import { Input } from "@/components/ui/input";
-import { useDebounce } from "@uidotdev/usehooks";
 
 const sortNames: {
   name: string;
@@ -51,7 +45,13 @@ const sortNames: {
   },
 ];
 
-export default function UserFiles({ user }: { user: UserType }) {
+export default function UserFiles({
+  user,
+  favoritedOnly,
+}: {
+  user: UserType;
+  favoritedOnly?: boolean;
+}) {
   const isMobile = useIsScreenSize(ScreenSize.Small);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>("");
@@ -81,16 +81,17 @@ export default function UserFiles({ user }: { user: UserType }) {
     isRefetching,
     refetch,
   } = useQuery<Page<FileType>>({
-    queryKey: ["userFiles", page, sort, debouncedSearch],
+    queryKey: ["userFiles", page, sort, debouncedSearch, favoritedOnly],
     queryFn: async () =>
       (await request.get<Page<FileType>>(`/api/user/files/${page}`, {
         searchParams: {
           sortKey: sort.key,
           sortDirection: sort.direction,
           ...(debouncedSearch && { search: debouncedSearch }),
+          ...(favoritedOnly && { favorited: "true" }),
         },
       }))!,
-    placeholderData: (data) => data,
+    placeholderData: data => data,
   });
 
   return (
@@ -110,7 +111,7 @@ export default function UserFiles({ user }: { user: UserType }) {
             <Input
               placeholder="Query..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={e => setSearch(e.target.value)}
               className="pr-8"
             />
             {search && (
@@ -126,7 +127,7 @@ export default function UserFiles({ user }: { user: UserType }) {
           {/* Sort By */}
           <Select
             value={sort.key}
-            onValueChange={(value) => {
+            onValueChange={value => {
               setSort({
                 ...sort,
                 key: value as FileKeys,
@@ -197,7 +198,9 @@ export default function UserFiles({ user }: { user: UserType }) {
             </>
           ) : (
             <span className="text-red-400">
-              No files found, or unknown page
+              {favoritedOnly
+                ? "No favorited files found"
+                : "No files found, or unknown page"}
             </span>
           )}
 
@@ -207,7 +210,7 @@ export default function UserFiles({ user }: { user: UserType }) {
             totalItems={files.metadata.totalItems}
             itemsPerPage={files.metadata.itemsPerPage}
             loadingPage={isLoading || isRefetching ? page : undefined}
-            onPageChange={(newPage) => setPage(newPage)}
+            onPageChange={newPage => setPage(newPage)}
           />
         </>
       )}

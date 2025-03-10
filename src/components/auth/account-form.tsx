@@ -230,7 +230,7 @@ export default function AccountForm({ type }: AccountFormProps) {
                             type="text"
                             autoComplete="username"
                             {...field}
-                            onChange={(event) => {
+                            onChange={event => {
                               event.target.value =
                                 event.target.value.toLowerCase();
                               field.onChange(event);
