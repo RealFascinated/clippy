@@ -107,17 +107,23 @@ export default function UserFile({ user, fileMeta, refetch }: UserFileProps) {
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              className="text-sm text-muted-foreground"
-              onClick={favoriteFile}
+            <SimpleTooltip
+              content={fileMeta.favorited ? "Unfavorite" : "Favorite"}
             >
-              <HeartIcon
-                className={cn(
-                  fileMeta.favorited ? "text-red-500" : "text-muted-foreground",
-                  "size-4"
-                )}
-              />
-            </button>
+              <button
+                className="text-sm text-muted-foreground cursor-pointer"
+                onClick={favoriteFile}
+              >
+                <HeartIcon
+                  className={cn(
+                    fileMeta.favorited
+                      ? "text-red-400 hover:text-muted-foreground"
+                      : "text-muted-foreground hover:text-red-400",
+                    "size-4 transition-all transform-gpu"
+                  )}
+                />
+              </button>
+            </SimpleTooltip>
           </div>
         </div>
       </div>
