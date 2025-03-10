@@ -60,7 +60,7 @@ const statistics: Statistic[] = [
     },
   },
   {
-    key: "totalViews",
+    key: "fileMetrics.views",
     name: "Total Views",
     format: "number",
     icon: <EyeIcon className="size-5" />,
