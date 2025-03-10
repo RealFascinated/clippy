@@ -13,7 +13,11 @@ export default function FileTypeList({
       <span className="font-semibold">File Types</span>
       <ul className="grid grid-cols-1">
         {Object.entries(mimetypeDistribution).map(([key, value]) => (
-          <Link href={`/dashboard/files?search=${key}`} key={key}>
+          <Link
+            href={`/dashboard/files?search=${key}`}
+            key={key}
+            prefetch={false}
+          >
             <li className="flex justify-between items-center px-1 py-1 rounded-sm hover:bg-muted/50">
               <span className="font-medium">{key}</span>
               <span className="text-muted-foreground">{value}</span>
