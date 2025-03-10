@@ -94,6 +94,7 @@ export async function uploadFile(
     createdAt: createdAt ? createdAt : new Date(),
     userId: user.id,
     hasThumbnail: false,
+    favorited: false,
   };
 
   const result = await storage.saveFile(
