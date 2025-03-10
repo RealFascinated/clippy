@@ -3,6 +3,7 @@ import request from "@/lib/request";
 import { UserGraphResponse } from "@/type/api/user/graph-response";
 import { headers } from "next/headers";
 import StatisticHistoryGraph from "./statistic-history-graph";
+import UserFileTypeDistribution from "./file-type-distribution";
 
 export default async function UserGraphs() {
   const response = await request.get<UserGraphResponse>(
@@ -18,8 +19,9 @@ export default async function UserGraphs() {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full flex flex-col gap-4">
       <StatisticHistoryGraph userGraphData={response} />
+      <UserFileTypeDistribution userGraphData={response} />
     </div>
   );
 }

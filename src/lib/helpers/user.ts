@@ -5,7 +5,17 @@ import request from "@/lib/request";
 import { DiscordEmbed } from "@/type/discord";
 import { UserFilesSort } from "@/type/user/user-file-sort";
 import { format } from "date-fns";
-import { and, AnyColumn, asc, count, desc, eq, like, or } from "drizzle-orm";
+import {
+  and,
+  AnyColumn,
+  asc,
+  count,
+  desc,
+  eq,
+  gte,
+  like,
+  or,
+} from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { authError } from "../api-commons";
@@ -14,6 +24,9 @@ import { db } from "../db/drizzle";
 import { fileTable } from "../db/schemas/file";
 import { thumbnailTable } from "../db/schemas/thumbnail";
 import { randomString } from "../utils/utils";
+import { getUserMetrics } from "./metrics";
+import { metricsTable } from "../db/schemas/metrics";
+import { MimetypeDistributionResponse } from "@/type/api/user/mimetype-distrubution";
 
 export type UserFilesOptions = {
   sort?: UserFilesSort;
@@ -128,6 +141,72 @@ export async function getUserFiles(id: string, options?: UserFilesOptions) {
   }
 
   return await query;
+}
+
+/**
+ * Gets the statistic history for a user
+ *
+ * @param id the id of the user
+ * @returns the statistic history
+ */
+export async function getStatisticHistory(id: string) {
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 60);
+  const formattedDate = thirtyDaysAgo.toISOString().split("T")[0];
+
+  const metrics = await db
+    .select({
+      date: metricsTable.date,
+      storageMetrics: metricsTable.storageMetrics,
+      fileMetrics: metricsTable.fileMetrics,
+      userMetrics: metricsTable.userMetrics,
+    })
+    .from(metricsTable)
+    .where(
+      and(eq(metricsTable.userId, id), gte(metricsTable.date, formattedDate))
+    );
+
+  const statisticHistory = metrics.reduce(
+    (acc, curr) => {
+      acc[curr.date as string] = curr;
+      return acc;
+    },
+    {} as Record<string, (typeof metrics)[number]>
+  );
+
+  // Add today's metrics to the statistic history
+  statisticHistory[format(new Date(), "yyyy-MM-dd")] = {
+    ...(await getUserMetrics(id)),
+    date: format(new Date(), "yyyy-MM-dd"),
+  };
+
+  return statisticHistory;
+}
+
+/**
+ * Gets the mimetype distribution for a user
+ *
+ * @param id the id of the user
+ * @returns the mimetype distribution
+ */
+export async function getMimetypeDistribution(
+  id: string
+): Promise<MimetypeDistributionResponse> {
+  const files = await db
+    .select()
+    .from(fileTable)
+    .where(eq(fileTable.userId, id));
+  const mimetypeDistribution = files.reduce((acc, curr) => {
+    acc[curr.mimeType as string] = (acc[curr.mimeType as string] || 0) + 1;
+    return acc;
+  }, {} as MimetypeDistributionResponse);
+
+  // get the top 10 mimetypes
+  const top10 = Object.entries(mimetypeDistribution)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10);
+
+  return Object.fromEntries(top10);
 }
 
 /**
