@@ -14,7 +14,7 @@ type Statistic = {
   name: string;
   format: Format;
   icon: ReactElement;
-  tooltip?: (statistics: UserMetricsType) => string | ReactElement;
+  tooltip?: (statistics: UserMetricsType) => string | ReactElement | undefined;
 };
 
 const statistics: Statistic[] = [
@@ -35,18 +35,22 @@ const statistics: Statistic[] = [
     name: "Storage Used",
     format: "bytes",
     icon: <ServerIcon className="size-5" />,
-    tooltip: statistics => {
+    tooltip: (statistics) => {
+      if (!statistics.storageMetrics) {
+        return undefined;
+      }
+
       return (
         <div className="flex flex-col gap-2">
           <div className="flex flex-col">
             <span className="font-semibold">File Usage</span>
-            <span>{formatBytes(statistics.storageMetrics?.usedStorage!)}</span>
+            <span>{formatBytes(statistics.storageMetrics?.usedStorage)}</span>
           </div>
 
           <div className="flex flex-col">
             <span className="font-semibold">Thumbnail Usage</span>
             <span>
-              {formatBytes(statistics.storageMetrics?.thumbnailStorage!)}
+              {formatBytes(statistics.storageMetrics?.thumbnailStorage)}
             </span>
           </div>
         </div>
@@ -87,7 +91,11 @@ export default async function UserStatistics() {
             icon={statistic.icon}
             format={statistic.format}
             value={value}
-            tooltip={statistic.tooltip && statistic.tooltip(statisticsResponse)}
+            tooltip={
+              statistic.tooltip
+                ? statistic.tooltip(statisticsResponse)
+                : undefined
+            }
           />
         );
       })}

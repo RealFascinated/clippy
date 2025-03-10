@@ -83,7 +83,7 @@ const options: ChartOptions<ChartTypes> = {
     tooltip: {
       callbacks: {
         label: function (context) {
-          let label = context.dataset.label || "";
+          const label = context.dataset.label || "";
           if (label === "Storage Used") {
             return `${label}: ${formatBytes(context.parsed.y)}`;
           }
