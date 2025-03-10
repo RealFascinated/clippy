@@ -2,7 +2,7 @@
 
 import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { formatBytes } from "@/lib/utils/utils";
-import { UserGraphResponse } from "@/type/api/user/graph-response";
+import { UserStatisticsResponse } from "@/type/api/user/graph-response";
 import {
   BarElement,
   CategoryScale,
@@ -122,7 +122,7 @@ const colors = {
 };
 
 type StatisticHistoryGraphProps = {
-  userGraphData: UserGraphResponse;
+  userGraphData: UserStatisticsResponse;
 };
 
 export default function StatisticHistoryGraph({

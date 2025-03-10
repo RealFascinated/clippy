@@ -1,7 +1,7 @@
 import { UserMetricsType } from "@/lib/db/schemas/metrics";
-import { MimetypeDistributionResponse } from "./mimetype-distrubution";
+import { MimetypeDistribution } from "./mimetype-distrubution";
 
-export type UserGraphResponse = {
+export type UserStatisticsResponse = {
   statisticHistory: Record<string, UserMetricsType>;
-  mimetypeDistribution: MimetypeDistributionResponse;
+  mimetypeDistribution: MimetypeDistribution;
 };

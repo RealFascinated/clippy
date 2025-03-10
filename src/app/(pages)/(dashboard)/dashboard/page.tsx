@@ -1,5 +1,4 @@
-import UserGraphs from "@/components/dashboard/user/graphs/graphs";
-import UserStatistics from "@/components/dashboard/user/statistic/statistics";
+import UserStatistics from "@/components/dashboard/user/statistic/user-statistics";
 import WelcomeBanner from "@/components/dashboard/user/welcome-banner";
 import { getUser } from "@/lib/helpers/user";
 import { Metadata } from "next";
@@ -15,7 +14,6 @@ export default async function DashboardPage() {
       <WelcomeBanner username={user.name} />
 
       <UserStatistics />
-      <UserGraphs />
     </div>
   );
 }

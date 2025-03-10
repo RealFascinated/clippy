@@ -1,3 +1,3 @@
-export type MimetypeDistributionResponse = {
+export type MimetypeDistribution = {
   [key: string]: number;
 };

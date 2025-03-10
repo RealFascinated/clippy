@@ -7,6 +7,8 @@ import { ClockIcon, EyeIcon, FileIcon, ServerIcon } from "lucide-react";
 import { headers } from "next/headers";
 import { ReactElement } from "react";
 import UserStatistic from "./statistic";
+import { UserStatisticsResponse } from "@/type/api/user/graph-response";
+import { format } from "date-fns";
 
 type Format = "number" | "bytes";
 type Statistic = {
@@ -65,24 +67,18 @@ const statistics: Statistic[] = [
   },
 ];
 
-export default async function UserStatistics() {
-  const statisticsResponse = await request.get<UserMetricsType>(
-    `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/statistics`,
-    {
-      headers: {
-        cookie: (await headers()).get("cookie"),
-      },
-    }
-  );
+type StatisticsProps = {
+  statisticsResponse: UserStatisticsResponse;
+};
 
-  if (!statisticsResponse) {
-    return null;
-  }
+export default function Statistics({ statisticsResponse }: StatisticsProps) {
+  const statisticsToday =
+    statisticsResponse.statisticHistory[format(new Date(), "yyyy-MM-dd")];
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full justify-between gap-4 items-center select-none">
       {statistics.map((statistic, index) => {
-        const value = getValueFromKey(statisticsResponse, statistic.key);
+        const value = getValueFromKey(statisticsToday, statistic.key);
 
         return (
           <UserStatistic
@@ -92,9 +88,7 @@ export default async function UserStatistics() {
             format={statistic.format}
             value={value}
             tooltip={
-              statistic.tooltip
-                ? statistic.tooltip(statisticsResponse)
-                : undefined
+              statistic.tooltip ? statistic.tooltip(statisticsToday) : undefined
             }
           />
         );

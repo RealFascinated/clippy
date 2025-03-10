@@ -26,7 +26,7 @@ import { thumbnailTable } from "../db/schemas/thumbnail";
 import { randomString } from "../utils/utils";
 import { getUserMetrics } from "./metrics";
 import { metricsTable } from "../db/schemas/metrics";
-import { MimetypeDistributionResponse } from "@/type/api/user/mimetype-distrubution";
+import { MimetypeDistribution } from "@/type/api/user/mimetype-distrubution";
 
 export type UserFilesOptions = {
   sort?: UserFilesSort;
@@ -191,7 +191,7 @@ export async function getStatisticHistory(id: string) {
  */
 export async function getMimetypeDistribution(
   id: string
-): Promise<MimetypeDistributionResponse> {
+): Promise<MimetypeDistribution> {
   const files = await db
     .select()
     .from(fileTable)
@@ -199,14 +199,16 @@ export async function getMimetypeDistribution(
   const mimetypeDistribution = files.reduce((acc, curr) => {
     acc[curr.mimeType as string] = (acc[curr.mimeType as string] || 0) + 1;
     return acc;
-  }, {} as MimetypeDistributionResponse);
+  }, {} as MimetypeDistribution);
 
-  // get the top 10 mimetypes
-  const top10 = Object.entries(mimetypeDistribution)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 10);
+  // sort the mimetype distribution by the amount of files
+  const sortedMimetypeDistribution = Object.entries(mimetypeDistribution).sort(
+    (a, b) => b[1] - a[1]
+  );
 
-  return Object.fromEntries(top10);
+  // Convert the sorted entries back into an object
+  const result = Object.fromEntries(sortedMimetypeDistribution);
+  return result;
 }
 
 /**

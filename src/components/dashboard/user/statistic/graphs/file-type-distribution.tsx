@@ -1,16 +1,17 @@
 "use client";
 
 import { formatBytes } from "@/lib/utils/utils";
-import { UserGraphResponse } from "@/type/api/user/graph-response";
+import { UserStatisticsResponse } from "@/type/api/user/graph-response";
 import {
   ArcElement,
   ChartData,
   Chart as ChartJS,
   ChartOptions,
+  DoughnutController,
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 
-ChartJS.register(ArcElement);
+ChartJS.register(ArcElement, DoughnutController);
 
 type ChartTypes = "doughnut";
 
@@ -25,7 +26,7 @@ const options: ChartOptions<ChartTypes> = {
 };
 
 type UserFileTypeDistributionProps = {
-  userGraphData: UserGraphResponse;
+  userGraphData: UserStatisticsResponse;
 };
 
 // Function to generate a color from a string
@@ -41,7 +42,13 @@ function generateColor(str: string, border: boolean = false): string {
 export default function UserFileTypeDistribution({
   userGraphData,
 }: UserFileTypeDistributionProps) {
-  const mimeTypes = Object.keys(userGraphData.mimetypeDistribution);
+  const mimeTypeDistribution = Object.entries(
+    userGraphData.mimetypeDistribution
+  )
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10);
+
+  const mimeTypes = mimeTypeDistribution.map(([key]) => key);
   const backgroundColor = mimeTypes.map((type) => generateColor(type));
   const borderColor = mimeTypes.map((type) => generateColor(type, true));
 
@@ -51,7 +58,7 @@ export default function UserFileTypeDistribution({
       {
         type: "doughnut" as const,
         label: "Amount",
-        data: Object.values(userGraphData.mimetypeDistribution),
+        data: mimeTypeDistribution.map(([_, value]) => value),
         backgroundColor,
         borderColor,
       },
@@ -59,7 +66,7 @@ export default function UserFileTypeDistribution({
   };
 
   return (
-    <div className="h-[400px] w-[400px] p-2 bg-background/70 rounded-md border border-muted">
+    <div className="w-full h-[250px] md:h-[350px] md:w-[350px] p-2 bg-background/70 rounded-md border border-muted">
       <Chart
         type="doughnut"
         options={options}
