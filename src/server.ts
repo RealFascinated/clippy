@@ -7,6 +7,8 @@ import Logger from "./lib/logger";
 import { isProduction } from "./lib/utils/utils";
 import { thumbnailQueue } from "./queue/queues";
 import TasksManager from "./tasks/tasks-manager";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
+import { db } from "./lib/db/drizzle";
 
 const port = parseInt(process.env.PORT || "3000", 10);
 const dev = env.NEXT_PUBLIC_APP_ENV !== "production";
@@ -14,8 +16,13 @@ const dev = env.NEXT_PUBLIC_APP_ENV !== "production";
 const app = next({ dev, conf: nextConfig, turbopack: dev, port });
 const handle = app.getRequestHandler();
 
-app.prepare().then(() => {
+app.prepare().then(async () => {
   Logger.info("Starting server...");
+
+  // Run migrations
+  Logger.info("Running migrations...");
+  await migrate(db, { migrationsFolder: "drizzle" });
+  Logger.info("Migrations completed");
 
   const server = express();
 
