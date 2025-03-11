@@ -7,6 +7,7 @@ import Logger from "../logger";
 import { getFileExtension, getFileName } from "../utils/file";
 import { getFilePath } from "../utils/paths";
 import { formatBytes, randomString } from "../utils/utils";
+import { Readable } from "stream";
 
 /**
  * Gets the file from the database
@@ -55,20 +56,20 @@ export async function updateFile(id: string, values: Record<string, unknown>) {
 }
 
 /**
- * Uploads a file for a user
+ * Uploads a file for a user using a stream
  *
  * @param fileId the id of the file
  * @param fileName the raw file name
  * @param fileSize the size of the file
- * @param fileBuffer the buffer of the file
+ * @param fileStream the readable stream of the file
  * @param mimeType the mimetype of the file
  * @param user the user to upload the file to
  */
-export async function uploadFile(
+export async function uploadFileStream(
   fileId: string,
   fileName: string,
   fileSize: number,
-  fileBuffer: Buffer,
+  fileStream: Readable,
   mimeType: string,
   user: UserType,
   createdAt?: Date
@@ -99,7 +100,8 @@ export async function uploadFile(
 
   const result = await storage.saveFile(
     getFilePath(user.id, fileMeta),
-    fileBuffer
+    fileStream,
+    fileSize
   );
 
   if (!result) {
