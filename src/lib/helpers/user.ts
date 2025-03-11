@@ -18,7 +18,7 @@ import {
   like,
   or,
 } from "drizzle-orm";
-import { headers } from "next/headers";
+import { headers as nextHeaders } from "next/headers";
 import { redirect } from "next/navigation";
 import { authError } from "../api-commons";
 import { auth } from "../auth";
@@ -289,9 +289,15 @@ export function generateUploadToken() {
  *
  * @returns the current user's sessions
  */
-export async function getUserSession(): Promise<UserSessionResponse | null> {
+export async function getUserSession(
+  cookieHeader?: string
+): Promise<UserSessionResponse | null> {
+  const headers = cookieHeader
+    ? new Headers({ cookie: cookieHeader })
+    : await nextHeaders();
+
   const session = await auth.api.getSession({
-    headers: await headers(),
+    headers,
   });
   if (!session) return null;
   return {
@@ -306,8 +312,9 @@ export async function getUserSession(): Promise<UserSessionResponse | null> {
  *
  * @returns the current user
  */
-export async function getUser(): Promise<UserType> {
-  const session: UserSessionResponse | null = await getUserSession();
+export async function getUser(cookieHeader?: string): Promise<UserType> {
+  const session: UserSessionResponse | null =
+    await getUserSession(cookieHeader);
 
   // This shouldn't happen
   if (!session) {
@@ -324,8 +331,9 @@ export async function getUser(): Promise<UserType> {
  *
  * @returns the user
  */
-export async function getApiUser(): Promise<UserType> {
-  const session: UserSessionResponse | null = await getUserSession();
+export async function getApiUser(cookieHeader?: string): Promise<UserType> {
+  const session: UserSessionResponse | null =
+    await getUserSession(cookieHeader);
   if (!session) {
     throw authError;
   }
