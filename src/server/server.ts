@@ -14,9 +14,7 @@ Logger.info("Starting server...");
 
 // Run migrations
 runMigrations().then(async () => {
-  const server = Fastify({
-    logger: false, // We're using our own logger
-  });
+  const server = Fastify();
 
   // Register Next.js plugin
   await server.register(fastifyNext, {
