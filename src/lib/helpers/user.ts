@@ -176,16 +176,16 @@ export async function getStatisticHistory(id: string) {
 
   const statisticHistory = metrics.reduce(
     (acc, curr) => {
-      acc[curr.date as string] = curr;
+      const { date, ...rest } = curr;
+      acc[date as string] = rest;
       return acc;
     },
-    {} as Record<string, (typeof metrics)[number]>
+    {} as Record<string, Omit<(typeof metrics)[number], "date">>
   );
 
   // Add today's metrics to the statistic history
   statisticHistory[format(new Date(), "yyyy-MM-dd")] = {
     ...(await getUserMetrics(id)),
-    date: format(new Date(), "yyyy-MM-dd"),
   };
 
   return statisticHistory;
