@@ -1,9 +1,10 @@
+import { COMPRESS_PERCENTAGE_DEFAULT } from "@/app/api/upload/route";
 import { handleApiRequestWithUser } from "@/lib/api-commons";
 import { env } from "@/lib/env";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  return handleApiRequestWithUser(async user => {
+  return handleApiRequestWithUser(async (user) => {
     if (!user.uploadToken) {
       return NextResponse.json(
         {
@@ -19,10 +20,15 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         Name: `${env.NEXT_PUBLIC_WEBSITE_NAME}`,
         DestinationType: "ImageUploader, TextUploader, FileUploader",
         RequestMethod: "POST",
-        RequestURL: `${env.NEXT_PUBLIC_WEBSITE_URL}/api/upload/sharex`,
+        RequestURL: `${env.NEXT_PUBLIC_WEBSITE_URL}/api/upload`,
         Body: "MultipartFormData",
         Arguments: {
-          token: `${user.uploadToken}`,
+          "x-clippy-upload-token": `${user.uploadToken}`,
+          ...(env.COMPRESS_IMAGES
+            ? {
+                "x-clippy-compress-percentage": `${COMPRESS_PERCENTAGE_DEFAULT}`,
+              }
+            : {}),
         },
         FileFormName: "sharex",
         URL: "{json:url}/{json:path}",

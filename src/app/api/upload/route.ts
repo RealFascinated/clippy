@@ -14,6 +14,10 @@ import { ApiErrorResponse } from "@/type/api/responses";
 import { NextResponse } from "next/server";
 import Sharp from "sharp";
 
+const COMPRESS_PERCENTAGE_MIN = 50;
+const COMPRESS_PERCENTAGE_MAX = 100;
+export const COMPRESS_PERCENTAGE_DEFAULT = 90;
+
 interface FileData {
   name: string;
   type: string;
@@ -50,6 +54,39 @@ async function processFile(file: File): Promise<FileData> {
   };
 }
 
+function getOptions(formData: FormData): {
+  uploadToken: string;
+  compressPercentage: number;
+} {
+  const uploadToken: string | undefined = formData
+    .get("x-clippy-upload-token")
+    ?.toString();
+  if (!uploadToken) {
+    throw new Error("No upload token was provided");
+  }
+
+  const compressPercentageString: string | undefined = formData
+    .get("x-clippy-compress-percentage")
+    ?.toString();
+  let compressPercentage: number | undefined = compressPercentageString
+    ? parseInt(compressPercentageString)
+    : undefined;
+  if (!compressPercentage) {
+    // Default compression percentage
+    compressPercentage = COMPRESS_PERCENTAGE_DEFAULT;
+  }
+  if (
+    compressPercentage < COMPRESS_PERCENTAGE_MIN ||
+    compressPercentage > COMPRESS_PERCENTAGE_MAX
+  ) {
+    throw new Error(
+      `Invalid compress percentage: ${compressPercentage} (must be between ${COMPRESS_PERCENTAGE_MIN} and ${COMPRESS_PERCENTAGE_MAX})`
+    );
+  }
+
+  return { uploadToken, compressPercentage };
+}
+
 /**
  * Handles file uploads from ShareX
  * @param request The incoming request containing form data
@@ -59,13 +96,8 @@ export async function POST(
 ): Promise<NextResponse<SuccessResponse | ApiErrorResponse>> {
   try {
     const formData = await request.formData();
-    const uploadToken: string | undefined = formData.get("token")?.toString();
-    if (!uploadToken) {
-      return NextResponse.json(
-        { message: "No upload token was provided" },
-        { status: 401 }
-      );
-    }
+    const { uploadToken, compressPercentage } = getOptions(formData);
+
     const user = await getUserByUploadToken(uploadToken);
     if (!user) {
       return NextResponse.json(
@@ -75,8 +107,6 @@ export async function POST(
     }
 
     const files = formData.getAll("sharex");
-
-    // Validate if files exist
     if (!files.length) {
       return NextResponse.json(
         { message: "No files were uploaded" },
@@ -85,7 +115,7 @@ export async function POST(
     }
 
     // Validate file types
-    if (!files.every(file => file instanceof File)) {
+    if (!files.every((file) => file instanceof File)) {
       return NextResponse.json(
         { message: "Invalid file format" },
         { status: 400 }
@@ -121,7 +151,7 @@ export async function POST(
         const before = Date.now();
         // Compress image using streaming
         content = Buffer.from(
-          await Sharp(content).webp({ quality: 95 }).toBuffer()
+          await Sharp(content).webp({ quality: compressPercentage }).toBuffer()
         );
 
         // Check if the new file is larger
@@ -177,6 +207,7 @@ export async function POST(
     return NextResponse.json(
       {
         message:
+          (error as Error).message ??
           "Failed to upload your file, please contact an admin if this keeps occuring",
       },
       { status: 500 }
