@@ -27,10 +27,7 @@ FROM oven/bun:1.2.5-alpine
 WORKDIR /app
 
 # Install binutils for strip command and copy/strip ffmpeg
-RUN apk add --no-cache binutils
 COPY --from=mwader/static-ffmpeg:7.1 /ffmpeg /usr/local/bin/
-RUN strip /usr/local/bin/ffmpeg && \
-    apk del binutils
 
 # Copy only necessary build artifacts
 COPY --from=builder /app/node_modules ./node_modules
