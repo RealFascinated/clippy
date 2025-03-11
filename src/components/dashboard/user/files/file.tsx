@@ -95,11 +95,11 @@ export default function UserFile({ user, fileMeta, refetch }: UserFileProps) {
 
         {/* Stats */}
         <div className="flex gap-2 items-center justify-between w-full px-1.5 bg-zinc-800/65 py-1 rounded-bl-md rounded-br-md">
-          <div className="flex flex-row divide-x-2 divide-card">
-            <span className="text-sm text-muted-foreground pr-2">
+          <div className="flex flex-col xs:flex-row xs:divide-x-2 xs:divide-card">
+            <span className="text-sm text-muted-foreground xs:pr-2">
               {formatBytes(fileMeta.size)}
             </span>
-            <span className="text-sm text-muted-foreground pl-2">
+            <span className="text-sm text-muted-foreground xs:pl-2">
               {formatNumberWithCommas(fileMeta.views)} View
               {fileMeta.views == 1 ? "" : "s"}
             </span>
