@@ -22,10 +22,11 @@ import { FileKeys } from "@/type/file/file-keys";
 import { SortDirection } from "@/type/sort-direction";
 import { UserFilesSort } from "@/type/user/user-file-sort";
 import { useQuery } from "@tanstack/react-query";
-import { useDebounce } from "@uidotdev/usehooks";
+import { useDebounce, useIsFirstRender } from "@uidotdev/usehooks";
 import { ArrowDownWideNarrow, ArrowUpNarrowWide, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import UserFile from "./file";
+import usePageUrl from "@/hooks/use-page-url";
 
 const sortNames: {
   name: string;
@@ -49,13 +50,23 @@ export default function UserFiles({
   user,
   favoritedOnly,
   initialSearch,
+  initialPage,
 }: {
   user: UserType;
   favoritedOnly?: boolean;
   initialSearch?: string;
+  initialPage?: number;
 }) {
+  const initialRender = useIsFirstRender();
   const isMobile = useIsScreenSize(ScreenSize.Small);
-  const [page, setPage] = useState<number>(1);
+  const { changePageUrl } = usePageUrl();
+
+  const [page, setPage] = useState<number>(() => {
+    const parsedInitialPage = Number(initialPage);
+    return !isNaN(parsedInitialPage) && parsedInitialPage > 0
+      ? parsedInitialPage
+      : 1;
+  });
   const [search, setSearch] = useState<string>(initialSearch ?? "");
   const [sort, setSort] = useState<UserFilesSort>({
     key: "createdAt",
@@ -76,6 +87,19 @@ export default function UserFiles({
   useEffect(() => {
     setPage(1);
   }, [debouncedSearch, sort]);
+
+  useEffect(() => {
+    if (initialRender) {
+      return;
+    }
+
+    if (!isNaN(page) && page > 0) {
+      changePageUrl(`/dashboard/files`, {
+        ...(page !== 1 && { page: String(page) }),
+        ...(debouncedSearch && { search: debouncedSearch }),
+      });
+    }
+  }, [debouncedSearch, page]);
 
   const {
     data: files,

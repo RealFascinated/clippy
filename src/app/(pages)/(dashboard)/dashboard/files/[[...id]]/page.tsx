@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 type FilesPageProps = {
   params: Promise<{ id: string[] }>;
-  searchParams: Promise<{ search?: string }>;
+  searchParams: Promise<{ page: string; search?: string }>;
 };
 
 export default async function FilesPage({
@@ -18,7 +18,7 @@ export default async function FilesPage({
   const user = await getUser();
   const id = (await params).id;
   const favoritedOnly = id && id[0] === "favorited";
-  const search = (await searchParams).search;
+  const { page, search } = await searchParams;
 
   return (
     <div className="flex flex-col gap-4 w-full items-center">
@@ -26,6 +26,7 @@ export default async function FilesPage({
         user={user}
         favoritedOnly={favoritedOnly}
         initialSearch={search}
+        initialPage={page ? Number(page) : undefined}
       />
     </div>
   );
