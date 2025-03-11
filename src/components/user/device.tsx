@@ -1,6 +1,8 @@
 import SimpleTooltip from "@/components/simple-tooltip";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { authClient } from "@/lib/client-auth";
 import { Session } from "better-auth";
 import { formatDistanceToNow } from "date-fns";
 import { Monitor, Smartphone, X } from "lucide-react";
@@ -19,11 +21,21 @@ export default function Device({
     ? UAParser(session.userAgent)
     : { device: null, browser: null };
   const isMobile: boolean = device?.is("mobile") ?? false;
+  let browserName: string = browser?.name ?? "An Unknown Browser";
+  if (isMobile) {
+    browserName = browserName.substring(6);
+  }
   const name: string = `${isMobile ? "Mobile" : "Desktop"} Device on ${browser?.name ?? "An Unknown Browser"}`;
+
+  async function logoutDevice() {
+    await authClient.revokeSession({
+      token: session.token,
+    });
+  }
 
   return (
     <>
-      <div className="relative p-2.5 w-full h-14 flex gap-3 items-center select-none">
+      <div className="group relative p-2.5 w-full h-14 flex gap-3 items-center select-none">
         {/* Device & Browser Icons */}
         <SimpleTooltip content={name}>
           <div className="relative w-9 h-full flex justify-center items-center bg-muted rounded-full">
@@ -35,8 +47,8 @@ export default function Device({
             {/* Browser */}
             <Image
               className="absolute bottom-0 right-0 p-1 bg-muted rounded-full"
-              src={`/browser/${browser?.name?.toLowerCase()}.svg`}
-              alt={browser?.name ?? "Browser"}
+              src={`/browser/${browserName.toLowerCase()}.svg`}
+              alt={browserName}
               width={20}
               height={20}
               draggable={false}
@@ -63,9 +75,13 @@ export default function Device({
         </div>
 
         {/* Actions */}
-        <div className="ml-auto flex gap-2 items-center">
-          <SimpleTooltip content="Logout Device">
-            <X className="size-4 text-muted-foreground" />
+        <div className="opacity-0 group-hover:opacity-100 ml-auto flex gap-2 items-center transition-all duration-300 transform-gpu">
+          <SimpleTooltip
+            content={<span className="text-destructive">Logout Device</span>}
+          >
+            <Button variant="ghost" size="icon" onClick={logoutDevice}>
+              <X className="size-4 text-muted-foreground" />
+            </Button>
           </SimpleTooltip>
         </div>
       </div>
