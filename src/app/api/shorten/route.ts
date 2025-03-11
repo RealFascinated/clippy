@@ -58,7 +58,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     return NextResponse.json({
       url: `${env.NEXT_PUBLIC_WEBSITE_URL}/short/${shortenedUrl.id}`,
-      deletionUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/api/shorten/delete/${shortenedUrl.id}`,
+      deletionUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/shorten/delete/${shortenedUrl.deleteKey}`,
     } as SuccessResponse);
   });
 }
