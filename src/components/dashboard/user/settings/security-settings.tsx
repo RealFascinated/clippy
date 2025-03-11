@@ -1,11 +1,14 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import Device from "@/components/user/device";
 import { authClient } from "@/lib/client-auth";
 import { UserSessionResponse } from "@/lib/helpers/user";
 import { useQuery } from "@tanstack/react-query";
 import { Session } from "better-auth";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { useRouter } from "next/navigation";
 
 export default function SecuritySettings({
   session,
@@ -24,14 +27,21 @@ function DeviceList({
 }: {
   session: UserSessionResponse;
 }) {
+  const router: AppRouterInstance = useRouter();
+
   // Get the sessions using react query
   const { data: sessions } = useQuery({
     queryKey: ["sessions"],
     queryFn: async () => authClient.listSessions(),
   });
 
+  const logoutAllDevices = async () => {
+    await authClient.revokeSessions();
+    router.refresh();
+  };
+
   return (
-    <div className=" flex flex-col gap-2">
+    <div className="relative flex flex-col gap-2">
       {/* Header */}
       <div className="flex flex-col select-none">
         <h1 className="text-base xs:text-lg font-bold transition-all transform-gpu">
@@ -70,6 +80,16 @@ function DeviceList({
           <DevicesSkeleton />
         )}
       </div>
+
+      {/* Logout All Button */}
+      <Button
+        className="absolute right-0 top-0"
+        size="sm"
+        variant="destructive"
+        onClick={logoutAllDevices}
+      >
+        Logout All Devices
+      </Button>
     </div>
   );
 }

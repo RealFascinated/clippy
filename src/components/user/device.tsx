@@ -6,7 +6,9 @@ import { authClient } from "@/lib/client-auth";
 import { Session } from "better-auth";
 import { formatDistanceToNow } from "date-fns";
 import { Monitor, Smartphone, X } from "lucide-react";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { UAParser } from "ua-parser-js";
 
 export default function Device({
@@ -16,6 +18,7 @@ export default function Device({
   currentSession: Session;
   session: Session;
 }) {
+  const router: AppRouterInstance = useRouter();
   const isCurrentSession: boolean = currentSession.token === session.token;
   const { device, browser } = session.userAgent
     ? UAParser(session.userAgent)
@@ -31,6 +34,7 @@ export default function Device({
     await authClient.revokeSession({
       token: session.token,
     });
+    if (isCurrentSession) router.refresh();
   }
 
   return (
