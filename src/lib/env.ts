@@ -18,7 +18,13 @@ export const env = createEnv({
     DATABASE_URL: z.string(),
     BETTER_AUTH_SECRET: z.string(),
 
-    STORAGE_PROVIDER: z.enum(["S3"]),
+    // Storage Provider
+    STORAGE_PROVIDER: z.enum(["S3", "LOCAL"]),
+
+    // Local Storage
+    STORAGE_LOCAL_PATH: z.string(),
+
+    // S3 Storage
     STORAGE_S3_ENDPOINT: z.string(),
     STORAGE_S3_PORT: z.number(),
     STORAGE_S3_USE_SSL: z.boolean(),
@@ -58,6 +64,11 @@ export const env = createEnv({
 
     // File Storage
     STORAGE_PROVIDER: process.env.STORAGE_PROVIDER,
+
+    // Local Storage
+    STORAGE_LOCAL_PATH: process.env.STORAGE_LOCAL_PATH,
+
+    // S3 Storage
     STORAGE_S3_ENDPOINT: process.env.STORAGE_S3_ENDPOINT,
     STORAGE_S3_PORT: Number(process.env.STORAGE_S3_PORT),
     STORAGE_S3_USE_SSL: process.env.STORAGE_S3_USE_SSL === "true",

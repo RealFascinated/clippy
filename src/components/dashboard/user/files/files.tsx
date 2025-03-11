@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScreenSize, useIsScreenSize } from "@/hooks/use-mobile";
+import usePageUrl from "@/hooks/use-page-url";
 import { UserType } from "@/lib/db/schemas/auth-schema";
 import { FileType } from "@/lib/db/schemas/file";
 import { Page } from "@/lib/pagination";
@@ -26,7 +27,6 @@ import { useDebounce, useIsFirstRender } from "@uidotdev/usehooks";
 import { ArrowDownWideNarrow, ArrowUpNarrowWide, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import UserFile from "./file";
-import usePageUrl from "@/hooks/use-page-url";
 
 const sortNames: {
   name: string;
@@ -117,7 +117,7 @@ export default function UserFiles({
           ...(favoritedOnly && { favorited: "true" }),
         },
       }))!,
-    placeholderData: (data) => data,
+    placeholderData: data => data,
   });
 
   return (
@@ -137,7 +137,7 @@ export default function UserFiles({
             <Input
               placeholder="Query..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={e => setSearch(e.target.value)}
               className="pr-8"
             />
             {search && (
@@ -153,7 +153,7 @@ export default function UserFiles({
           {/* Sort By */}
           <Select
             value={sort.key}
-            onValueChange={(value) => {
+            onValueChange={value => {
               setSort({
                 ...sort,
                 key: value as FileKeys,
@@ -210,7 +210,7 @@ export default function UserFiles({
           {files.items.length > 0 ? (
             <>
               <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-2 items-center">
-                {files.items.map((fileMeta) => (
+                {files.items.map(fileMeta => (
                   <UserFile
                     user={user}
                     key={fileMeta.id}
@@ -236,7 +236,7 @@ export default function UserFiles({
             totalItems={files.metadata.totalItems}
             itemsPerPage={files.metadata.itemsPerPage}
             loadingPage={isLoading || isRefetching ? page : undefined}
-            onPageChange={(newPage) => setPage(newPage)}
+            onPageChange={newPage => setPage(newPage)}
           />
         </>
       )}
