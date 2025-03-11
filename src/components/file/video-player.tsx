@@ -9,12 +9,16 @@ type VideoPlayerProps = {
 
 export default function FileVideoPlayer({ url, className }: VideoPlayerProps) {
   return (
-    <ReactPlayer
-      url={url}
-      volume={0.25}
-      playing
-      controls
-      className={className}
-    />
+    <div className="w-full max-w-full aspect-video">
+      <ReactPlayer
+        url={url}
+        volume={0.25}
+        playing
+        controls
+        width="100%"
+        height="100%"
+        className={className}
+      />
+    </div>
   );
 }
