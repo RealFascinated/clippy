@@ -8,25 +8,30 @@ RUN bun install --frozen-lockfile --quiet
 
 # Copy source and build the app
 COPY . .
-RUN bun run build
+RUN bun run build \
+    && rm -rf node_modules \
+    && bun install --frozen-lockfile --production --quiet \
+    && rm -rf .git .github .next/cache/* \
+           src/.next/cache/* \
+           **/*.map \
+           !cli/**/*.map \
+           **/*.ts \
+           !**/*.d.ts \
+           !cli/**/*.ts \
+           **/*.tsx \
+           !.next/types/**/*.ts \
+           !.next/types/**/*.tsx
 
-# Production dependencies stage
-FROM base AS prod-deps
+# Final smaller image
+FROM oven/bun:1.2.5-alpine
 WORKDIR /app
-COPY package.json* bun.lock* ./
-RUN bun install --frozen-lockfile --production --quiet
 
-# Final smaller image with Alpine
-FROM oven/bun:1.2.5-alpine AS runner
-WORKDIR /app
-
-# Copy only the ffmpeg binary
+# Copy only the ffmpeg binary and strip it
 COPY --from=mwader/static-ffmpeg:7.1 /ffmpeg /usr/local/bin/
-
-# Copy only the production dependencies
-COPY --from=prod-deps /app/node_modules ./node_modules
+RUN strip /usr/local/bin/ffmpeg
 
 # Copy only necessary build artifacts
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/drizzle ./drizzle
 COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
@@ -37,9 +42,11 @@ COPY --from=builder /app/src ./src
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./
 
-ENV NEXT_PUBLIC_APP_ENV=production
-ENV HOSTNAME="0.0.0.0"
+ENV NODE_ENV=production \
+    NEXT_PUBLIC_APP_ENV=production \
+    HOSTNAME="0.0.0.0" \
+    PORT=3000
+
 EXPOSE 3000
-ENV PORT=3000
 
 CMD ["bun", "run", "start"]
