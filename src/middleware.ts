@@ -36,7 +36,7 @@ export async function middleware(req: NextRequest) {
   if (!session) {
     const cookieName = req.cookies
       .getAll()
-      .find((cookie) => cookie.name.includes("session_token"));
+      .find(cookie => cookie.name.includes("session_token"));
     const response = NextResponse.redirect(new URL("/auth/login", req.url));
     if (cookieName) response.cookies.delete(cookieName.name);
     return response;

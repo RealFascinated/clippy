@@ -6,7 +6,6 @@ import NotificationSettings from "@/components/dashboard/user/settings/notificat
 import SecuritySettings from "@/components/dashboard/user/settings/security-settings";
 import UserSettings from "@/components/dashboard/user/settings/user-settings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UserType } from "@/lib/db/schemas/auth-schema";
 import { UserSessionResponse } from "@/lib/helpers/user";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useRouter } from "next/navigation";
@@ -16,19 +15,25 @@ const tabs = [
     id: "user",
     name: "User",
     description: "Manage your account settings and preferences.",
-    content: (session: UserSessionResponse) => <UserSettings user={session.user} />,
+    content: (session: UserSessionResponse) => (
+      <UserSettings user={session.user} />
+    ),
   },
   {
     id: "security",
     name: "Security",
     description: "Manage the security of your account.",
-    content: (session: UserSessionResponse) => <SecuritySettings session={session} />,
+    content: (session: UserSessionResponse) => (
+      <SecuritySettings session={session} />
+    ),
   },
   {
     id: "config",
     name: "Config",
     description: "Manage your upload client configurations.",
-    content: (session: UserSessionResponse) => <ConfigSettings user={session.user} />,
+    content: (session: UserSessionResponse) => (
+      <ConfigSettings user={session.user} />
+    ),
   },
   {
     id: "notifications",
@@ -40,7 +45,9 @@ const tabs = [
     id: "appearance",
     name: "Appearance",
     description: "Manage your website appearance settings.",
-    content: (session: UserSessionResponse) => <AppearanceSettings user={session.user} />,
+    content: (session: UserSessionResponse) => (
+      <AppearanceSettings user={session.user} />
+    ),
   },
 ];
 
@@ -62,7 +69,7 @@ export default function SettingTabs({
     >
       {/* Headers */}
       <TabsList className="w-full h-full flex flex-wrap bg-transparent rounded-sm">
-        {tabs.map((tab) => (
+        {tabs.map(tab => (
           <TabsTrigger
             key={tab.id}
             className="flex-1 min-w-24 border-b border-border data-[state=active]:border-primary/75 data-[state=active]:text-primary rounded-none hover:opacity-75 cursor-pointer transition-all transform-gpu"
@@ -74,7 +81,7 @@ export default function SettingTabs({
       </TabsList>
 
       {/* Content */}
-      {tabs.map((tab) => (
+      {tabs.map(tab => (
         <TabsContent
           key={tab.id}
           className="p-4 flex flex-col gap-4 bg-background/70 rounded-md border border-muted"

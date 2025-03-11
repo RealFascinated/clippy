@@ -1,4 +1,5 @@
 import { handleApiRequestWithUser, notFound } from "@/lib/api-commons";
+import ApiError from "@/lib/api-errors/api-error";
 import { FileType } from "@/lib/db/schemas/file";
 import { ThumbnailType } from "@/lib/db/schemas/thumbnail";
 import { env } from "@/lib/env";
@@ -26,29 +27,20 @@ export async function POST(
     const { key } = await params;
     const file = await getFileById(key);
     if (!file) {
-      return notFound;
+      throw notFound;
     }
 
     const { id } = await request.json();
     if (!id) {
-      return NextResponse.json(
-        { message: "The id is required." },
-        { status: 400 }
-      );
+      throw new ApiError("The id is required.", 400);
     }
 
     if (id.length > env.FILE_ID_LENGTH) {
-      return NextResponse.json(
-        { message: "The id is too long." },
-        { status: 400 }
-      );
+      throw new ApiError("The id is too long.", 400);
     }
 
     if ((await getFileById(id)) !== undefined) {
-      return NextResponse.json(
-        { message: "The id is already taken." },
-        { status: 400 }
-      );
+      throw new ApiError("The id is already taken.", 400);
     }
 
     // Rename the file

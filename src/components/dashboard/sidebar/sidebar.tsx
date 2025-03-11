@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils/utils";
 import { SiGithub } from "@icons-pack/react-simple-icons";
-import { Cog, File, Heart, Home, NotebookText } from "lucide-react";
+import { Cog, File, Heart, Home, NotebookText, Video } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactElement } from "react";
@@ -53,6 +53,11 @@ const groups: Group[] = [
         title: "Favorited Files",
         url: "/dashboard/files/favorited",
         icon: <Heart />,
+      },
+      {
+        title: "Videos",
+        url: "/dashboard/files/videos",
+        icon: <Video />,
       },
     ],
   },
@@ -129,7 +134,7 @@ export default function AppSidebar() {
         {/* Social Links */}
         <SidebarFooter className={cn("gap-0", !isMobile && "pb-14")}>
           <div className="bg-zinc-800/75 rounded-lg p-2">
-            {socials.map((item) => (
+            {socials.map(item => (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild>
                   <Link

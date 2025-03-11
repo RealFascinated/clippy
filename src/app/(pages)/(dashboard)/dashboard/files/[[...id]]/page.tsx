@@ -18,6 +18,7 @@ export default async function FilesPage({
   const user = await getUser();
   const id = (await params).id;
   const favoritedOnly = id && id[0] === "favorited";
+  const videosOnly = id && id[0] === "videos";
   const { page, search } = await searchParams;
 
   return (
@@ -25,6 +26,7 @@ export default async function FilesPage({
       <UserFiles
         user={user}
         favoritedOnly={favoritedOnly}
+        videosOnly={videosOnly}
         initialSearch={search}
         initialPage={page ? Number(page) : undefined}
       />

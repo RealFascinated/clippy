@@ -42,7 +42,7 @@ export function readableStreamToNodeStream(
             this.push(Buffer.from(value));
           }
         },
-        (error) => {
+        error => {
           this.destroy(error);
         }
       );

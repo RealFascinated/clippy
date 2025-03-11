@@ -1,17 +1,15 @@
-import { fileExceedsUploadLimit } from "@/lib/api-commons";
-import { FileType } from "@/lib/db/schemas/file";
+import { fileExceedsUploadLimit, handleApiRequest } from "@/lib/api-commons";
+import ApiError from "@/lib/api-errors/api-error";
 import { env } from "@/lib/env";
-import { uploadFileStream } from "@/lib/helpers/file";
+import { uploadFile } from "@/lib/helpers/file";
 import { getUserRole } from "@/lib/helpers/role";
 import { getUserByUploadToken } from "@/lib/helpers/user";
 import Logger from "@/lib/logger";
 import { Notifications } from "@/lib/notification";
 import { getFileName } from "@/lib/utils/file";
 import { validateMimeType } from "@/lib/utils/mime";
-import { readableStreamToNodeStream } from "@/lib/utils/stream";
 import { formatBytes, randomString } from "@/lib/utils/utils";
 import { thumbnailQueue } from "@/queue/queues";
-import { ApiErrorResponse } from "@/type/api/responses";
 import { NextResponse } from "next/server";
 import Sharp from "sharp";
 
@@ -23,7 +21,7 @@ interface FileData {
   name: string;
   type: string;
   size: number;
-  stream: ReadableStream<Uint8Array>;
+  content: Uint8Array;
 }
 
 interface SuccessResponse {
@@ -51,7 +49,7 @@ async function processFile(file: File): Promise<FileData> {
     name: file.name,
     type: file.type,
     size: file.size,
-    stream: file.stream(),
+    content: new Uint8Array(await file.arrayBuffer()),
   };
 }
 
@@ -63,7 +61,7 @@ function getOptions(formData: FormData): {
     .get("x-clippy-upload-token")
     ?.toString();
   if (!uploadToken) {
-    throw new Error("No upload token was provided");
+    throw new ApiError("No upload token was provided", 400);
   }
 
   const compressPercentageString: string | undefined = formData
@@ -80,8 +78,9 @@ function getOptions(formData: FormData): {
     compressPercentage < COMPRESS_PERCENTAGE_MIN ||
     compressPercentage > COMPRESS_PERCENTAGE_MAX
   ) {
-    throw new Error(
-      `Invalid compress percentage: ${compressPercentage} (must be between ${COMPRESS_PERCENTAGE_MIN} and ${COMPRESS_PERCENTAGE_MAX})`
+    throw new ApiError(
+      `Invalid compress percentage: ${compressPercentage} (must be between ${COMPRESS_PERCENTAGE_MIN} and ${COMPRESS_PERCENTAGE_MAX})`,
+      400
     );
   }
 
@@ -92,139 +91,109 @@ function getOptions(formData: FormData): {
  * Handles file uploads from ShareX
  * @param request The incoming request containing form data
  */
-export async function POST(
-  request: Request
-): Promise<NextResponse<SuccessResponse | ApiErrorResponse>> {
-  try {
+export async function POST(request: Request): Promise<NextResponse> {
+  return handleApiRequest(async () => {
+    const contentLength = request.headers.get("content-length");
+
     const formData = await request.formData();
     const { uploadToken, compressPercentage } = getOptions(formData);
 
     const user = await getUserByUploadToken(uploadToken);
     if (!user) {
-      return NextResponse.json(
-        { message: "Invalid upload token" },
-        { status: 401 }
-      );
+      throw new ApiError("Invalid upload token", 401);
+    }
+
+    // Check upload limit before processing
+    const role = getUserRole(user);
+    if (
+      contentLength &&
+      role.uploadLimit !== -1 &&
+      parseInt(contentLength) > role.uploadLimit
+    ) {
+      throw fileExceedsUploadLimit(role.uploadLimit);
     }
 
     const files = formData.getAll("sharex");
     if (!files.length) {
-      return NextResponse.json(
-        { message: "No files were uploaded" },
-        { status: 400 }
-      );
+      throw new ApiError("No files were uploaded", 400);
     }
 
     // Validate file types
-    if (!files.every((file) => file instanceof File)) {
-      return NextResponse.json(
-        { message: "Invalid file format" },
-        { status: 400 }
-      );
+    if (!files.every(file => file instanceof File)) {
+      throw new ApiError("Invalid file format", 400);
     }
 
-    let fileMeta: FileType;
-    try {
-      const file = await processFile(files[0]);
-      if (!validateMimeType(file.type)) {
-        return NextResponse.json(
-          { message: `The mime-type "${file.type}" is not allowed` },
-          { status: 400 }
-        );
-      }
+    const file = await processFile(files[0]);
+    if (!validateMimeType(file.type)) {
+      throw new ApiError(`The mime-type "${file.type}" is not allowed`, 400);
+    }
 
-      const fileId = randomString(env.FILE_ID_LENGTH);
+    const fileId = randomString(env.FILE_ID_LENGTH);
+    let content = Buffer.from(file.content);
 
-      // Check upload limit before processing
-      const role = getUserRole(user);
-      if (role.uploadLimit !== -1 && file.size > role.uploadLimit) {
-        throw fileExceedsUploadLimit;
-      }
+    // Check upload limit before processing
+    if (role.uploadLimit !== -1 && file.size > role.uploadLimit) {
+      throw fileExceedsUploadLimit(role.uploadLimit);
+    }
 
-      const nodeStream = readableStreamToNodeStream(file.stream);
+    // Image compression
+    if (
+      env.COMPRESS_IMAGES && // Compression is enabled
+      file.type.startsWith("image/") && // Is an image
+      file.size > 51200 && // Larger than 50kb
+      !file.type.startsWith("image/gif") // ignore gifs
+    ) {
+      const before = Date.now();
+      // Compress image using streaming
+      const compressedContent = Buffer.from(
+        await Sharp(content).webp({ quality: compressPercentage }).toBuffer()
+      );
 
-      // Image compression
-      if (
-        env.COMPRESS_IMAGES && // Compression is enabled
-        file.type.startsWith("image/") && // Is an image
-        file.size > 51200 && // Larger than 50kb
-        !file.type.startsWith("image/gif") // ignore gifs
-      ) {
-        const before = Date.now();
-
-        // Create a transform stream for compression
-        const transformer = Sharp().webp({ quality: compressPercentage });
-
-        // Use streaming for compression
-        const compressedStream = nodeStream.pipe(transformer);
-
-        // For compressed images, we need to change the file type and extension
-        const nameParts = file.name.split(".");
-        nameParts.pop();
-        const newName = `${nameParts.join(".")}.webp`;
-
-        // Upload the compressed stream
-        fileMeta = await uploadFileStream(
-          fileId,
-          newName,
-          file.size, // We'll use original size as an estimate, actual size will be different
-          compressedStream,
-          "image/webp",
-          user
-        );
-
+      // Check if the new file is larger
+      if (compressedContent.length > file.size) {
         Logger.info(
-          `Compressed file "${fileId}.webp" (original size: ${formatBytes(file.size)}, took: ${Date.now() - before}ms)`
+          `Compressed file is larger than original file, using original file. (${formatBytes(file.size)} vs ${formatBytes(content.length)})`
         );
       } else {
-        // Upload the original file stream directly
-        fileMeta = await uploadFileStream(
-          fileId,
-          file.name,
-          file.size,
-          nodeStream,
-          file.type,
-          user
+        file.type = "image/webp";
+        const nameParts = file.name.split(".");
+        nameParts.pop();
+        file.name = `${nameParts.join(".")}.webp`;
+
+        Logger.info(
+          `Compressed file "${fileId}.webp" (before: ${formatBytes(file.size)}, after: ${formatBytes(content.length)}, took: ${Date.now() - before}ms)`
         );
+        content = compressedContent;
       }
-
-      // Add to thumbnail queue
-      thumbnailQueue.add(fileMeta);
-
-      Notifications.sendUploadFileNotification(user, fileMeta);
-    } catch (err) {
-      return NextResponse.json(
-        {
-          message: (err as Error).message,
-        },
-        {
-          status: 500,
-        }
-      );
     }
 
-    return NextResponse.json({
-      path: getFileName(fileMeta),
-      url: env.NEXT_PUBLIC_WEBSITE_URL,
-      deletionUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/file/delete/${fileMeta.deleteKey}`,
-    });
-  } catch (error) {
-    console.error("Error processing file upload:", error);
+    const fileMeta = await uploadFile(
+      fileId,
+      file.name,
+      content.length,
+      content,
+      file.type,
+      user
+    );
 
+    thumbnailQueue.add(fileMeta);
+    Notifications.sendUploadFileNotification(user, fileMeta);
     return NextResponse.json(
       {
-        message:
-          (error as Error).message ??
-          "Failed to upload your file, please contact an admin if this keeps occuring",
-      },
-      { status: 500 }
+        path: getFileName(fileMeta),
+        url: env.NEXT_PUBLIC_WEBSITE_URL,
+        deletionUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/file/delete/${fileMeta.deleteKey}`,
+      } as SuccessResponse,
+      { status: 200 }
     );
-  }
+  });
 }
 
 // Configuration for the API route
 export const config = {
   api: {
     bodyParser: false,
+    responseLimit: false,
+    maxDuration: 60,
   },
 };

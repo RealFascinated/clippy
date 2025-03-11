@@ -1,8 +1,7 @@
-import { getFileById, uploadFileStream } from "@/lib/helpers/file";
+import { getFileById, uploadFile } from "@/lib/helpers/file";
 import { getUserByName } from "@/lib/helpers/user";
 import { thumbnailQueue } from "@/queue/queues";
 import { Command } from "commander";
-import { createReadStream } from "fs";
 import fs from "fs/promises";
 import mime from "mime";
 import path from "path";
@@ -11,7 +10,7 @@ const migrateFilesCommand = new Command("migrate-files")
   .description("Migrates files from a directory to a users profile")
   .requiredOption("--user <username>", "Username to import files for")
   .requiredOption("--path <path>", "Path to directory containing files")
-  .action(async (options) => {
+  .action(async options => {
     const userName = options.user;
     const providedPath = options.path;
 
@@ -24,7 +23,7 @@ const migrateFilesCommand = new Command("migrate-files")
     }
 
     const resolvedPath = path.resolve(providedPath);
-    const stat = await fs.stat(resolvedPath).catch((err) => {
+    const stat = await fs.stat(resolvedPath).catch(err => {
       console.log(`The path ${providedPath} was not found.`, err);
       process.exit(1);
     });
@@ -57,20 +56,18 @@ const migrateFilesCommand = new Command("migrate-files")
         continue;
       }
 
-      // Get file stats to determine size and creation date
+      const buffer = await fs.readFile(filePath);
+      const size = buffer.length;
+
       const fileStat = await fs.stat(filePath);
-      const size = fileStat.size;
       const createdAt = fileStat.mtime;
 
-      // Create a file stream directly instead of reading into buffer
-      const fileStream = createReadStream(filePath);
-
       try {
-        const fileMeta = await uploadFileStream(
+        const fileMeta = await uploadFile(
           fileId,
           fileName,
           size,
-          fileStream,
+          buffer,
           mimeType,
           user,
           createdAt

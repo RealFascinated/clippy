@@ -12,12 +12,12 @@ export async function POST(
     const file = await getFileById(key);
     if (!file) {
       Logger.error(`File not found 1: ${key}`);
-      return notFound;
+      throw notFound;
     }
 
     if (file.userId !== user.id) {
       Logger.error(`File not found 2: ${key}`);
-      return notFound;
+      throw notFound;
     }
 
     await updateFile(file.id, {
@@ -41,11 +41,11 @@ export async function DELETE(
     const { key } = await params;
     const file = await getFileById(key);
     if (!file) {
-      return notFound;
+      throw notFound;
     }
 
     if (file.userId !== user.id) {
-      return notFound;
+      throw notFound;
     }
 
     await updateFile(file.id, {

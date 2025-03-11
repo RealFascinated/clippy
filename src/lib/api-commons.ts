@@ -1,21 +1,17 @@
 import { NextResponse } from "next/server";
+import ApiError from "./api-errors/api-error";
 import { UserType } from "./db/schemas/auth-schema";
 import { getApiUser } from "./helpers/user";
+import { formatBytes } from "./utils/utils";
 
-export const authError = NextResponse.json(
-  { message: "Invalid Credentials" },
-  { status: 401 }
-);
-
-export const notFound = NextResponse.json(
-  { message: "Not Found" },
-  { status: 404 }
-);
-
-export const fileExceedsUploadLimit = NextResponse.json(
-  { message: "File exceeds your upload limit" },
-  { status: 413 }
-);
+export const authError = new ApiError("Invalid Credentials", 401);
+export const notFound = new ApiError("Not Found", 404);
+export function fileExceedsUploadLimit(uploadLimit: number) {
+  return new ApiError(
+    `File exceeds your upload limit of ${formatBytes(uploadLimit)}`,
+    413
+  );
+}
 
 /**
  * Handles an api request with a user.
@@ -52,8 +48,11 @@ export async function handleApiRequest(handler: () => Promise<NextResponse>) {
   try {
     return await handler();
   } catch (error) {
-    if (error instanceof NextResponse) {
-      return error;
+    if (error instanceof ApiError) {
+      return NextResponse.json(
+        { message: error.message },
+        { status: error.status }
+      );
     }
     return NextResponse.json(
       { message: (error as Error).message },

@@ -1,4 +1,5 @@
 import { handleApiRequestWithUser } from "@/lib/api-commons";
+import ApiError from "@/lib/api-errors/api-error";
 import { auth } from "@/lib/auth";
 import { generateUploadToken } from "@/lib/helpers/user";
 import Logger from "@/lib/logger";
@@ -19,9 +20,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
       Notifications.sendResetUploadTokenNotification(user);
     } catch {
-      return NextResponse.json(
-        { message: "An error occured when resetting the upload token" },
-        { status: 500 }
+      throw new ApiError(
+        "An error occured when resetting the upload token",
+        500
       );
     }
 

@@ -34,7 +34,8 @@ export type UserFilesOptions = {
   limit?: number;
   offset?: number;
   search?: string;
-  favorited?: boolean;
+  favoritedOnly?: boolean;
+  videosOnly?: boolean;
 };
 
 export type UserSessionResponse = {
@@ -112,9 +113,10 @@ export async function getUserFiles(id: string, options?: UserFilesOptions) {
     .where(
       and(
         eq(fileTable.userId, id),
-        options?.favorited
-          ? eq(fileTable.favorited, options.favorited)
+        options?.favoritedOnly
+          ? eq(fileTable.favorited, options.favoritedOnly)
           : undefined,
+        options?.videosOnly ? like(fileTable.mimeType, "video/%") : undefined,
         options?.search
           ? or(
               like(fileTable.id, `%${options.search}%`),
@@ -247,9 +249,10 @@ export async function getUserFilesCount(
     .where(
       and(
         eq(fileTable.userId, id),
-        options?.favorited
-          ? eq(fileTable.favorited, options.favorited)
+        options?.favoritedOnly
+          ? eq(fileTable.favorited, options.favoritedOnly)
           : undefined,
+        options?.videosOnly ? like(fileTable.mimeType, "video%") : undefined,
         options?.search
           ? or(
               like(fileTable.id, `%${options.search}%`),

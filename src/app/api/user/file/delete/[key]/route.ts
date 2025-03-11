@@ -1,4 +1,5 @@
 import { handleApiRequest, notFound } from "@/lib/api-commons";
+import ApiError from "@/lib/api-errors/api-error";
 import { UserType } from "@/lib/db/schemas/auth-schema";
 import { getFileByDeleteKey, removeFile } from "@/lib/helpers/file";
 import { getUserById } from "@/lib/helpers/user";
@@ -17,11 +18,11 @@ export async function GET(
     const { key } = await params;
     const file = await getFileByDeleteKey(key);
     if (!file) {
-      return notFound;
+      throw notFound;
     }
     const user: UserType | undefined = await getUserById(file.userId);
     if (!user) {
-      return notFound;
+      throw notFound;
     }
 
     try {
@@ -29,32 +30,27 @@ export async function GET(
         getFilePath(file.userId, file)
       );
       if (!deletedFile) {
-        return NextResponse.json(
-          { message: "Unable to delete the file, please contact an admin" },
-          { status: 500 }
+        throw new ApiError(
+          "Unable to delete the file, please contact an admin",
+          500
         );
       }
       const deletedThubnail = await storage.deleteFile(
         getFileThumbnailPath(file.userId, file)
       );
       if (!deletedThubnail) {
-        return NextResponse.json(
-          {
-            message: "Unable to delete the thumbnail, please contact an admin",
-          },
-          { status: 500 }
+        throw new ApiError(
+          "Unable to delete the thumbnail, please contact an admin",
+          500
         );
       }
       await removeFile(file.id);
 
       Notifications.sendDeleteFileNotification(user, file);
     } catch {
-      return NextResponse.json(
-        {
-          message:
-            "An error occured when removing this file, please contact an admin",
-        },
-        { status: 500 }
+      throw new ApiError(
+        "An error occured when removing this file, please contact an admin",
+        500
       );
     }
 

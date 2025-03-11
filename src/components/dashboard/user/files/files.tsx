@@ -49,11 +49,13 @@ const sortNames: {
 export default function UserFiles({
   user,
   favoritedOnly,
+  videosOnly,
   initialSearch,
   initialPage,
 }: {
   user: UserType;
   favoritedOnly?: boolean;
+  videosOnly?: boolean;
   initialSearch?: string;
   initialPage?: number;
 }) {
@@ -107,14 +109,22 @@ export default function UserFiles({
     isRefetching,
     refetch,
   } = useQuery<Page<FileType>>({
-    queryKey: ["userFiles", page, sort, debouncedSearch, favoritedOnly],
+    queryKey: [
+      "userFiles",
+      page,
+      sort,
+      debouncedSearch,
+      favoritedOnly,
+      videosOnly,
+    ],
     queryFn: async () =>
       (await request.get<Page<FileType>>(`/api/user/files/${page}`, {
         searchParams: {
           sortKey: sort.key,
           sortDirection: sort.direction,
           ...(debouncedSearch && { search: debouncedSearch }),
-          ...(favoritedOnly && { favorited: "true" }),
+          ...(favoritedOnly && { favoritedOnly: "true" }),
+          ...(videosOnly && { videosOnly: "true" }),
         },
       }))!,
     placeholderData: data => data,
