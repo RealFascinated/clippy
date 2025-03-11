@@ -141,24 +141,24 @@ function FilePreview({ fileMeta }: { fileMeta: FileType }) {
 
   return (
     <Dialog>
-      <DialogTrigger className="relative cursor-pointer w-full flex items-center justify-center">
-        <div className="w-full flex justify-center items-center min-h-36">
-          {isImage || (isVideo && fileMeta.hasThumbnail) ? (
+      <DialogTrigger className="relative cursor-pointer w-full flex items-center justify-center min-h-36">
+        {isImage || (isVideo && fileMeta.hasThumbnail) ? (
+          <>
             <img
               src={`/thumbnails/${fileMeta.id}.webp`}
               alt="Recent File Image Preview"
-              className="transparent max-h-36"
+              className="transparent max-h-36 rounded-sm"
             />
-          ) : (
-            loading && (
-              <div className="w-full flex justify-center items-center">
-                Missing Thumbnail
-              </div>
-            )
-          )}
-        </div>
-        {fileMeta.mimeType.startsWith("video") && !loading && (
-          <PlayIcon className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 size-10" />
+            {isVideo && (
+              <PlayIcon className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 size-10" />
+            )}
+          </>
+        ) : (
+          loading && (
+            <div className="w-full flex justify-center items-center">
+              Missing Thumbnail
+            </div>
+          )
         )}
       </DialogTrigger>
       <DialogContent className="flex flex-col items-center w-full sm:w-fit lg:max-w-4xl min-w-80">
