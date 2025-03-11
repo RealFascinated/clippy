@@ -2,6 +2,7 @@ import { COMPRESS_PERCENTAGE_DEFAULT } from "@/app/api/upload/route";
 import { handleApiRequestWithUser } from "@/lib/api-commons";
 import ApiError from "@/lib/api-errors/api-error";
 import { env } from "@/lib/env";
+import { isProduction } from "@/lib/utils/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -13,7 +14,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       {
         Version: "14.1.0",
-        Name: `${env.NEXT_PUBLIC_WEBSITE_NAME}`,
+        Name: `${env.NEXT_PUBLIC_WEBSITE_NAME}${isProduction() ? "" : " (Dev)"} - File Uploader`,
         DestinationType: "ImageUploader, TextUploader, FileUploader",
         RequestMethod: "POST",
         RequestURL: `${env.NEXT_PUBLIC_WEBSITE_URL}/api/upload`,
@@ -34,7 +35,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       {
         status: 200,
         headers: {
-          "Content-Disposition": `attachment; filename="sharex-config-${user.name}.sxcu"`,
+          "Content-Disposition": `attachment; filename="sharex-config-${user.username}-file.sxcu"`,
         },
       }
     );

@@ -32,9 +32,13 @@ export const env = createEnv({
     STORAGE_S3_SECRET_KEY: z.string(),
     STORAGE_S3_BUCKET: z.string(),
 
+    // File Upload
     ALLOWED_MIME_TYPES: z.string().optional(),
     FILE_ID_LENGTH: z.number().optional().default(8),
     COMPRESS_IMAGES: z.boolean().optional().default(true),
+
+    // Short URL
+    SHORT_URL_LENGTH: z.number().optional().default(6),
   },
 
   /**
@@ -76,10 +80,13 @@ export const env = createEnv({
     STORAGE_S3_SECRET_KEY: process.env.STORAGE_S3_SECRET_KEY,
     STORAGE_S3_BUCKET: process.env.STORAGE_S3_BUCKET,
 
-    // Configuration
+    // File Upload
     ALLOWED_MIME_TYPES: process.env.ALLOWED_MIME_TYPES,
     FILE_ID_LENGTH: Number(process.env.FILE_ID_LENGTH ?? 8),
     COMPRESS_IMAGES: process.env.COMPRESS_IMAGES === "true",
+
+    // Short URL
+    SHORT_URL_LENGTH: Number(process.env.SHORT_URL_LENGTH ?? 6),
   },
 
   /**

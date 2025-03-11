@@ -57,6 +57,13 @@
       "when": 1741624504050,
       "tag": "0007_odd_retro_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1741709343837,
+      "tag": "0008_odd_vision",
+      "breakpoints": true
     }
   ]
 }

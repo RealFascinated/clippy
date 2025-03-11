@@ -13,7 +13,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ScreenSize, useIsScreenSize } from "@/hooks/use-mobile";
 import Request from "@/lib/request";
 import { cn } from "@/lib/utils/utils";
 import { Copy, Loader2, RefreshCw } from "lucide-react";
@@ -28,14 +27,26 @@ export default function ConfigSettings({ user }: { user: any }) {
   return (
     <div className="flex flex-col gap-6">
       <UploadToken user={user} />
-      <DownloadConfig hasUploadToken={!!user.uploadToken} />
+      <div className="flex gap-2 flex-wrap">
+        <DownloadConfig
+          hasUploadToken={!!user.uploadToken}
+          configName="ShareX File Uploader"
+          configUrl="/api/user/config/sharex/file"
+          logoUrl="/sharex.svg"
+        />
+        <DownloadConfig
+          hasUploadToken={!!user.uploadToken}
+          configName="ShareX URL Shortener"
+          configUrl="/api/user/config/sharex/shorten"
+          logoUrl="/sharex.svg"
+        />
+      </div>
     </div>
   );
 }
 
 function UploadToken({ user }: { user: any }) {
   const router: AppRouterInstance = useRouter();
-  const isMobile = useIsScreenSize(ScreenSize.Small);
   const hasUploadToken: boolean = !!user.uploadToken;
 
   async function resetToken() {
@@ -149,7 +160,17 @@ function ResetTokenDialog({ resetToken }: { resetToken: () => void }) {
   );
 }
 
-function DownloadConfig({ hasUploadToken }: { hasUploadToken: boolean }) {
+function DownloadConfig({
+  hasUploadToken,
+  configName,
+  configUrl,
+  logoUrl,
+}: {
+  hasUploadToken: boolean;
+  configName: string;
+  configUrl: string;
+  logoUrl: string;
+}) {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleDownload = () => {
@@ -165,7 +186,7 @@ function DownloadConfig({ hasUploadToken }: { hasUploadToken: boolean }) {
     >
       <Link
         className={cn("w-fit", !hasUploadToken && "!cursor-not-allowed")}
-        href={hasUploadToken ? "/api/user/config/sharex" : "#"}
+        href={hasUploadToken ? configUrl : "#"}
         prefetch={false}
         draggable={false}
       >
@@ -181,13 +202,8 @@ function DownloadConfig({ hasUploadToken }: { hasUploadToken: boolean }) {
             </>
           ) : (
             <>
-              <Image
-                src="/sharex.svg"
-                alt="ShareX Logo"
-                width={16}
-                height={16}
-              />
-              Download Config
+              <Image src={logoUrl} alt="Uploader Logo" width={16} height={16} />
+              Download {configName}
             </>
           )}
         </Button>
