@@ -128,21 +128,23 @@ export default function AppSidebar() {
 
         {/* Social Links */}
         <SidebarFooter className={cn("gap-0", !isMobile && "pb-14")}>
-          {socials.map(item => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
-                <Link
-                  href={item.url}
-                  target="_blank"
-                  prefetch={false}
-                  draggable={false}
-                >
-                  <span className="*:size-4">{item.icon}</span>
-                  <span>{item.title}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+          <div className="bg-zinc-800/75 rounded-lg p-2">
+            {socials.map((item) => (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton asChild>
+                  <Link
+                    href={item.url}
+                    target="_blank"
+                    prefetch={false}
+                    draggable={false}
+                  >
+                    <span className="*:size-4">{item.icon}</span>
+                    <span>{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </div>
         </SidebarFooter>
       </Sidebar>
     </div>
