@@ -1,13 +1,14 @@
 import { fileExceedsUploadLimit } from "@/lib/api-commons";
 import { FileType } from "@/lib/db/schemas/file";
 import { env } from "@/lib/env";
-import { uploadFile } from "@/lib/helpers/file";
+import { uploadFileStream } from "@/lib/helpers/file";
 import { getUserRole } from "@/lib/helpers/role";
 import { getUserByUploadToken } from "@/lib/helpers/user";
 import Logger from "@/lib/logger";
 import { Notifications } from "@/lib/notification";
 import { getFileName } from "@/lib/utils/file";
 import { validateMimeType } from "@/lib/utils/mime";
+import { readableStreamToNodeStream } from "@/lib/utils/stream";
 import { formatBytes, randomString } from "@/lib/utils/utils";
 import { thumbnailQueue } from "@/queue/queues";
 import { ApiErrorResponse } from "@/type/api/responses";
@@ -22,7 +23,7 @@ interface FileData {
   name: string;
   type: string;
   size: number;
-  content: Uint8Array;
+  stream: ReadableStream<Uint8Array>;
 }
 
 interface SuccessResponse {
@@ -50,7 +51,7 @@ async function processFile(file: File): Promise<FileData> {
     name: file.name,
     type: file.type,
     size: file.size,
-    content: new Uint8Array(await file.arrayBuffer()),
+    stream: file.stream(),
   };
 }
 
@@ -133,13 +134,14 @@ export async function POST(
       }
 
       const fileId = randomString(env.FILE_ID_LENGTH);
-      let content = Buffer.from(file.content);
 
       // Check upload limit before processing
       const role = getUserRole(user);
       if (role.uploadLimit !== -1 && file.size > role.uploadLimit) {
         throw fileExceedsUploadLimit;
       }
+
+      const nodeStream = readableStreamToNodeStream(file.stream);
 
       // Image compression
       if (
@@ -149,37 +151,42 @@ export async function POST(
         !file.type.startsWith("image/gif") // ignore gifs
       ) {
         const before = Date.now();
-        // Compress image using streaming
-        content = Buffer.from(
-          await Sharp(content).webp({ quality: compressPercentage }).toBuffer()
+
+        // Create a transform stream for compression
+        const transformer = Sharp().webp({ quality: compressPercentage });
+
+        // Use streaming for compression
+        const compressedStream = nodeStream.pipe(transformer);
+
+        // For compressed images, we need to change the file type and extension
+        const nameParts = file.name.split(".");
+        nameParts.pop();
+        const newName = `${nameParts.join(".")}.webp`;
+
+        // Upload the compressed stream
+        fileMeta = await uploadFileStream(
+          fileId,
+          newName,
+          file.size, // We'll use original size as an estimate, actual size will be different
+          compressedStream,
+          "image/webp",
+          user
         );
 
-        // Check if the new file is larger
-        if (content.length > file.size) {
-          Logger.info(
-            `Compressed file is larger than original file, using original file. (${formatBytes(file.size)} vs ${formatBytes(content.length)})`
-          );
-          content = Buffer.from(file.content);
-        } else {
-          file.type = "image/webp";
-          const nameParts = file.name.split(".");
-          nameParts.pop();
-          file.name = `${nameParts.join(".")}.webp`;
-
-          Logger.info(
-            `Compressed file "${fileId}.webp" (before: ${formatBytes(file.size)}, after: ${formatBytes(content.length)}, took: ${Date.now() - before}ms)`
-          );
-        }
+        Logger.info(
+          `Compressed file "${fileId}.webp" (original size: ${formatBytes(file.size)}, took: ${Date.now() - before}ms)`
+        );
+      } else {
+        // Upload the original file stream directly
+        fileMeta = await uploadFileStream(
+          fileId,
+          file.name,
+          file.size,
+          nodeStream,
+          file.type,
+          user
+        );
       }
-
-      fileMeta = await uploadFile(
-        fileId,
-        file.name,
-        content.length,
-        content,
-        file.type,
-        user
-      );
 
       // Add to thumbnail queue
       thumbnailQueue.add(fileMeta);
