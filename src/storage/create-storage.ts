@@ -2,11 +2,20 @@ import { env } from "@/lib/env";
 import DummyStorage from "./impl/dummy";
 import S3Storage from "./impl/s3";
 import Storage from "./storage";
+import LocalStorage from "./impl/local";
 
-function createStorage(provider: "S3"): Storage {
+/**
+ * Creates a storage instance based on the provider.
+ *
+ * @param provider the provider to use
+ * @returns the storage instance
+ */
+function createStorage(provider: typeof env.STORAGE_PROVIDER): Storage {
   switch (provider) {
     case "S3":
       return new S3Storage();
+    case "LOCAL":
+      return new LocalStorage();
     default:
       if (process.env.NEXT_PHASE == "phase-production-build") {
         return new DummyStorage();
