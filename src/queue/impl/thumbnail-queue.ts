@@ -36,7 +36,9 @@ export default class ThumbnailQueue extends Queue<FileType> {
       )) as FileType[];
 
     this.queue = files;
-    Logger.info(`Loaded ${this.queue.length} files to process`);
+    if (files.length > 0) {
+      Logger.info(`Loaded ${files.length} files into the thumbnail queue`);
+    }
   }
 
   async process(file: FileType) {

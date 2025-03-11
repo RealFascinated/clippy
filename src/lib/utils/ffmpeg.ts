@@ -20,7 +20,7 @@ export function extractVideoThumbnail(inputFile: string, outputFile: string) {
       outputFile,
     ]);
 
-    command.on("error", (err) => {
+    command.on("error", err => {
       console.error(
         `An error occurred while extracting the thumbnail for ${inputFile}: ${err.message}`
       );

@@ -26,7 +26,7 @@ export default abstract class Queue<T> {
           this.activeProcesses++;
           // Process item without awaiting to allow concurrent execution
           this.process(item)
-            .catch((error) => {
+            .catch(error => {
               console.error("Error processing queue item:", error);
             })
             .finally(() => {

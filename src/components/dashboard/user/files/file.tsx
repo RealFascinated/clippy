@@ -11,7 +11,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import Loader from "@/components/ui/loader";
 import { UserType } from "@/lib/db/schemas/auth-schema";
 import { FileType } from "@/lib/db/schemas/file";
 import { getFileName } from "@/lib/utils/file";
