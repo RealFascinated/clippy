@@ -15,12 +15,15 @@ RUN bun run build \
            src/.next/cache/* \
            **/*.map \
            !cli/**/*.map \
+           !src/**/*.map \
            **/*.ts \
            !**/*.d.ts \
            !cli/**/*.ts \
+           !src/**/*.ts \
            **/*.tsx \
            !.next/types/**/*.ts \
-           !.next/types/**/*.tsx
+           !.next/types/**/*.tsx \
+           !src/**/*.tsx
 
 # Final smaller image
 FROM oven/bun:1.2.5-alpine

@@ -1,3 +1,4 @@
+import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { MimetypeDistribution } from "@/type/api/user/mimetype-distrubution";
 import Link from "next/link";
 
@@ -20,7 +21,9 @@ export default function FileTypeList({
           >
             <li className="flex justify-between items-center px-1 py-1 rounded-sm hover:bg-muted/50">
               <span className="font-medium">{key}</span>
-              <span className="text-muted-foreground">{value}</span>
+              <span className="text-muted-foreground">
+                {formatNumberWithCommas(value)}
+              </span>
             </li>
           </Link>
         ))}
