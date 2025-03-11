@@ -33,7 +33,6 @@ export async function middleware(req: NextRequest) {
       },
     }
   );
-  console.log({ session });
   if (!session) {
     const cookieName = req.cookies
       .getAll()
