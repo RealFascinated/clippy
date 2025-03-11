@@ -1,4 +1,4 @@
-import internal from "stream";
+import internal, { Readable } from "stream";
 import Storage from "../storage";
 
 export default class DummyStorage extends Storage {
@@ -6,7 +6,11 @@ export default class DummyStorage extends Storage {
     super();
   }
 
-  async saveFile(name: string, data: Buffer): Promise<boolean> {
+  async saveFile(
+    name: string,
+    data: Buffer | Readable,
+    size?: number
+  ): Promise<boolean> {
     return false;
   }
 

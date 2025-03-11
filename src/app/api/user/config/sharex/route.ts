@@ -14,7 +14,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
 
     return NextResponse.json(
-      JSON.stringify({
+      {
         Version: "14.1.0",
         Name: `${env.NEXT_PUBLIC_WEBSITE_NAME}`,
         DestinationType: "ImageUploader, TextUploader, FileUploader",
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         URL: "{json:url}/{json:path}",
         DeletionURL: "{json:deletionUrl}",
         ErrorMessage: "{json:message}",
-      }),
+      },
       {
         status: 200,
         headers: {

@@ -3,6 +3,7 @@ import Logger from "@/lib/logger";
 import { readableToBuffer } from "@/lib/utils/stream";
 import * as Minio from "minio";
 import internal from "stream";
+import { Readable } from "stream";
 import Storage from "../storage";
 
 export default class S3Storage extends Storage {
@@ -32,9 +33,32 @@ export default class S3Storage extends Storage {
     }
   }
 
-  async saveFile(name: string, data: Buffer): Promise<boolean> {
+  async saveFile(
+    name: string,
+    data: Buffer | Readable,
+    size?: number
+  ): Promise<boolean> {
     try {
-      await this.client.putObject(env.STORAGE_S3_BUCKET, name, data);
+      let stream: Readable;
+      let dataSize: number;
+
+      if (Buffer.isBuffer(data)) {
+        stream = Readable.from(data);
+        dataSize = data.length;
+      } else {
+        if (size === undefined) {
+          throw new Error("Size must be provided when using a stream");
+        }
+        stream = data;
+        dataSize = size;
+      }
+
+      await this.client.putObject(
+        env.STORAGE_S3_BUCKET,
+        name,
+        stream,
+        dataSize
+      );
       return true;
     } catch (err) {
       Logger.error(err);
@@ -44,8 +68,8 @@ export default class S3Storage extends Storage {
 
   async getFile(name: string): Promise<Buffer | null> {
     try {
-      const file = await this.client.getObject(env.STORAGE_S3_BUCKET, name);
-      return readableToBuffer(file);
+      const stream = await this.client.getObject(env.STORAGE_S3_BUCKET, name);
+      return readableToBuffer(stream);
     } catch (err) {
       Logger.error(err);
       return null;

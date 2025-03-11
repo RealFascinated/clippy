@@ -46,8 +46,7 @@ async function processFile(file: File): Promise<FileData> {
     name: file.name,
     type: file.type,
     size: file.size,
-    // @ts-ignore
-    content: await file.bytes(),
+    content: new Uint8Array(await file.arrayBuffer()),
   };
 }
 
@@ -86,7 +85,7 @@ export async function POST(
     }
 
     // Validate file types
-    if (!files.every(file => file instanceof File)) {
+    if (!files.every((file) => file instanceof File)) {
       return NextResponse.json(
         { message: "Invalid file format" },
         { status: 400 }
@@ -106,6 +105,12 @@ export async function POST(
       const fileId = randomString(env.FILE_ID_LENGTH);
       let content = Buffer.from(file.content);
 
+      // Check upload limit before processing
+      const role = getUserRole(user);
+      if (role.uploadLimit !== -1 && file.size > role.uploadLimit) {
+        throw fileExceedsUploadLimit;
+      }
+
       // Image compression
       if (
         env.COMPRESS_IMAGES && // Compression is enabled
@@ -114,7 +119,7 @@ export async function POST(
         !file.type.startsWith("image/gif") // ignore gifs
       ) {
         const before = Date.now();
-        // Compress image
+        // Compress image using streaming
         content = Buffer.from(
           await Sharp(content).webp({ quality: 95 }).toBuffer()
         );
@@ -135,11 +140,6 @@ export async function POST(
             `Compressed file "${fileId}.webp" (before: ${formatBytes(file.size)}, after: ${formatBytes(content.length)}, took: ${Date.now() - before}ms)`
           );
         }
-      }
-
-      const role = getUserRole(user);
-      if (role.uploadLimit !== -1 && content.length > role.uploadLimit) {
-        throw fileExceedsUploadLimit;
       }
 
       fileMeta = await uploadFile(

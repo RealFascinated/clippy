@@ -6,6 +6,7 @@ import Logger from "@/lib/logger";
 import { getFileName } from "@/lib/utils/file";
 import { getFilePath, getFileThumbnailPath } from "@/lib/utils/paths";
 import { getThumbnail } from "@/lib/utils/thumbmail";
+import { readableToBuffer } from "@/lib/utils/stream";
 import Queue from "@/queue/queue";
 import { storage } from "@/storage/create-storage";
 import { and, eq, like, or } from "drizzle-orm";
@@ -52,12 +53,15 @@ export default class ThumbnailQueue extends Queue<FileType> {
     const fileName = getFileName(file);
     Logger.info(`Processing thumbnail for file ${file.id}`);
     try {
-      const fileBuffer = await storage.getFile(getFilePath(file.userId, file));
-      if (fileBuffer == null) {
-        Logger.info(`Failed to get buffer for ${fileName}`);
+      const fileStream = await storage.getFileStream(
+        getFilePath(file.userId, file)
+      );
+      if (fileStream == null) {
+        Logger.info(`Failed to get stream for ${fileName}`);
         return;
       }
 
+      const fileBuffer = await readableToBuffer(fileStream);
       const thumbnail = await getThumbnail(fileName, fileBuffer, file.mimeType);
       const thumbnailMeta: ThumbnailType = {
         id: file.id,
@@ -68,7 +72,8 @@ export default class ThumbnailQueue extends Queue<FileType> {
 
       const savedThumbnail = await storage.saveFile(
         getFileThumbnailPath(file.userId, thumbnailMeta),
-        thumbnail.buffer
+        thumbnail.buffer,
+        thumbnail.size
       );
 
       if (!savedThumbnail) {

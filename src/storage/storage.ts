@@ -1,14 +1,19 @@
-import internal from "stream";
+import internal, { Readable } from "stream";
 
 export default abstract class Storage {
   /**
    * Saves a file to the storage.
    *
    * @param name the name of the file to save
-   * @param data the buffer for the file
+   * @param data the buffer or readable stream for the file
+   * @param size the size of the file in bytes (required when data is a stream)
    * @returns true if saved, false if an error occured
    */
-  abstract saveFile(name: string, data: Buffer): Promise<boolean>;
+  abstract saveFile(
+    name: string,
+    data: Buffer | Readable,
+    size?: number
+  ): Promise<boolean>;
 
   /**
    * Gets a file from the storage.
