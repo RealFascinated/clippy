@@ -71,7 +71,7 @@ const groups: Group[] = [
 const socials: Item[] = [
   {
     title: "GitHub",
-    url: "https://github.com/ClippyCDN/clippy/clippy",
+    url: "https://github.com/ClippyCDN/clippy",
     icon: <SiGithub />,
   },
   {
