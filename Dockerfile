@@ -44,4 +44,5 @@ ENV NEXT_PUBLIC_APP_ENV=production
 ENV HOSTNAME="0.0.0.0"
 EXPOSE 3000
 ENV PORT=3000
-", "run", "start"]
+
+CMD ["bun", "run", "start"]
