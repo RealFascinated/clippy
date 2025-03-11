@@ -1,46 +1,23 @@
-import apiRequest from "@/lib/request";
-import { Session } from "better-auth";
 import { getSessionCookie } from "better-auth/cookies";
 import { NextRequest, NextResponse } from "next/server";
-import { env } from "./lib/env";
 
-export async function middleware(req: NextRequest) {
-  const pathname = req.nextUrl.pathname;
-  const sessionCookie = getSessionCookie(req);
+export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+  const sessionCookie = getSessionCookie(request);
 
   // Not logged in and on dashboard page
   if (pathname.startsWith("/dashboard") && !sessionCookie) {
-    return NextResponse.redirect(new URL("/auth/login", req.url));
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
   if (pathname === "/") {
     if (sessionCookie) {
       // They are logged in
-      return NextResponse.redirect(new URL("/dashboard", req.url));
+      return NextResponse.redirect(new URL("/dashboard", request.url));
     } else {
       // Not logged in
-      return NextResponse.redirect(new URL("/auth/login", req.url));
+      return NextResponse.redirect(new URL("/auth/login", request.url));
     }
-  }
-
-  // Check if the session is valid
-  if (!pathname.startsWith("/dashboard") || !sessionCookie) return;
-  const session: Session | undefined = await apiRequest.get(
-    `${env.NEXT_PUBLIC_WEBSITE_URL}/api/auth/get-session`,
-    {
-      baseURL: req.nextUrl.origin,
-      headers: {
-        cookie: req.headers.get("cookie") || "",
-      },
-    }
-  );
-  if (!session) {
-    const cookieName = req.cookies
-      .getAll()
-      .find((cookie) => cookie.name.includes("session_token"));
-    const response = NextResponse.redirect(new URL("/auth/login", req.url));
-    if (cookieName) response.cookies.delete(cookieName.name);
-    return response;
   }
 }
 
