@@ -1,6 +1,5 @@
 import SettingTabs from "@/components/dashboard/user/settings/setting-tabs";
-import { UserType } from "@/lib/db/schemas/auth-schema";
-import { getUser } from "@/lib/helpers/user";
+import { getUserSession, UserSessionResponse } from "@/lib/helpers/user";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,7 +11,7 @@ export default async function AccountSettingsPage({
 }: {
   params: Promise<{ slug: string[] }>;
 }) {
-  const user: UserType = await getUser();
+  const session: UserSessionResponse | null = await getUserSession();
   const selectedTab: string | undefined = (await params).slug?.[0];
 
   return (
@@ -28,7 +27,7 @@ export default async function AccountSettingsPage({
       </div>
 
       {/* Settings */}
-      <SettingTabs user={user} defaultTab={selectedTab} />
+      {session && <SettingTabs session={session} defaultTab={selectedTab} />}
     </div>
   );
 }

@@ -2,8 +2,10 @@ import { users, UserType } from "@/lib/db/schemas/auth-schema";
 import { env } from "@/lib/env";
 import { getUserPreferences } from "@/lib/preference";
 import request from "@/lib/request";
+import { MimetypeDistribution } from "@/type/api/user/mimetype-distrubution";
 import { DiscordEmbed } from "@/type/discord";
 import { UserFilesSort } from "@/type/user/user-file-sort";
+import { Session } from "better-auth";
 import { format } from "date-fns";
 import {
   and,
@@ -22,11 +24,10 @@ import { authError } from "../api-commons";
 import { auth } from "../auth";
 import { db } from "../db/drizzle";
 import { fileTable } from "../db/schemas/file";
+import { metricsTable } from "../db/schemas/metrics";
 import { thumbnailTable } from "../db/schemas/thumbnail";
 import { randomString } from "../utils/utils";
 import { getUserMetrics } from "./metrics";
-import { metricsTable } from "../db/schemas/metrics";
-import { MimetypeDistribution } from "@/type/api/user/mimetype-distrubution";
 
 export type UserFilesOptions = {
   sort?: UserFilesSort;
@@ -34,6 +35,11 @@ export type UserFilesOptions = {
   offset?: number;
   search?: string;
   favorited?: boolean;
+};
+
+export type UserSessionResponse = {
+  session: Session;
+  user: UserType;
 };
 
 /**
@@ -276,15 +282,30 @@ export function generateUploadToken() {
 }
 
 /**
+ * Get the current user's sessions
+ *
+ * @returns the current user's sessions
+ */
+export async function getUserSession(): Promise<UserSessionResponse | null> {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) return null;
+  return {
+    session: session.session as any as Session,
+    user: session.user as UserType,
+  };
+}
+
+/**
  * Get the current user. If the user is not
  * logged in, redirect to the main page.
  *
  * @returns the current user
  */
 export async function getUser(): Promise<UserType> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session: UserSessionResponse | null = await getUserSession();
+
   // This shouldn't happen
   if (!session) {
     redirect("/");
@@ -301,9 +322,7 @@ export async function getUser(): Promise<UserType> {
  * @returns the user
  */
 export async function getApiUser(): Promise<UserType> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session: UserSessionResponse | null = await getUserSession();
   if (!session) {
     throw authError;
   }
