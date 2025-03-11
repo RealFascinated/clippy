@@ -8,6 +8,7 @@ import TasksManager from "../tasks/tasks-manager";
 import fastifyNext from "./plugins/fastify-next";
 import { FastifyRequest } from "fastify";
 import { isProduction } from "@/lib/utils/utils";
+import multipart from "@fastify/multipart";
 
 // Extend FastifyRequest to include our custom log property
 declare module "fastify" {
@@ -28,6 +29,9 @@ runMigrations().then(async () => {
   const server = Fastify({
     logger: false,
   });
+
+  // Register multipart plugin to handle form-data
+  await server.register(multipart);
 
   // Add custom request logging in production
   if (isProduction()) {
