@@ -9,9 +9,9 @@ export default function FileTypeList({
   mimetypeDistribution,
 }: FileTypeListProps) {
   return (
-    <div className="w-full h-[250px] md:h-[350px] p-4 bg-background/70 rounded-md border border-muted overflow-y-auto flex flex-col gap-2">
+    <div className="w-full h-[250px] md:h-[350px] p-4 bg-background/70 rounded-md border border-muted flex flex-col gap-2">
       <span className="font-semibold">File Types</span>
-      <ul className="grid grid-cols-1">
+      <ul className="grid grid-cols-1 overflow-y-auto">
         {Object.entries(mimetypeDistribution).map(([key, value]) => (
           <Link
             href={`/dashboard/files?search=${key}`}
