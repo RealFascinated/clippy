@@ -4,6 +4,7 @@ import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { formatBytes } from "@/lib/utils/utils";
 import { UserStatisticsResponse } from "@/type/api/user/graph-response";
 import {
+  BarController,
   BarElement,
   CategoryScale,
   ChartData,
@@ -11,11 +12,10 @@ import {
   ChartOptions,
   Legend,
   LinearScale,
+  LineController,
   LineElement,
   PointElement,
   Tooltip,
-  LineController,
-  BarController,
 } from "chart.js";
 import { format } from "date-fns";
 import { Chart } from "react-chartjs-2";

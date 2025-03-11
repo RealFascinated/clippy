@@ -2,8 +2,7 @@ import { env } from "@/lib/env";
 import Logger from "@/lib/logger";
 import { readableToBuffer } from "@/lib/utils/stream";
 import * as Minio from "minio";
-import internal from "stream";
-import { Readable } from "stream";
+import internal, { Readable } from "stream";
 import Storage from "../storage";
 
 export default class S3Storage extends Storage {

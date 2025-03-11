@@ -2,6 +2,7 @@ import { users, UserType } from "@/lib/db/schemas/auth-schema";
 import { env } from "@/lib/env";
 import { getUserPreferences } from "@/lib/preference";
 import request from "@/lib/request";
+import { MimetypeDistribution } from "@/type/api/user/mimetype-distrubution";
 import { DiscordEmbed } from "@/type/discord";
 import { UserFilesSort } from "@/type/user/user-file-sort";
 import { format } from "date-fns";
@@ -22,11 +23,10 @@ import { authError } from "../api-commons";
 import { auth } from "../auth";
 import { db } from "../db/drizzle";
 import { fileTable } from "../db/schemas/file";
+import { metricsTable } from "../db/schemas/metrics";
 import { thumbnailTable } from "../db/schemas/thumbnail";
 import { randomString } from "../utils/utils";
 import { getUserMetrics } from "./metrics";
-import { metricsTable } from "../db/schemas/metrics";
-import { MimetypeDistribution } from "@/type/api/user/mimetype-distrubution";
 
 export type UserFilesOptions = {
   sort?: UserFilesSort;

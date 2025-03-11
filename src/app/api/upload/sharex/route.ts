@@ -85,7 +85,7 @@ export async function POST(
     }
 
     // Validate file types
-    if (!files.every((file) => file instanceof File)) {
+    if (!files.every(file => file instanceof File)) {
       return NextResponse.json(
         { message: "Invalid file format" },
         { status: 400 }

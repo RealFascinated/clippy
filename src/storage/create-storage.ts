@@ -1,8 +1,8 @@
 import { env } from "@/lib/env";
 import DummyStorage from "./impl/dummy";
+import LocalStorage from "./impl/local";
 import S3Storage from "./impl/s3";
 import Storage from "./storage";
-import LocalStorage from "./impl/local";
 
 /**
  * Creates a storage instance based on the provider.

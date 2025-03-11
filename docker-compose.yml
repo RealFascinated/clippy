@@ -31,7 +31,7 @@ services:
 
       # Configuration
       FILE_ID_LENGTH: 8
-      ALLOWED_MIME_TYPES: */*
+      ALLOWED_MIME_TYPES: "*/*"
       COMPRESS_IMAGES: true
     ports:
       - "3000:3000"

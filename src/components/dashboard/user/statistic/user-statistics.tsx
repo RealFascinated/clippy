@@ -1,13 +1,11 @@
-import { UserMetricsType } from "@/lib/db/schemas/metrics";
-
 import { env } from "@/lib/env";
 import request from "@/lib/request";
 import { UserStatisticsResponse } from "@/type/api/user/graph-response";
 import { headers } from "next/headers";
-import Statistics from "./statistics";
+import FileTypeList from "./file-type-list";
 import UserFileTypeDistribution from "./graphs/file-type-distribution";
 import StatisticHistoryGraph from "./graphs/statistic-history-graph";
-import FileTypeList from "./file-type-list";
+import Statistics from "./statistics";
 
 export default async function UserStatistics() {
   const statisticsResponse = await request.get<UserStatisticsResponse>(

@@ -1,6 +1,5 @@
 "use client";
 
-import { formatBytes } from "@/lib/utils/utils";
 import { UserStatisticsResponse } from "@/type/api/user/graph-response";
 import {
   ArcElement,
@@ -49,8 +48,8 @@ export default function UserFileTypeDistribution({
     .slice(0, 10);
 
   const mimeTypes = mimeTypeDistribution.map(([key]) => key);
-  const backgroundColor = mimeTypes.map((type) => generateColor(type));
-  const borderColor = mimeTypes.map((type) => generateColor(type, true));
+  const backgroundColor = mimeTypes.map(type => generateColor(type));
+  const borderColor = mimeTypes.map(type => generateColor(type, true));
 
   const chartData: ChartData<ChartTypes> = {
     labels: mimeTypes,
@@ -74,7 +73,7 @@ export default function UserFileTypeDistribution({
         plugins={[
           {
             id: "legend-padding",
-            beforeInit: (chart) => {
+            beforeInit: chart => {
               if (chart.legend) {
                 const originalFit = chart.legend.fit;
                 chart.legend.fit = function fit() {
