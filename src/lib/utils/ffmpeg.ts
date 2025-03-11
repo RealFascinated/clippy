@@ -1,4 +1,4 @@
-import ffmpeg from "fluent-ffmpeg";
+import childProcess from "child_process";
 
 /**
  * Extracts a thumbnail from a video file at 00:01.
@@ -8,25 +8,27 @@ import ffmpeg from "fluent-ffmpeg";
  */
 export function extractVideoThumbnail(inputFile: string, outputFile: string) {
   return new Promise((resolve, reject) => {
-    const command = ffmpeg();
-    command
-      .input(inputFile)
-      .output(outputFile)
-      .outputOptions([
-        "-vframes 1", // Get the first frame
-        "-q:v 2", // High-quality output
-        "-c:v mjpeg", // Use MJPEG for thumbnail
-        "-f image2", // Force image format
-      ])
-      .on("error", err => {
-        console.error(
-          `An error occurred while extracting the thumbnail for ${inputFile}: ${err.message}`
-        );
-        reject(err);
-      })
-      .on("end", () => {
-        resolve(true);
-      })
-      .run();
+    const command = childProcess.spawn("ffmpeg", [
+      "-i",
+      inputFile,
+      "-vframes",
+      "1",
+      "-filter:v",
+      "thumbnail",
+      "-c:v",
+      "mjpeg",
+      outputFile,
+    ]);
+
+    command.on("error", (err) => {
+      console.error(
+        `An error occurred while extracting the thumbnail for ${inputFile}: ${err.message}`
+      );
+      reject(err);
+    });
+
+    command.on("close", () => {
+      resolve(true);
+    });
   });
 }

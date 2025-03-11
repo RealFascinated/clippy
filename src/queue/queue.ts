@@ -1,5 +1,5 @@
 export default abstract class Queue<T> {
-  public queue: T[];
+  public queue: T[] = [];
   private activeProcesses: number = 0;
   private isProcessing = false;
 
@@ -7,8 +7,6 @@ export default abstract class Queue<T> {
     processInterval: number,
     private concurrency: number = 1
   ) {
-    this.queue = [];
-
     setInterval(async () => {
       if (this.isProcessing || !Array.isArray(this.queue)) {
         return;
@@ -28,7 +26,7 @@ export default abstract class Queue<T> {
           this.activeProcesses++;
           // Process item without awaiting to allow concurrent execution
           this.process(item)
-            .catch(error => {
+            .catch((error) => {
               console.error("Error processing queue item:", error);
             })
             .finally(() => {

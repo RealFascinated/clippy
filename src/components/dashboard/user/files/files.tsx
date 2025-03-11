@@ -74,21 +74,32 @@ export default function UserFiles({
     key: "createdAt",
     direction: "desc",
   });
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
 
   const debouncedSearch = useDebounce(search, 500);
 
   useEffect(() => {
-    setSort({
-      key: (localStorage.getItem("sortKey") as FileKeys) ?? sort.key,
-      direction:
-        (localStorage.getItem("sortDirection") as SortDirection) ??
-        sort.direction,
-    });
+    if (typeof window !== "undefined") {
+      const savedSortKey = localStorage.getItem("sortKey") as FileKeys;
+      const savedSortDirection = localStorage.getItem(
+        "sortDirection"
+      ) as SortDirection;
+
+      if (savedSortKey || savedSortDirection) {
+        setSort({
+          key: savedSortKey ?? "createdAt",
+          direction: savedSortDirection ?? "desc",
+        });
+      }
+    }
   }, []);
 
+  // Only reset page on user-initiated changes
   useEffect(() => {
-    setPage(1);
-  }, [debouncedSearch, sort]);
+    if (hasUserInteracted) {
+      setPage(1);
+    }
+  }, [debouncedSearch, sort, hasUserInteracted]);
 
   useEffect(() => {
     if (initialRender) {
@@ -102,6 +113,36 @@ export default function UserFiles({
       });
     }
   }, [debouncedSearch, page]);
+
+  // Update handlers to set hasUserInteracted
+  const handleSortChange = (value: string) => {
+    setHasUserInteracted(true);
+    setSort({
+      ...sort,
+      key: value as FileKeys,
+    });
+    localStorage.setItem("sortKey", value);
+  };
+
+  const handleDirectionChange = () => {
+    setHasUserInteracted(true);
+    const direction = sort.direction === "asc" ? "desc" : "asc";
+    setSort({
+      ...sort,
+      direction: direction,
+    });
+    localStorage.setItem("sortDirection", direction);
+  };
+
+  const handleSearch = (value: string) => {
+    setHasUserInteracted(true);
+    setSearch(value);
+  };
+
+  const handleClearSearch = () => {
+    setHasUserInteracted(true);
+    setSearch("");
+  };
 
   const {
     data: files,
@@ -127,7 +168,7 @@ export default function UserFiles({
           ...(videosOnly && { videosOnly: "true" }),
         },
       }))!,
-    placeholderData: data => data,
+    placeholderData: (data) => data,
   });
 
   return (
@@ -147,13 +188,13 @@ export default function UserFiles({
             <Input
               placeholder="Query..."
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={(e) => handleSearch(e.target.value)}
               className="pr-8"
             />
             {search && (
               <button
                 className="absolute right-0 top-0 h-full w-6.5 p-0"
-                onClick={() => setSearch("")}
+                onClick={handleClearSearch}
               >
                 <X className="size-4" />
               </button>
@@ -161,16 +202,7 @@ export default function UserFiles({
           </div>
 
           {/* Sort By */}
-          <Select
-            value={sort.key}
-            onValueChange={value => {
-              setSort({
-                ...sort,
-                key: value as FileKeys,
-              });
-              localStorage.setItem("sortKey", value);
-            }}
-          >
+          <Select value={sort.key} onValueChange={handleSortChange}>
             <SelectTrigger className="w-[140px]">
               <SelectValue />
             </SelectTrigger>
@@ -190,16 +222,9 @@ export default function UserFiles({
           <Button
             variant="outline"
             className="border-input"
-            onClick={() => {
-              const direction = sort.direction == "asc" ? "desc" : "asc";
-              setSort({
-                ...sort,
-                direction: direction,
-              });
-              localStorage.setItem("sortDirection", direction);
-            }}
+            onClick={handleDirectionChange}
           >
-            {sort.direction == "asc" ? (
+            {sort.direction === "asc" ? (
               <ArrowUpNarrowWide className="size-5" />
             ) : (
               <ArrowDownWideNarrow className="size-5" />
@@ -220,7 +245,7 @@ export default function UserFiles({
           {files.items.length > 0 ? (
             <>
               <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-2 items-center">
-                {files.items.map(fileMeta => (
+                {files.items.map((fileMeta) => (
                   <UserFile
                     user={user}
                     key={fileMeta.id}
@@ -246,7 +271,7 @@ export default function UserFiles({
             totalItems={files.metadata.totalItems}
             itemsPerPage={files.metadata.itemsPerPage}
             loadingPage={isLoading || isRefetching ? page : undefined}
-            onPageChange={newPage => setPage(newPage)}
+            onPageChange={(newPage) => setPage(newPage)}
           />
         </>
       )}

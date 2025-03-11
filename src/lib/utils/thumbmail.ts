@@ -19,8 +19,7 @@ import { randomString } from "./utils";
 export async function getThumbnail(
   fileName: string,
   buffer: Buffer,
-  mimeType: string,
-  quality = 80 // Default quality set to 80
+  mimeType: string
 ): Promise<{ buffer: Buffer; size: number }> {
   let thumbnail: Buffer | undefined;
 
@@ -32,7 +31,7 @@ export async function getThumbnail(
       tempDir,
       `${randomString(8)}.${getFileExtension(fileName)}`
     );
-    const outputPath = path.join(tempDir, `${randomString(8)}.webp`);
+    const outputPath = path.join(tempDir, `${randomString(8)}.jpg`);
 
     try {
       await fs.writeFile(inputPath, buffer);
@@ -44,13 +43,14 @@ export async function getThumbnail(
       // Resize the thumbnail to a maximum width and height of 250 pixels using Sharp
       thumbnail = await Sharp(thumbnail)
         .resize(250, 250, { fit: "inside" })
-        .webp({ quality })
+        .webp({ quality: 90 })
         .toBuffer();
     } catch (err) {
       Logger.warn(
         `An error occurred while processing the video file ${fileName}:`,
         err
       );
+      throw err;
     } finally {
       // Cleanup temporary files
       await fs.rm(tempDir, {
@@ -63,13 +63,14 @@ export async function getThumbnail(
     try {
       thumbnail = await Sharp(buffer)
         .resize(250, 250, { fit: "inside" })
-        .webp({ quality })
+        .webp({ quality: 90 })
         .toBuffer();
     } catch (err) {
       Logger.warn(
         `An error occurred while processing the image file ${fileName}:`,
         err
       );
+      throw err;
     }
   }
 
