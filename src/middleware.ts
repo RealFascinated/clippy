@@ -2,6 +2,7 @@ import apiRequest from "@/lib/request";
 import { Session } from "better-auth";
 import { getSessionCookie } from "better-auth/cookies";
 import { NextRequest, NextResponse } from "next/server";
+import { env } from "./lib/env";
 
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
@@ -25,7 +26,7 @@ export async function middleware(req: NextRequest) {
   // Check if the session is valid
   if (!pathname.startsWith("/dashboard") || !sessionCookie) return;
   const session: Session | undefined = await apiRequest.get(
-    "/api/auth/get-session",
+    `${env.NEXT_PUBLIC_WEBSITE_URL}/api/auth/get-session`,
     {
       baseURL: req.nextUrl.origin,
       headers: {
@@ -36,7 +37,7 @@ export async function middleware(req: NextRequest) {
   if (!session) {
     const cookieName = req.cookies
       .getAll()
-      .find(cookie => cookie.name.includes("session_token"));
+      .find((cookie) => cookie.name.includes("session_token"));
     const response = NextResponse.redirect(new URL("/auth/login", req.url));
     if (cookieName) response.cookies.delete(cookieName.name);
     return response;
