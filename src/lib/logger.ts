@@ -1,4 +1,6 @@
 import { format } from "date-fns";
+import { env } from "./env";
+import chalk from "chalk";
 
 export default class Logger {
   private static readonly LogLevel = {
@@ -7,6 +9,31 @@ export default class Logger {
     warn: 2,
     error: 3,
   };
+
+  private static readonly LogColors = {
+    debug: chalk.blue,
+    info: chalk.green,
+    warn: chalk.yellow,
+    error: chalk.red,
+  };
+
+  private static readonly LogSymbols = {
+    debug: "🔍",
+    info: "ℹ️",
+    warn: "⚠️",
+    error: "❌",
+  };
+
+  /**
+   * Checks if a log level should be logged.
+   *
+   * @param level the log level to check
+   * @returns true if the log level should be logged, false otherwise
+   */
+  private static shouldLog(level: keyof typeof Logger.LogLevel): boolean {
+    const configuredLevel = env.LOG_LEVEL || "info";
+    return Logger.LogLevel[level] >= Logger.LogLevel[configuredLevel];
+  }
 
   /**
    * Logs a message to the console.
@@ -20,8 +47,18 @@ export default class Logger {
     message: unknown,
     ...args: unknown[]
   ) {
-    const prefix = `${format(new Date(), "dd/MM/yyyy, HH:mm:ss")} [Clippy / ${level.toUpperCase()}]`;
-    const formattedMessage = `${prefix}: ${message}`;
+    if (!Logger.shouldLog(level)) {
+      return;
+    }
+
+    const timestamp = chalk.gray(format(new Date(), "dd/MM/yyyy, HH:mm:ss"));
+    const symbol = Logger.LogSymbols[level];
+    const levelColor = Logger.LogColors[level];
+    const levelText = levelColor.bold(`[${level.toUpperCase()}]`);
+    const appName = chalk.cyan("[Clippy]");
+
+    const prefix = `${timestamp} ${appName} ${levelText} ${symbol}`;
+    const formattedMessage = `${prefix} ${message}`;
 
     switch (level) {
       case "debug":

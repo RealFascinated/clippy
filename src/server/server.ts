@@ -9,6 +9,9 @@ import fastifyNext from "./plugins/fastify-next";
 import { FastifyRequest } from "fastify";
 import { isProduction } from "@/lib/utils/utils";
 import multipart from "@fastify/multipart";
+import { networkInterfaces } from "os";
+import chalk from "chalk";
+import { getStatusColor, getResponseTimeColor } from "../lib/utils/log-colors";
 
 // Extend FastifyRequest to include our custom log property
 declare module "fastify" {
@@ -46,8 +49,10 @@ runMigrations().then(async () => {
       if (request.customLog?.startTime) {
         const hrtime = process.hrtime(request.customLog.startTime);
         const timeInMs = (hrtime[0] * 1000 + hrtime[1] / 1e6).toFixed(2);
+        const timeInMsNum = parseFloat(timeInMs);
+
         Logger.info(
-          `${request.method} ${request.url} ${reply.statusCode} in ${timeInMs}ms`
+          `${chalk.bold(request.method)} ${request.url} ${getStatusColor(reply.statusCode)(reply.statusCode)} ${getResponseTimeColor(timeInMsNum)(`in ${timeInMs}ms`)}`
         );
       }
       done();
@@ -78,8 +83,44 @@ runMigrations().then(async () => {
 
     new TasksManager();
     thumbnailQueue.loadFiles();
+
+    // Get startup information
+    const localIP = getLocalIP();
+    const startupTime = new Date().toLocaleTimeString();
+    const environment = dev ? "development" : "production";
+
+    // Create a visually appealing startup message
+    console.log("\n" + "=".repeat(50));
+    console.log(chalk.bold.green("🚀 Server Successfully Started!"));
+    console.log("=".repeat(50));
+    console.log(chalk.cyan("📡 Network Information:"));
+    console.log(
+      `   ${chalk.bold("Local:")}           http://localhost:${port}`
+    );
+    console.log(
+      `   ${chalk.bold("On Your Network:")} http://${localIP}:${port}`
+    );
+    console.log("\n📊 Server Details:");
+    console.log(`   ${chalk.bold("Environment:")}     ${environment}`);
+    console.log(`   ${chalk.bold("Start Time:")}      ${startupTime}`);
+    console.log(`   ${chalk.bold("Node.js Version:")} ${process.version}`);
+    console.log("=".repeat(50) + "\n");
   } catch (err) {
     Logger.error("Failed to start server:", err);
     process.exit(1);
   }
 });
+
+// Get local IP address
+const getLocalIP = () => {
+  const nets = networkInterfaces();
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name] ?? []) {
+      // Skip internal and non-IPv4 addresses
+      if (!net.internal && net.family === "IPv4") {
+        return net.address;
+      }
+    }
+  }
+  return "unknown";
+};

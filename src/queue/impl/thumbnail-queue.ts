@@ -37,7 +37,7 @@ export default class ThumbnailQueue extends Queue<FileType> {
 
     this.queue = files;
     if (files.length > 0) {
-      Logger.info(`Loaded ${files.length} files into the thumbnail queue`);
+      Logger.debug(`Loaded ${files.length} files into the thumbnail queue`);
     }
   }
 
@@ -45,11 +45,11 @@ export default class ThumbnailQueue extends Queue<FileType> {
     // Skip if file is not an image or video
     const before = performance.now();
     const fileName = getFileName(file);
-    Logger.info(`Processing thumbnail for file ${fileName}`);
+    Logger.debug(`Processing thumbnail for file ${fileName}`);
     try {
       const buffer = await storage.getFile(getFilePath(file.userId, file));
       if (!buffer) {
-        Logger.info(`Failed to get buffer for ${fileName}`);
+        Logger.debug(`Failed to get buffer for ${fileName}`);
         return;
       }
 
@@ -71,7 +71,7 @@ export default class ThumbnailQueue extends Queue<FileType> {
         await storage.deleteFile(
           getFileThumbnailPath(file.userId, thumbnailMeta)
         );
-        Logger.error("An error occurred whilst generating the thumbnail");
+        Logger.debug("An error occurred whilst generating the thumbnail");
         return;
       }
 
@@ -80,13 +80,13 @@ export default class ThumbnailQueue extends Queue<FileType> {
         hasThumbnail: true,
       });
 
-      Logger.info(
+      Logger.debug(
         `Finished processing thumbnail for ${fileName} in ${(
           performance.now() - before
         ).toFixed(2)}ms (${this.queue.length} files remaining)`
       );
     } catch (err) {
-      Logger.error(`Failed to generate thumbnail for ${fileName}`, err);
+      Logger.debug(`Failed to generate thumbnail for ${fileName}`, err);
     }
   }
 }

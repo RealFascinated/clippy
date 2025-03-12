@@ -14,11 +14,13 @@ export default class TasksManager {
         task.cron,
         async () => {
           if (task.running) {
-            Logger.warn(`Task ${task.name} is already running, skipping task.`);
+            Logger.debug(
+              `Task ${task.name} is already running, skipping task.`
+            );
             return;
           }
 
-          Logger.info(`Running task ${task.name}`);
+          Logger.debug(`Running task ${task.name}`);
           task.running = true;
           await task.run();
           task.running = false;
@@ -37,6 +39,6 @@ export default class TasksManager {
    */
   private registerTask(task: Task) {
     this.tasks.push(task);
-    Logger.info(`Registered the task "${task.name}" (${task.cron})`);
+    Logger.debug(`Registered the task "${task.name}" (${task.cron})`);
   }
 }

@@ -15,7 +15,10 @@ export const env = createEnv({
   },
 
   server: {
+    // Database
     DATABASE_URL: z.string(),
+
+    // Better Auth
     BETTER_AUTH_SECRET: z.string(),
 
     // Storage Provider
@@ -39,13 +42,22 @@ export const env = createEnv({
 
     // Short URL
     SHORT_URL_LENGTH: z.number().optional().default(6),
+
+    // Misc
+    LOG_LEVEL: z
+      .enum(["debug", "info", "warn", "error"])
+      .optional()
+      .default("info"),
   },
 
   /**
    * This is the environment variables that are available on the server.
    */
   runtimeEnv: {
-    // Website
+    /**
+     * Client
+     */
+
     NEXT_PUBLIC_WEBSITE_NAME: process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "Clippy",
     NEXT_PUBLIC_WEBSITE_DESCRIPTION:
       process.env.NEXT_PUBLIC_WEBSITE_DESCRIPTION ??
@@ -54,19 +66,25 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_WEBSITE_LOGO ?? "/logo.png",
     NEXT_PUBLIC_WEBSITE_URL: process.env.NEXT_PUBLIC_WEBSITE_URL,
 
-    // Shared
+    /**
+     * Shared
+     */
+
     NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV ?? "development",
     NEXT_PUBLIC_ALLOW_REGISTRATIONS:
       process.env.NEXT_PUBLIC_ALLOW_REGISTRATIONS === "true",
 
-    // Postgres
+    /**
+     * Server
+     */
+
+    // Database
     DATABASE_URL: process.env.DATABASE_URL,
 
     // Better Auth
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
-    BETTER_AUTH_URL: process.env.NEXT_PUBLIC_WEBSITE_URL,
 
-    // File Storage
+    // Storage Provider
     STORAGE_PROVIDER: process.env.STORAGE_PROVIDER,
 
     // Local Storage
@@ -87,6 +105,9 @@ export const env = createEnv({
 
     // Short URL
     SHORT_URL_LENGTH: Number(process.env.SHORT_URL_LENGTH ?? 6),
+
+    // Misc
+    LOG_LEVEL: process.env.LOG_LEVEL,
   },
 
   /**
