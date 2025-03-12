@@ -14,7 +14,18 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils/utils";
 import { SiGithub } from "@icons-pack/react-simple-icons";
-import { Cog, File, Heart, Home, NotebookText, Video } from "lucide-react";
+import {
+  Bell,
+  FolderOpen,
+  Heart,
+  Home,
+  Lock,
+  NotebookText,
+  Palette,
+  Settings,
+  User,
+  Video,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactElement } from "react";
@@ -45,12 +56,12 @@ const groups: Group[] = [
     title: "Files",
     items: [
       {
-        title: "Files",
+        title: "All Files",
         url: "/dashboard/files",
-        icon: <File />,
+        icon: <FolderOpen />,
       },
       {
-        title: "Favorited Files",
+        title: "Favorites",
         url: "/dashboard/files/favorited",
         icon: <Heart />,
       },
@@ -62,12 +73,32 @@ const groups: Group[] = [
     ],
   },
   {
-    title: "Account",
+    title: "Settings",
     items: [
       {
-        title: "Settings",
-        url: "/dashboard/account/settings",
-        icon: <Cog />,
+        title: "User",
+        url: "/dashboard/account/settings/user",
+        icon: <User />,
+      },
+      {
+        title: "Security",
+        url: "/dashboard/account/settings/security",
+        icon: <Lock />,
+      },
+      {
+        title: "Config",
+        url: "/dashboard/account/settings/config",
+        icon: <Settings />,
+      },
+      {
+        title: "Notifications",
+        url: "/dashboard/account/settings/notifications",
+        icon: <Bell />,
+      },
+      {
+        title: "Appearance",
+        url: "/dashboard/account/settings/appearance",
+        icon: <Palette />,
       },
     ],
   },
@@ -102,7 +133,7 @@ export default function AppSidebar() {
                   <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
                 )}
                 <SidebarGroupContent>
-                  <SidebarMenu>
+                  <SidebarMenu className="gap-0.5">
                     {group.items.map((item, index) => {
                       const active: boolean = path === item.url;
                       return (
@@ -119,7 +150,14 @@ export default function AppSidebar() {
                               prefetch={false}
                               draggable={false}
                             >
-                              <span className="*:size-4">{item.icon}</span>
+                              <span
+                                className={cn(
+                                  "*:size-4",
+                                  active && "*:fill-white"
+                                )}
+                              >
+                                {item.icon}
+                              </span>
                               <span>{item.title}</span>
                             </Link>
                           </SidebarMenuButton>
