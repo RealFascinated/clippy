@@ -6,6 +6,7 @@ import Preference, {
 import SimpleTooltip from "@/components/simple-tooltip";
 import { Button } from "@/components/ui/button";
 import { Notifications, NotificationState } from "@/lib/db/schemas/preference";
+import Logger from "@/lib/logger";
 import { cn } from "@/lib/utils/utils";
 import { usePreferences } from "@/providers/preferences-provider";
 import { Mail, Webhook } from "lucide-react";
@@ -103,7 +104,7 @@ function NotificationToggle({
       });
       setStatus("success");
     } catch (error) {
-      console.error("Failed to update preference:", error);
+      Logger.error("Failed to update preference:", error);
       setStatus("failed");
     }
   };

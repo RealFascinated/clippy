@@ -1,4 +1,5 @@
 import { isProduction } from "@/lib/utils/utils";
+import Logger from "../logger";
 
 type DebugOptions = {
   added?: boolean;
@@ -128,7 +129,7 @@ export class AppCache {
           this.remove(key);
         }
         if (this.debug.expired) {
-          console.log(
+          Logger.debug(
             `Expired ${before - this.cache.size} objects from cache (before: ${before}, after: ${this.cache.size})`
           );
         }
@@ -145,7 +146,7 @@ export class AppCache {
     const cachedObject = this.cache.get(key);
     if (cachedObject === undefined) {
       if (this.debug.missed) {
-        console.log(
+        Logger.debug(
           `Cache miss for key: ${key}, total misses: ${this.cacheMisses}`
         );
       }
@@ -153,7 +154,9 @@ export class AppCache {
       return undefined;
     }
     if (this.debug.fetched) {
-      console.log(`Retrieved ${key} from cache, total hits: ${this.cacheHits}`);
+      Logger.debug(
+        `Retrieved ${key} from cache, total hits: ${this.cacheHits}`
+      );
     }
     this.cacheHits++;
     return cachedObject.value as T;
@@ -172,7 +175,7 @@ export class AppCache {
     });
 
     if (this.debug.added) {
-      console.log(
+      Logger.debug(
         `Inserted ${key} into cache, total keys: ${this.cache.size}, total hits: ${this.cacheHits}, total misses: ${this.cacheMisses}`
       );
     }
@@ -196,7 +199,7 @@ export class AppCache {
     this.cache.delete(key);
 
     if (this.debug.removed) {
-      console.log(`Removed ${key} from cache`);
+      Logger.debug(`Removed ${key} from cache`);
     }
   }
 

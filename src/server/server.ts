@@ -79,7 +79,7 @@ runMigrations().then(async () => {
     new TasksManager();
     thumbnailQueue.loadFiles();
   } catch (err) {
-    console.error("Failed to start server:", err);
+    Logger.error("Failed to start server:", err);
     process.exit(1);
   }
 });

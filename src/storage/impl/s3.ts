@@ -113,10 +113,6 @@ export default class S3Storage extends Storage {
   }
 
   async renameFile(oldName: string, newName: string): Promise<boolean> {
-    console.log({
-      oldName,
-      newName,
-    });
     try {
       await this.client.copyObject(
         env.STORAGE_S3_BUCKET,

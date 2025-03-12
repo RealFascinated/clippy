@@ -2,6 +2,7 @@ import Preference, {
   statusIcons,
 } from "@/components/dashboard/user/settings/types/preference";
 import { Checkbox } from "@/components/ui/checkbox";
+import Logger from "@/lib/logger";
 import { usePreferences } from "@/providers/preferences-provider";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -38,7 +39,7 @@ export default function BooleanPreference({
       updatePreferences({ [preferenceId]: checked });
       setStatus("success");
     } catch (error) {
-      console.error("Failed to update preference:", error);
+      Logger.error("Failed to update preference:", error);
       setValue(!checked);
       setStatus("failed");
     }

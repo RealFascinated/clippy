@@ -1,4 +1,4 @@
-import { authError, notFound } from "@/lib/api-commons";
+import { authError, handleApiRequest, notFound } from "@/lib/api-commons";
 import { UserType } from "@/lib/db/schemas/auth-schema";
 import { FileType } from "@/lib/db/schemas/file";
 import { getFileById, updateFile } from "@/lib/helpers/file";
@@ -98,7 +98,7 @@ async function getRangeResponse(
   request: NextRequest,
   user: UserType,
   fileId: string
-): Promise<Response> {
+): Promise<NextResponse> {
   const { fileMeta } = await getFileMetadata(fileId);
   const rangeHeader = request.headers.get("range");
   if (!rangeHeader) {
@@ -116,7 +116,7 @@ async function getRangeResponse(
     throw notFound;
   }
 
-  return new Response(stream as any, {
+  return new NextResponse(stream as any, {
     status: 206,
     headers: {
       "Content-Range": `bytes ${start}-${end}/${fileMeta.size}`,
@@ -133,12 +133,12 @@ async function getRangeResponse(
 export async function HEAD(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-): Promise<NextResponse | Response> {
+): Promise<NextResponse> {
   const { id } = await params;
 
   try {
     const { headers } = await getFileMetadata(id);
-    return new Response(null, { status: 200, headers });
+    return new NextResponse(null, { status: 200, headers });
   } catch (error) {
     return error as NextResponse;
   }
@@ -147,13 +147,14 @@ export async function HEAD(
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-): Promise<NextResponse | Response> {
-  const { id } = await params;
-  const searchParams = request.nextUrl.searchParams;
-  const incrementViews = searchParams.get("incrementviews") === "true" || true;
-  const download = searchParams.get("download") === "true" || false;
+): Promise<NextResponse> {
+  return handleApiRequest(async () => {
+    const { id } = await params;
+    const searchParams = request.nextUrl.searchParams;
+    const incrementViews =
+      searchParams.get("incrementviews") === "true" || true;
+    const download = searchParams.get("download") === "true" || false;
 
-  try {
     const { fileMeta, user, isVideo, headers } = await getFileMetadata(
       id,
       download
@@ -175,7 +176,7 @@ export async function GET(
         throw notFound;
       }
 
-      return new Response(stream as any, { headers: headers });
+      return new NextResponse(stream as any, { headers: headers });
     }
 
     // Handle video streaming with range support
@@ -190,16 +191,6 @@ export async function GET(
     }
 
     // Return streamed response with common headers
-    return new Response(stream as any, { headers: headers });
-  } catch (error) {
-    if (error instanceof NextResponse) {
-      return error;
-    } else {
-      console.error(error);
-      return NextResponse.json(
-        { message: "An unexpected error occurred" },
-        { status: 500 }
-      );
-    }
-  }
+    return new NextResponse(stream as any, { headers: headers });
+  });
 }

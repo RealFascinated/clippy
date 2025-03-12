@@ -1,4 +1,5 @@
 import childProcess from "child_process";
+import Logger from "../logger";
 
 /**
  * Extracts a thumbnail from a video file at 00:01.
@@ -20,8 +21,8 @@ export function extractVideoThumbnail(inputFile: string, outputFile: string) {
       outputFile,
     ]);
 
-    command.on("error", err => {
-      console.error(
+    command.on("error", (err) => {
+      Logger.error(
         `An error occurred while extracting the thumbnail for ${inputFile}: ${err.message}`
       );
       reject(err);

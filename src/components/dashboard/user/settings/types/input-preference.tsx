@@ -1,6 +1,7 @@
 import Preference from "@/components/dashboard/user/settings/types/preference";
 import { SensitiveInput } from "@/components/sensitive-input";
 import { Button } from "@/components/ui/button";
+import Logger from "@/lib/logger";
 import { usePreferences } from "@/providers/preferences-provider";
 import { ReactNode, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -44,7 +45,7 @@ export default function InputPreference({
       updatePreferences({ [preferenceId]: value });
       setStatus("success");
     } catch (err) {
-      console.error("Failed to update preference:", err);
+      Logger.error("Failed to update preference:", err);
       setStatus("failed");
     }
   };
@@ -53,7 +54,7 @@ export default function InputPreference({
     <Preference header={header} badge={badge} description={description}>
       <form
         className="w-full flex gap-0 items-center"
-        onSubmit={async event => {
+        onSubmit={async (event) => {
           event.preventDefault();
           toast.promise(handleSave(), {
             loading: "Saving...",

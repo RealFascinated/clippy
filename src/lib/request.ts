@@ -93,7 +93,7 @@ class Request {
     const cacheKey = this.getCacheKey(finalUrl, method, finalOptions);
 
     if (DEBUG) {
-      console.info(`Sending request: ${finalUrl}`);
+      Logger.info(`Sending request: ${finalUrl}`);
     }
 
     // Check for pending requests
@@ -113,7 +113,7 @@ class Request {
       return await requestPromise;
     } finally {
       if (DEBUG) {
-        console.info(`Request completed: ${finalUrl}`);
+        Logger.info(`Request completed: ${finalUrl}`);
       }
       this.pendingRequests.delete(cacheKey);
     }

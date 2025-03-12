@@ -1,3 +1,5 @@
+import Logger from "@/lib/logger";
+
 export default abstract class Queue<T> {
   public queue: T[] = [];
   private activeProcesses: number = 0;
@@ -26,8 +28,8 @@ export default abstract class Queue<T> {
           this.activeProcesses++;
           // Process item without awaiting to allow concurrent execution
           this.process(item)
-            .catch(error => {
-              console.error("Error processing queue item:", error);
+            .catch((error) => {
+              Logger.error("Error processing queue item:", error);
             })
             .finally(() => {
               this.activeProcesses--;
