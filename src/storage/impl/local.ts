@@ -10,7 +10,7 @@ export default class LocalStorage extends Storage {
 
   constructor() {
     super();
-    this.path = env.STORAGE_LOCAL_PATH;
+    this.path = env.STORAGE_LOCAL_PATH!;
   }
 
   /**

@@ -11,14 +11,14 @@ export default class S3Storage extends Storage {
   constructor() {
     super();
     this.client = new Minio.Client({
-      endPoint: env.STORAGE_S3_ENDPOINT,
-      port: env.STORAGE_S3_PORT,
-      useSSL: env.STORAGE_S3_USE_SSL,
-      accessKey: env.STORAGE_S3_ACCESS_KEY,
-      secretKey: env.STORAGE_S3_SECRET_KEY,
+      endPoint: env.STORAGE_S3_ENDPOINT!,
+      port: env.STORAGE_S3_PORT!,
+      useSSL: env.STORAGE_S3_USE_SSL!,
+      accessKey: env.STORAGE_S3_ACCESS_KEY!,
+      secretKey: env.STORAGE_S3_SECRET_KEY!,
     });
 
-    this.ensureBucket(env.STORAGE_S3_BUCKET);
+    this.ensureBucket(env.STORAGE_S3_BUCKET!);
   }
 
   /**
@@ -53,7 +53,7 @@ export default class S3Storage extends Storage {
       }
 
       await this.client.putObject(
-        env.STORAGE_S3_BUCKET,
+        env.STORAGE_S3_BUCKET!,
         name,
         stream,
         dataSize
@@ -67,7 +67,7 @@ export default class S3Storage extends Storage {
 
   async getFile(name: string): Promise<Buffer | null> {
     try {
-      const stream = await this.client.getObject(env.STORAGE_S3_BUCKET, name);
+      const stream = await this.client.getObject(env.STORAGE_S3_BUCKET!, name);
       return readableToBuffer(stream);
     } catch (err) {
       Logger.error(err);
@@ -77,7 +77,7 @@ export default class S3Storage extends Storage {
 
   async getFileStream(name: string): Promise<internal.Readable | null> {
     try {
-      return await this.client.getObject(env.STORAGE_S3_BUCKET, name);
+      return await this.client.getObject(env.STORAGE_S3_BUCKET!, name);
     } catch (err) {
       Logger.error(err);
       return null;
@@ -86,7 +86,7 @@ export default class S3Storage extends Storage {
 
   async deleteFile(name: string): Promise<boolean> {
     try {
-      await this.client.removeObject(env.STORAGE_S3_BUCKET, name);
+      await this.client.removeObject(env.STORAGE_S3_BUCKET!, name);
       return true;
     } catch (err) {
       Logger.error(err);
@@ -101,7 +101,7 @@ export default class S3Storage extends Storage {
   ): Promise<internal.Readable | null> {
     try {
       return await this.client.getPartialObject(
-        env.STORAGE_S3_BUCKET,
+        env.STORAGE_S3_BUCKET!,
         name,
         start,
         end - start + 1
@@ -115,7 +115,7 @@ export default class S3Storage extends Storage {
   async renameFile(oldName: string, newName: string): Promise<boolean> {
     try {
       await this.client.copyObject(
-        env.STORAGE_S3_BUCKET,
+        env.STORAGE_S3_BUCKET!,
         newName,
         `/${env.STORAGE_S3_BUCKET}/${oldName}`
       );
