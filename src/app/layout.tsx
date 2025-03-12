@@ -5,7 +5,9 @@ import AppProvider from "@/providers/app-provider";
 import type { Metadata } from "next";
 import { type NextFont } from "next/dist/compiled/@next/font";
 import localFont from "next/font/local";
+import Script from "next/script";
 import "./globals.css";
+import { isProduction } from "@/lib/utils/utils";
 
 const font: NextFont = localFont({
   src: "../font/Satoshi.ttf",
@@ -30,6 +32,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      {isProduction() && (
+        <head>
+          <Script src="/env.js" strategy="beforeInteractive" />
+        </head>
+      )}
       <body
         className={`${font.className} antialiased`}
         style={{

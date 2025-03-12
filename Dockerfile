@@ -21,7 +21,7 @@ FROM oven/bun:1.2.5-alpine AS runner
 WORKDIR /app
 
 # Install dependencies
-RUN apk add --no-cache curl wget ca-certificates
+RUN apk add --no-cache curl wget ca-certificates sed grep
 
 # Copy only the ffmpeg binary
 COPY --from=mwader/static-ffmpeg:7.1 /ffmpeg /usr/local/bin/
