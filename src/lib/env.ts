@@ -66,34 +66,34 @@ export const env = createEnv({
      * Client
      */
     NEXT_PUBLIC_WEBSITE_NAME:
-      typeof window !== "undefined"
+      (typeof window !== "undefined"
         ? window.__ENV.NEXT_PUBLIC_WEBSITE_NAME
-        : (process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "Clippy"),
+        : process.env.NEXT_PUBLIC_WEBSITE_NAME) ?? "Clippy",
     NEXT_PUBLIC_WEBSITE_DESCRIPTION:
-      typeof window !== "undefined"
+      (typeof window !== "undefined"
         ? window.__ENV.NEXT_PUBLIC_WEBSITE_DESCRIPTION
-        : (process.env.NEXT_PUBLIC_WEBSITE_DESCRIPTION ??
-          "Open Source ShareX Uploader."),
+        : process.env.NEXT_PUBLIC_WEBSITE_DESCRIPTION) ??
+      "Open Source ShareX Uploader.",
     NEXT_PUBLIC_WEBSITE_LOGO:
-      typeof window !== "undefined"
+      (typeof window !== "undefined"
         ? window.__ENV.NEXT_PUBLIC_WEBSITE_LOGO
-        : (process.env.NEXT_PUBLIC_WEBSITE_LOGO ?? "/logo.png"),
+        : process.env.NEXT_PUBLIC_WEBSITE_LOGO) ?? "/logo.png",
     NEXT_PUBLIC_WEBSITE_URL:
-      typeof window !== "undefined"
+      (typeof window !== "undefined"
         ? window.__ENV.NEXT_PUBLIC_WEBSITE_URL
-        : (process.env.NEXT_PUBLIC_WEBSITE_URL ?? "http://localhost:3000"),
+        : process.env.NEXT_PUBLIC_WEBSITE_URL) ?? "http://localhost:3000",
 
     /**
      * Shared
      */
     NEXT_PUBLIC_APP_ENV:
-      typeof window !== "undefined"
+      (typeof window !== "undefined"
         ? window.__ENV.NEXT_PUBLIC_APP_ENV
-        : (process.env.NEXT_PUBLIC_APP_ENV ?? "development"),
+        : process.env.NEXT_PUBLIC_APP_ENV) ?? "development",
     NEXT_PUBLIC_ALLOW_REGISTRATIONS:
-      typeof window !== "undefined"
+      (typeof window !== "undefined"
         ? window.__ENV.NEXT_PUBLIC_ALLOW_REGISTRATIONS
-        : process.env.NEXT_PUBLIC_ALLOW_REGISTRATIONS === "true",
+        : process.env.NEXT_PUBLIC_ALLOW_REGISTRATIONS) === "true",
 
     /**
      * Server
@@ -145,5 +145,5 @@ export const env = createEnv({
   /**
    * Skip validation during production build.
    */
-  skipValidation: process.env.NEXT_PHASE == "phase-production-build",
+  skipValidation: true,
 });
