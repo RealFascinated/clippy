@@ -1,5 +1,6 @@
 "use client";
 
+import ConfirmationPopover from "@/components/confirmation-popover";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import Device from "@/components/user/device";
@@ -82,14 +83,19 @@ function DeviceList({
       </div>
 
       {/* Logout All Button */}
-      <Button
-        className="absolute right-0 top-0"
-        size="sm"
-        variant="destructive"
-        onClick={logoutAllDevices}
+      <ConfirmationPopover
+        message="Are you sure you would like to logout all devices?"
+        confirmationButton="Logout All"
+        onConfirm={logoutAllDevices}
       >
-        Logout All Devices
-      </Button>
+        <Button
+          className="lg:absolute right-0 top-0 w-fit"
+          size="xs"
+          variant="destructive"
+        >
+          Logout All Devices
+        </Button>
+      </ConfirmationPopover>
     </div>
   );
 }

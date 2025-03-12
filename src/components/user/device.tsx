@@ -1,10 +1,11 @@
+import ConfirmationPopover from "@/components/confirmation-popover";
 import SimpleTooltip from "@/components/simple-tooltip";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/client-auth";
 import { Session } from "better-auth";
-import { formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { Monitor, Smartphone, X } from "lucide-react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import Image from "next/image";
@@ -26,9 +27,13 @@ export default function Device({
   const isMobile: boolean = device?.is("mobile") ?? false;
   let browserName: string = browser?.name ?? "An Unknown Browser";
   if (isMobile) {
-    browserName = browserName.substring(6);
+    browserName = browserName.substring(7);
   }
-  const name: string = `${isMobile ? "Mobile" : "Desktop"} Device on ${browser?.name ?? "An Unknown Browser"}`;
+  const name: string = `${isMobile ? "Mobile" : "Desktop"} Device on ${browserName}`;
+  const ipAddress: string =
+    (session.ipAddress?.length ?? 0 <= 4)
+      ? "localhost"
+      : (session.ipAddress ?? "Unknown");
 
   async function logoutDevice() {
     await authClient.revokeSession({
@@ -61,7 +66,7 @@ export default function Device({
         </SimpleTooltip>
 
         <div className="flex flex-col gap-0.5">
-          {/* Name & IP Address */}
+          {/* Name & Current Badge */}
           <div className="flex gap-2 items-center">
             <h1 className="text-sm font-medium">{name}</h1>
 
@@ -73,20 +78,28 @@ export default function Device({
 
           {/* IP Address & Login Date */}
           <div className="flex gap-1 items-center text-xs text-muted-foreground">
-            {session.ipAddress} 🞄{" "}
-            {formatDistanceToNow(session.createdAt, { addSuffix: true })}
+            {ipAddress} -{" "}
+            <SimpleTooltip
+              content={`Device logged in on ${format(session.createdAt, "MMM d, yyyy h:mm a")}`}
+            >
+              <span className="cursor-pointer hover:opacity-75 transition-all transform-gpu">
+                {formatDistanceToNow(session.createdAt, { addSuffix: true })}
+              </span>
+            </SimpleTooltip>
           </div>
         </div>
 
         {/* Actions */}
         <div className="opacity-0 group-hover:opacity-100 ml-auto flex gap-2 items-center transition-all duration-300 transform-gpu">
-          <SimpleTooltip
-            content={<span className="text-destructive">Logout Device</span>}
+          <ConfirmationPopover
+            message="Are you sure you would like to logout this device?"
+            confirmationButton="Logout Device"
+            onConfirm={logoutDevice}
           >
             <Button variant="ghost" size="icon" onClick={logoutDevice}>
               <X className="size-4 text-muted-foreground" />
             </Button>
-          </SimpleTooltip>
+          </ConfirmationPopover>
         </div>
       </div>
       <Separator />
