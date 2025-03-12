@@ -1,6 +1,7 @@
 "use client";
 
 import ConfirmationPopover from "@/components/confirmation-popover";
+import SimpleTooltip from "@/components/simple-tooltip";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import Device from "@/components/user/device";
@@ -83,19 +84,23 @@ function DeviceList({
       </div>
 
       {/* Logout All Button */}
-      <ConfirmationPopover
-        message="Are you sure you would like to logout all devices?"
-        confirmationButton="Logout All"
-        onConfirm={logoutAllDevices}
-      >
-        <Button
-          className="lg:absolute right-0 top-0 w-fit"
-          size="xs"
-          variant="destructive"
-        >
-          Logout All Devices
-        </Button>
-      </ConfirmationPopover>
+      <SimpleTooltip content="Logout All Devices">
+        <div>
+          <ConfirmationPopover
+            message="Are you sure you would like to logout all devices?"
+            confirmationButton="Logout All"
+            onConfirm={logoutAllDevices}
+          >
+            <Button
+              className="lg:absolute right-0 top-0 w-fit"
+              size="xs"
+              variant="destructive"
+            >
+              Logout All Devices
+            </Button>
+          </ConfirmationPopover>
+        </div>
+      </SimpleTooltip>
     </div>
   );
 }

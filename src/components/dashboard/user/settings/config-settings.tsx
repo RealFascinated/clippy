@@ -1,5 +1,6 @@
 "use client";
 
+import ConfirmationPopover from "@/components/confirmation-popover";
 import { SensitiveInput } from "@/components/sensitive-input";
 import SimpleTooltip from "@/components/simple-tooltip";
 import { Button } from "@/components/ui/button";
@@ -97,17 +98,30 @@ function UploadToken({ user }: { user: any }) {
             {/* Reset Token */}
             <SimpleTooltip content="Rotate Upload Token">
               <div>
-                <ResetTokenDialog resetToken={resetToken} />
+                <ConfirmationPopover
+                  message="Are you sure you would like to reset your upload token?"
+                  confirmationButton="Rotate Token"
+                  onConfirm={resetToken}
+                >
+                  <Button
+                    className="size-7 text-muted-foreground/70 border-muted-foreground/70 hover:text-muted-foreground/75 transition-all transform-gpu"
+                    variant="outline"
+                  >
+                    <RefreshCw className="size-4" />
+                  </Button>
+                </ConfirmationPopover>
               </div>
             </SimpleTooltip>
 
-            <Button
-              className="size-7 text-muted-foreground/70 border-muted-foreground/70 hover:text-muted-foreground/75 transition-all transform-gpu"
-              variant="outline"
-              onClick={copyToken}
-            >
-              <Copy className="size-4" />
-            </Button>
+            <SimpleTooltip content="Copy Upload Token">
+              <Button
+                className="size-7 text-muted-foreground/70 border-muted-foreground/70 hover:text-muted-foreground/75 transition-all transform-gpu"
+                variant="outline"
+                onClick={copyToken}
+              >
+                <Copy className="size-4" />
+              </Button>
+            </SimpleTooltip>
           </div>
         )}
       </div>

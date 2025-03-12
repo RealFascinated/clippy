@@ -44,9 +44,11 @@ export default function ConfirmationPopover({
         <p className="text-sm text-muted-foreground">{message}</p>
 
         <div className="flex gap-1.5 items-center">
-          <Button variant="destructive" size="xs" onClick={onConfirm}>
-            {confirmationButton}
-          </Button>
+          <PopoverClose asChild>
+            <Button variant="destructive" size="xs" onClick={onConfirm}>
+              {confirmationButton}
+            </Button>
+          </PopoverClose>
 
           <PopoverClose asChild>
             <Button variant="secondary" size="xs">

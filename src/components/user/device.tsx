@@ -91,15 +91,20 @@ export default function Device({
 
         {/* Actions */}
         <div className="opacity-0 group-hover:opacity-100 ml-auto flex gap-2 items-center transition-all duration-300 transform-gpu">
-          <ConfirmationPopover
-            message="Are you sure you would like to logout this device?"
-            confirmationButton="Logout Device"
-            onConfirm={logoutDevice}
-          >
-            <Button variant="ghost" size="icon" onClick={logoutDevice}>
-              <X className="size-4 text-muted-foreground" />
-            </Button>
-          </ConfirmationPopover>
+          {/* Logout */}
+          <SimpleTooltip content="Logout Device">
+            <div>
+              <ConfirmationPopover
+                message="Are you sure you would like to logout this device?"
+                confirmationButton="Logout Device"
+                onConfirm={logoutDevice}
+              >
+                <Button variant="ghost" size="icon" onClick={logoutDevice}>
+                  <X className="size-4 text-muted-foreground" />
+                </Button>
+              </ConfirmationPopover>
+            </div>
+          </SimpleTooltip>
         </div>
       </div>
       <Separator />
