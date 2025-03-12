@@ -6,17 +6,7 @@ export const env = createEnv({
     NEXT_PUBLIC_WEBSITE_NAME: z.string(),
     NEXT_PUBLIC_WEBSITE_DESCRIPTION: z.string(),
     NEXT_PUBLIC_WEBSITE_LOGO: z.string(),
-    NEXT_PUBLIC_WEBSITE_URL: z.string().transform((val) => {
-      console.log("URL validation received:", val);
-      if (!val) {
-        console.error("URL is empty or undefined");
-        throw new Error("URL is required");
-      }
-      // Remove any potential invisible characters
-      const cleaned = val.trim().replace(/[\u200B-\u200D\uFEFF]/g, "");
-      console.log("Cleaned URL:", cleaned);
-      return cleaned;
-    }),
+    NEXT_PUBLIC_WEBSITE_URL: z.string(),
   },
 
   shared: {
