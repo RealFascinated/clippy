@@ -13,5 +13,6 @@ env | grep "^NEXT_PUBLIC_" | while IFS='=' read -r key value; do
     echo "  \"$key\": \"$escaped_value\"," >> /app/public/env.js
 done
 echo "};" >> /app/public/env.js
+echo "console.log(window.__ENV);" >> /app/public/env.js
 
 echo "Generated runtime environment variables in /app/public/env.js" 
