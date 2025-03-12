@@ -1,6 +1,14 @@
 import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
 
+declare global {
+  interface Window {
+    __ENV: {
+      [key: string]: string;
+    };
+  }
+}
+
 export const env = createEnv({
   client: {
     NEXT_PUBLIC_WEBSITE_NAME: z.string(),
@@ -57,21 +65,35 @@ export const env = createEnv({
     /**
      * Client
      */
-    NEXT_PUBLIC_WEBSITE_NAME: process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "Clippy",
+    NEXT_PUBLIC_WEBSITE_NAME:
+      typeof window !== "undefined"
+        ? window.__ENV.NEXT_PUBLIC_WEBSITE_NAME
+        : (process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "Clippy"),
     NEXT_PUBLIC_WEBSITE_DESCRIPTION:
-      process.env.NEXT_PUBLIC_WEBSITE_DESCRIPTION ??
-      "Open Source ShareX Uploader.",
+      typeof window !== "undefined"
+        ? window.__ENV.NEXT_PUBLIC_WEBSITE_DESCRIPTION
+        : (process.env.NEXT_PUBLIC_WEBSITE_DESCRIPTION ??
+          "Open Source ShareX Uploader."),
     NEXT_PUBLIC_WEBSITE_LOGO:
-      process.env.NEXT_PUBLIC_WEBSITE_LOGO ?? "/logo.png",
+      typeof window !== "undefined"
+        ? window.__ENV.NEXT_PUBLIC_WEBSITE_LOGO
+        : (process.env.NEXT_PUBLIC_WEBSITE_LOGO ?? "/logo.png"),
     NEXT_PUBLIC_WEBSITE_URL:
-      process.env.NEXT_PUBLIC_WEBSITE_URL ?? "http://localhost:3000",
+      typeof window !== "undefined"
+        ? window.__ENV.NEXT_PUBLIC_WEBSITE_URL
+        : (process.env.NEXT_PUBLIC_WEBSITE_URL ?? "http://localhost:3000"),
 
     /**
      * Shared
      */
-    NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV ?? "development",
+    NEXT_PUBLIC_APP_ENV:
+      typeof window !== "undefined"
+        ? window.__ENV.NEXT_PUBLIC_APP_ENV
+        : (process.env.NEXT_PUBLIC_APP_ENV ?? "development"),
     NEXT_PUBLIC_ALLOW_REGISTRATIONS:
-      process.env.NEXT_PUBLIC_ALLOW_REGISTRATIONS === "true",
+      typeof window !== "undefined"
+        ? window.__ENV.NEXT_PUBLIC_ALLOW_REGISTRATIONS
+        : process.env.NEXT_PUBLIC_ALLOW_REGISTRATIONS === "true",
 
     /**
      * Server

@@ -60,8 +60,6 @@ export default function SettingTabs({
 }) {
   const router: AppRouterInstance = useRouter();
 
-  console.log(process.env);
-
   return (
     <Tabs
       defaultValue={defaultTab ?? tabs[0].id}
