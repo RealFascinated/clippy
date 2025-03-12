@@ -9,7 +9,7 @@ import { UserType } from "@/lib/db/schemas/auth-schema";
 import { env } from "@/lib/env";
 import { getUserRole } from "@/lib/helpers/role";
 import { format } from "date-fns";
-import { Trash2 } from "lucide-react";
+import { FolderX, Trash2 } from "lucide-react";
 
 export default function UserSettings({ user }: { user: UserType }) {
   return (
@@ -81,7 +81,7 @@ function DataAndPrivacy() {
         <BooleanPreference
           preferenceId="showKitty"
           header="Public Activity"
-          description="Would you like to display your activity graph on your profile?"
+          description="Would you like to display your activity graph on your public profile?"
         />
 
         {/* Download Data */}
@@ -107,31 +107,44 @@ function DangerZone() {
         Danger Zone
       </h1>
 
-      <div className="flex gap-2 items-center">
+      <div className="flex flex-col gap-2">
         {/* Delete Account */}
-        <ConfirmationPopover
-          message="Are you sure you would like to delete your account? This action is irreversible and all of your data will be lost."
-          confirmationButton="Delete Account"
-          doubleConfirmation
-          onConfirm={() => {}}
+        <Preference
+          header="Delete My Account"
+          description="Deleting your account will remove all of your data and is irreversible."
+          inline
         >
-          <Button variant="destructive" size="xs">
-            <Trash2 />
-            Delete Account
-          </Button>
-        </ConfirmationPopover>
+          <ConfirmationPopover
+            message="Are you sure you would like to delete your account? This action is irreversible and all of your data will be lost."
+            confirmationButton="Delete Account"
+            doubleConfirmation
+            onConfirm={() => {}}
+          >
+            <Button variant="destructive" size="xs">
+              <Trash2 />
+              Delete Account
+            </Button>
+          </ConfirmationPopover>
+        </Preference>
 
         {/* Delete All Files */}
-        <ConfirmationPopover
-          message="Are you sure you would like to delete all of your files? This action is irreversible and all of your files will be lost."
-          confirmationButton="Delete All Files"
-          doubleConfirmation
-          onConfirm={() => {}}
+        <Preference
+          header="Delete My Files"
+          description="Deleting all of your files is irreversible."
+          inline
         >
-          <Button variant="destructive" size="xs">
-            Delete All Files
-          </Button>
-        </ConfirmationPopover>
+          <ConfirmationPopover
+            message="Are you sure you would like to delete all of your files? This action is irreversible and all of your files will be lost."
+            confirmationButton="Delete All Files"
+            doubleConfirmation
+            onConfirm={() => {}}
+          >
+            <Button variant="destructive" size="xs">
+              <FolderX />
+              Delete Files
+            </Button>
+          </ConfirmationPopover>
+        </Preference>
       </div>
     </div>
   );
