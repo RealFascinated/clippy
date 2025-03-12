@@ -2,14 +2,13 @@ import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
 
 export const env = createEnv({
-  client: {
+  client: {},
+
+  shared: {
     NEXT_PUBLIC_WEBSITE_NAME: z.string(),
     NEXT_PUBLIC_WEBSITE_DESCRIPTION: z.string(),
     NEXT_PUBLIC_WEBSITE_LOGO: z.string(),
     NEXT_PUBLIC_WEBSITE_URL: z.string(),
-  },
-
-  shared: {
     NEXT_PUBLIC_APP_ENV: z.string(),
     NEXT_PUBLIC_ALLOW_REGISTRATIONS: z.boolean().optional().default(true),
   },
@@ -55,7 +54,7 @@ export const env = createEnv({
    */
   runtimeEnv: {
     /**
-     * Client
+     * Shared
      */
 
     NEXT_PUBLIC_WEBSITE_NAME: process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "Clippy",
@@ -65,11 +64,6 @@ export const env = createEnv({
     NEXT_PUBLIC_WEBSITE_LOGO:
       process.env.NEXT_PUBLIC_WEBSITE_LOGO ?? "/logo.png",
     NEXT_PUBLIC_WEBSITE_URL: process.env.NEXT_PUBLIC_WEBSITE_URL,
-
-    /**
-     * Shared
-     */
-
     NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV ?? "development",
     NEXT_PUBLIC_ALLOW_REGISTRATIONS:
       process.env.NEXT_PUBLIC_ALLOW_REGISTRATIONS === "true",
