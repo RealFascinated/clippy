@@ -1,14 +1,34 @@
 import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
 
-export const env = createEnv({
-  client: {},
+// Debug logging for all public env vars
+console.log('Environment Variables Debug:');
+console.log('NEXT_PUBLIC_WEBSITE_NAME:', process.env.NEXT_PUBLIC_WEBSITE_NAME);
+console.log('NEXT_PUBLIC_WEBSITE_URL:', process.env.NEXT_PUBLIC_WEBSITE_URL);
+console.log('NEXT_PUBLIC_WEBSITE_LOGO:', process.env.NEXT_PUBLIC_WEBSITE_LOGO);
+console.log('Type of NEXT_PUBLIC_WEBSITE_URL:', typeof process.env.NEXT_PUBLIC_WEBSITE_URL);
+console.log('URL length:', process.env.NEXT_PUBLIC_WEBSITE_URL?.length);
+console.log('Raw URL chars:', Array.from(process.env.NEXT_PUBLIC_WEBSITE_URL || '').map(c => c.charCodeAt(0)));
 
-  shared: {
+export const env = createEnv({
+  client: {
     NEXT_PUBLIC_WEBSITE_NAME: z.string(),
     NEXT_PUBLIC_WEBSITE_DESCRIPTION: z.string(),
     NEXT_PUBLIC_WEBSITE_LOGO: z.string(),
-    NEXT_PUBLIC_WEBSITE_URL: z.string(),
+    NEXT_PUBLIC_WEBSITE_URL: z.string().transform((val) => {
+      console.log("URL validation received:", val);
+      if (!val) {
+        console.error("URL is empty or undefined");
+        throw new Error("URL is required");
+      }
+      // Remove any potential invisible characters
+      const cleaned = val.trim().replace(/[\u200B-\u200D\uFEFF]/g, "");
+      console.log("Cleaned URL:", cleaned);
+      return cleaned;
+    }),
+  },
+
+  shared: {
     NEXT_PUBLIC_APP_ENV: z.string(),
     NEXT_PUBLIC_ALLOW_REGISTRATIONS: z.boolean().optional().default(true),
   },
@@ -54,7 +74,7 @@ export const env = createEnv({
    */
   runtimeEnv: {
     /**
-     * Shared
+     * Client
      */
 
     NEXT_PUBLIC_WEBSITE_NAME: process.env.NEXT_PUBLIC_WEBSITE_NAME ?? "Clippy",
@@ -64,6 +84,11 @@ export const env = createEnv({
     NEXT_PUBLIC_WEBSITE_LOGO:
       process.env.NEXT_PUBLIC_WEBSITE_LOGO ?? "/logo.png",
     NEXT_PUBLIC_WEBSITE_URL: process.env.NEXT_PUBLIC_WEBSITE_URL,
+
+    /**
+     * Shared
+     */
+
     NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV ?? "development",
     NEXT_PUBLIC_ALLOW_REGISTRATIONS:
       process.env.NEXT_PUBLIC_ALLOW_REGISTRATIONS === "true",
