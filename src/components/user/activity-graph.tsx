@@ -56,109 +56,111 @@ export default function ActivityGraph({
       </div>
 
       {/* Graph */}
-      <div className="flex flex-col gap-1 justify-center items-center">
-        <div className="p-2 relative border border-muted rounded-lg">
-          {/* Month labels row */}
-          <div className="mb-1 ml-8 flex text-xs text-muted-foreground">
-            {monthPositions.map((position, i) => (
-              <div
-                key={`month-${i}`}
-                style={{
-                  marginLeft:
-                    i === 0
-                      ? `${position.weekIndex * CELL_TOTAL}px`
-                      : `${(position.weekIndex - monthPositions[i - 1].weekIndex - 1) * CELL_TOTAL}px`,
-                }}
-              >
-                {position.month}
-              </div>
-            ))}
-          </div>
-
-          <div className="w-full flex">
-            {/* Day of week labels */}
-            <div className="mr-2 pt-1 text-xs text-muted-foreground">
-              {dayLabels.map((day, i) => (
+      <div className="overflow-scroll">
+        <div className="mx-auto w-fit flex flex-col gap-1.5">
+          <div className="p-2 relative border border-muted rounded-lg">
+            {/* Month labels row */}
+            <div className="mb-1 ml-8 flex text-xs text-muted-foreground">
+              {monthPositions.map((position, i) => (
                 <div
-                  key={`day-${i}`}
-                  className="h-3 text-right leading-none"
+                  key={`month-${i}`}
                   style={{
-                    height: `${CELL_TOTAL}px`,
-                    lineHeight: `${CELL_TOTAL}px`,
-                    paddingRight: "4px",
+                    marginLeft:
+                      i === 0
+                        ? `${position.weekIndex * CELL_TOTAL}px`
+                        : `${(position.weekIndex - monthPositions[i - 1].weekIndex - 1) * CELL_TOTAL}px`,
                   }}
                 >
-                  {i % 2 === 0 ? day.substring(0, 3) : ""}
+                  {position.month}
                 </div>
               ))}
             </div>
 
-            {/* Calendar grid */}
-            <div className="flex">
-              {weeks.map((week, weekIndex) => (
-                <div
-                  key={`week-${weekIndex}`}
-                  className="flex flex-col"
-                  style={{ marginRight: `${CELL_GAP}px` }}
-                >
-                  {week.map((day, dayIndex) => (
-                    <div
-                      className="mb-0"
-                      key={`day-${weekIndex}-${dayIndex}`}
-                      style={{
-                        height: `${CELL_TOTAL}px`,
-                      }}
-                    >
-                      {day ? (
-                        <SimpleTooltip
-                          content={`${day.count < 1 ? "No uploads" : `${day.count} upload${day.count > 1 ? "s" : ""}`} on ${day.date.toLocaleDateString(
-                            "en-US",
-                            {
-                              month: "long",
-                              day: "numeric",
-                              year: "numeric",
-                            }
-                          )}`}
-                        >
-                          <div>
-                            <ActivityBox
-                              loading={isLoading}
-                              count={day.count}
-                            />
-                          </div>
-                        </SimpleTooltip>
-                      ) : (
-                        <div className="size-3" />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              ))}
+            <div className="w-full flex">
+              {/* Day of week labels */}
+              <div className="mr-2 pt-1 text-xs text-muted-foreground">
+                {dayLabels.map((day, i) => (
+                  <div
+                    key={`day-${i}`}
+                    className="h-3 text-right leading-none"
+                    style={{
+                      height: `${CELL_TOTAL}px`,
+                      lineHeight: `${CELL_TOTAL}px`,
+                      paddingRight: "4px",
+                    }}
+                  >
+                    {i % 2 === 0 ? day.substring(0, 3) : ""}
+                  </div>
+                ))}
+              </div>
+
+              {/* Calendar grid */}
+              <div className="flex">
+                {weeks.map((week, weekIndex) => (
+                  <div
+                    key={`week-${weekIndex}`}
+                    className="flex flex-col"
+                    style={{ marginRight: `${CELL_GAP}px` }}
+                  >
+                    {week.map((day, dayIndex) => (
+                      <div
+                        className="mb-0"
+                        key={`day-${weekIndex}-${dayIndex}`}
+                        style={{
+                          height: `${CELL_TOTAL}px`,
+                        }}
+                      >
+                        {day ? (
+                          <SimpleTooltip
+                            content={`${day.count < 1 ? "No uploads" : `${day.count} upload${day.count > 1 ? "s" : ""}`} on ${day.date.toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "long",
+                                day: "numeric",
+                                year: "numeric",
+                              }
+                            )}`}
+                          >
+                            <div>
+                              <ActivityBox
+                                loading={isLoading}
+                                count={day.count}
+                              />
+                            </div>
+                          </SimpleTooltip>
+                        ) : (
+                          <div className="size-3" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Total & Legend */}
-        <div className="ml-auto mr-24 flex gap-1 items-center text-xs text-muted-foreground">
-          {/* Total */}
-          <div>
-            {formatNumberWithCommas(activityData?.total ?? 0)} total uploads
-            this year
-          </div>
-
-          <span>-</span>
-
-          {/* Legend */}
-          <div className="flex gap-2 items-center">
-            <span>Less</span>
-            <div className="flex gap-1 items-center">
-              <ActivityBox count={0} />
-              <ActivityBox count={2} />
-              <ActivityBox count={5} />
-              <ActivityBox count={8} />
-              <ActivityBox count={10} />
+          {/* Total & Legend */}
+          <div className="place-self-end flex gap-1 items-center text-xs text-muted-foreground">
+            {/* Total */}
+            <div>
+              {formatNumberWithCommas(activityData?.total ?? 0)} total uploads
+              this year
             </div>
-            <span>More</span>
+
+            <span>-</span>
+
+            {/* Legend */}
+            <div className="flex gap-2 items-center">
+              <span>Less</span>
+              <div className="flex gap-1 items-center">
+                <ActivityBox count={0} />
+                <ActivityBox count={2} />
+                <ActivityBox count={5} />
+                <ActivityBox count={8} />
+                <ActivityBox count={10} />
+              </div>
+              <span>More</span>
+            </div>
           </div>
         </div>
       </div>
