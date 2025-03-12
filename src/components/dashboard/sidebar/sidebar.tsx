@@ -107,12 +107,14 @@ export default function AppSidebar() {
                       const active: boolean = path === item.url;
                       return (
                         <SidebarMenuItem key={index}>
-                          <SidebarMenuButton asChild>
+                          <SidebarMenuButton
+                            className={cn(
+                              active &&
+                                "bg-primary/85 hover:bg-primary/90 text-sidebar-accent-foreground"
+                            )}
+                            asChild
+                          >
                             <Link
-                              className={cn(
-                                active &&
-                                  "bg-sidebar-accent text-sidebar-accent-foreground"
-                              )}
                               href={item.url}
                               prefetch={false}
                               draggable={false}
@@ -134,7 +136,7 @@ export default function AppSidebar() {
         {/* Social Links */}
         <SidebarFooter className={cn("gap-0", !isMobile && "pb-14")}>
           <div className="bg-zinc-800/75 rounded-lg p-2">
-            {socials.map(item => (
+            {socials.map((item) => (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild>
                   <Link

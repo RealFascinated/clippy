@@ -1,4 +1,3 @@
-import Background from "@/components/background";
 import Navbar from "@/components/navbar";
 import { Toaster } from "@/components/ui/sonner";
 import { env } from "@/lib/env";
@@ -31,7 +30,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${font.className} antialiased`}>
+      <body
+        className={`${font.className} antialiased`}
+        style={{
+          background:
+            "linear-gradient(to bottom, hsl(240, 6%, 10%), var(--background))",
+        }}
+      >
         <Toaster
           position="bottom-center"
           toastOptions={{
@@ -43,7 +48,7 @@ export default function RootLayout({
             },
           }}
         />
-        <Background />
+        {/* <Background /> */}
         <AppProvider>
           <Navbar />
           {children}
