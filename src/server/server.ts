@@ -46,7 +46,7 @@ runMigrations().then(async () => {
     });
 
     server.addHook("onResponse", (request: FastifyRequest, reply, done) => {
-      if (request.customLog?.startTime) {
+      if (request.customLog?.startTime && !request.url.startsWith("/_next")) {
         const hrtime = process.hrtime(request.customLog.startTime);
         const timeInMs = (hrtime[0] * 1000 + hrtime[1] / 1e6).toFixed(2);
         const timeInMsNum = parseFloat(timeInMs);
