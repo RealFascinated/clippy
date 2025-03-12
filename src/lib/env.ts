@@ -10,6 +10,12 @@ declare global {
   }
 }
 
+/**
+ * Gets the environment variable from the client or server
+ *
+ * @param env the environment variable to get
+ * @returns the environment variable
+ */
 function getClientEnv(env: string) {
   if (typeof window !== "undefined" && window.__ENV) {
     Logger.info(`Getting client env: ${env}`);
