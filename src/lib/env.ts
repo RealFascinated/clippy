@@ -25,15 +25,15 @@ export const env = createEnv({
     STORAGE_PROVIDER: z.enum(["S3", "LOCAL"]),
 
     // Local Storage
-    STORAGE_LOCAL_PATH: z.string(),
+    STORAGE_LOCAL_PATH: z.string().optional(),
 
     // S3 Storage
-    STORAGE_S3_ENDPOINT: z.string(),
-    STORAGE_S3_PORT: z.number(),
-    STORAGE_S3_USE_SSL: z.boolean(),
-    STORAGE_S3_ACCESS_KEY: z.string(),
-    STORAGE_S3_SECRET_KEY: z.string(),
-    STORAGE_S3_BUCKET: z.string(),
+    STORAGE_S3_ENDPOINT: z.string().optional(),
+    STORAGE_S3_PORT: z.number().optional(),
+    STORAGE_S3_USE_SSL: z.boolean().optional(),
+    STORAGE_S3_ACCESS_KEY: z.string().optional(),
+    STORAGE_S3_SECRET_KEY: z.string().optional(),
+    STORAGE_S3_BUCKET: z.string().optional(),
 
     // File Upload
     ALLOWED_MIME_TYPES: z.string().optional(),
