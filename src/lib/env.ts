@@ -18,10 +18,10 @@ declare global {
  */
 function getClientEnv(env: string) {
   if (typeof window !== "undefined" && window.__ENV) {
-    Logger.info(`Getting client env: ${env}`);
+    console.log(`Getting client env: ${env}`);
     return window.__ENV[env];
   }
-  Logger.info(`Getting server env: ${env}`);
+  console.log(`Getting server env: ${env}`);
   return process.env[env];
 }
 
