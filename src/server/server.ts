@@ -1,4 +1,4 @@
-import Fastify from "fastify";
+import Fastify, { FastifyReply, HookHandlerDoneFunction } from "fastify";
 import nextConfig from "../../next.config";
 import { env } from "../lib/env";
 import Logger from "../lib/logger";
@@ -38,25 +38,35 @@ runMigrations().then(async () => {
 
   // Add custom request logging in production
   if (isProduction()) {
-    server.addHook("onRequest", (request: FastifyRequest, reply, done) => {
-      request.customLog = {
-        startTime: process.hrtime(),
-      };
-      done();
-    });
-
-    server.addHook("onResponse", (request: FastifyRequest, reply, done) => {
-      if (request.customLog?.startTime && !request.url.startsWith("/_next")) {
-        const hrtime = process.hrtime(request.customLog.startTime);
-        const timeInMs = (hrtime[0] * 1000 + hrtime[1] / 1e6).toFixed(2);
-        const timeInMsNum = parseFloat(timeInMs);
-
-        Logger.info(
-          `${chalk.bold(request.method)} ${request.url} ${getStatusColor(reply.statusCode)(reply.statusCode)} ${getResponseTimeColor(timeInMsNum)(`in ${timeInMs}ms`)}`
-        );
+    server.addHook(
+      "onRequest",
+      (request: FastifyRequest, _, done: HookHandlerDoneFunction) => {
+        request.customLog = {
+          startTime: process.hrtime(),
+        };
+        done();
       }
-      done();
-    });
+    );
+
+    server.addHook(
+      "onResponse",
+      (
+        request: FastifyRequest,
+        reply: FastifyReply,
+        done: HookHandlerDoneFunction
+      ) => {
+        if (request.customLog?.startTime && !request.url.startsWith("/_next")) {
+          const hrtime = process.hrtime(request.customLog.startTime);
+          const timeInMs = (hrtime[0] * 1000 + hrtime[1] / 1e6).toFixed(2);
+          const timeInMsNum = parseFloat(timeInMs);
+
+          Logger.info(
+            `${chalk.bold(request.method)} ${request.url} ${getStatusColor(reply.statusCode)(reply.statusCode)} ${getResponseTimeColor(timeInMsNum)(`in ${timeInMs}ms`)}`
+          );
+        }
+        done();
+      }
+    );
   }
 
   // Register Next.js plugin
