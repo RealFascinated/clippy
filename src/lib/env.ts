@@ -9,10 +9,10 @@ declare global {
   }
 }
 
-const readVariable = (key: string) => {
-  if (typeof window === "undefined") return process.env[key];
-  return window.__ENV[key];
-};
+// const readVariable = (key: string) => {
+//   if (typeof window === "undefined") return process.env[key];
+//   return window.__ENV[key];
+// };
 
 export const env = createEnv({
   client: {
@@ -65,18 +65,16 @@ export const env = createEnv({
 
   runtimeEnv: {
     // Client
-    NEXT_PUBLIC_WEBSITE_NAME: readVariable("NEXT_PUBLIC_WEBSITE_NAME"),
-    NEXT_PUBLIC_WEBSITE_DESCRIPTION: readVariable(
-      "NEXT_PUBLIC_WEBSITE_DESCRIPTION"
-    ),
-    NEXT_PUBLIC_WEBSITE_LOGO: readVariable("NEXT_PUBLIC_WEBSITE_LOGO"),
-    NEXT_PUBLIC_WEBSITE_URL: readVariable("NEXT_PUBLIC_WEBSITE_URL"),
+    NEXT_PUBLIC_WEBSITE_NAME: process.env.NEXT_PUBLIC_WEBSITE_NAME,
+    NEXT_PUBLIC_WEBSITE_DESCRIPTION:
+      process.env.NEXT_PUBLIC_WEBSITE_DESCRIPTION,
+    NEXT_PUBLIC_WEBSITE_LOGO: process.env.NEXT_PUBLIC_WEBSITE_LOGO,
+    NEXT_PUBLIC_WEBSITE_URL: process.env.NEXT_PUBLIC_WEBSITE_URL,
 
     // Shared
-    NEXT_PUBLIC_APP_ENV: readVariable("NEXT_PUBLIC_APP_ENV"),
-    NEXT_PUBLIC_ALLOW_REGISTRATIONS: readVariable(
-      "NEXT_PUBLIC_ALLOW_REGISTRATIONS"
-    ),
+    NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV,
+    NEXT_PUBLIC_ALLOW_REGISTRATIONS:
+      process.env.NEXT_PUBLIC_ALLOW_REGISTRATIONS === "true",
 
     // Server
     DATABASE_URL: process.env.DATABASE_URL,

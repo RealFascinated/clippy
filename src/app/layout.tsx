@@ -5,6 +5,7 @@ import AppProvider from "@/providers/app-provider";
 import type { Metadata } from "next";
 import { type NextFont } from "next/dist/compiled/@next/font";
 import localFont from "next/font/local";
+import { PublicEnvScript } from "next-runtime-env";
 import "./globals.css";
 
 const font: NextFont = localFont({
@@ -30,6 +31,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <PublicEnvScript />
+      </head>
       <body
         className={`${font.className} antialiased`}
         style={{
