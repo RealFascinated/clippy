@@ -143,6 +143,7 @@ export default function ActivityGraph({
           {/* Total */}
           <div>
             {formatNumberWithCommas(activityData?.total ?? 0)} total uploads
+            this year
           </div>
 
           <span>-</span>

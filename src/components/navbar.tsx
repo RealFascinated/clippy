@@ -31,7 +31,7 @@ function NavButton({ name, icon, href }: Item) {
 
 export default async function Navbar() {
   return (
-    <header className="fle sticky flex top-0 z-50 justify-center items-center bg-card/60 backdrop-blur-md border border-border gap-3 px-4 select-none">
+    <header className="fle sticky flex top-0 z-50 justify-center items-center bg-sidebar backdrop-blur-md border border-border gap-3 px-4 select-none">
       <SidebarToggle />
 
       <div className="flex max-w-7xl items-center h-[var(--header-height)] w-full justify-between">
