@@ -121,5 +121,8 @@ export const env = createEnv({
    */
   emptyStringAsUndefined: true,
 
-  skipValidation: true,
+  /**
+   * Skip validation during production build.
+   */
+  skipValidation: process.env.NEXT_PHASE == "phase-production-build",
 });
