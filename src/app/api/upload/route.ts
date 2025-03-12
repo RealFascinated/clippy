@@ -13,6 +13,8 @@ import { thumbnailQueue } from "@/queue/queues";
 import { NextResponse } from "next/server";
 import Sharp from "sharp";
 
+const MAX_FILE_SIZE = 1024 * 1024 * 1024; // 1GB
+
 const COMPRESS_PERCENTAGE_MIN = 50;
 const COMPRESS_PERCENTAGE_MAX = 100;
 export const COMPRESS_PERCENTAGE_DEFAULT = 90;
@@ -53,6 +55,12 @@ async function processFile(file: File): Promise<FileData> {
   };
 }
 
+/**
+ * Extracts upload token and compression percentage from form data
+ *
+ * @param formData the form data to extract options from
+ * @returns the upload token and compression percentage
+ */
 function getOptions(formData: FormData): {
   uploadToken: string;
   compressPercentage: number;
@@ -88,13 +96,31 @@ function getOptions(formData: FormData): {
 }
 
 /**
+ * Checks if a file size exceeds the allowed limits
+ *
+ * @param size the size to check in bytes
+ * @param role the user's role with upload limits
+ */
+function checkFileSizeLimit(size: number, role: { uploadLimit: number }) {
+  // Check global file size limit first
+  if (size > MAX_FILE_SIZE) {
+    throw fileExceedsUploadLimit(MAX_FILE_SIZE);
+  }
+
+  // Then check role-specific limit if it exists
+  if (role.uploadLimit !== -1 && size > role.uploadLimit) {
+    throw fileExceedsUploadLimit(role.uploadLimit);
+  }
+}
+
+/**
  * Handles file uploads from ShareX
+ *
  * @param request The incoming request containing form data
  */
 export async function POST(request: Request): Promise<NextResponse> {
   return handleApiRequest(async () => {
     const contentLength = request.headers.get("content-length");
-
     const formData = await request.formData();
     const { uploadToken, compressPercentage } = getOptions(formData);
 
@@ -103,14 +129,11 @@ export async function POST(request: Request): Promise<NextResponse> {
       throw new ApiError("Invalid upload token", 401);
     }
 
-    // Check upload limit before processing
     const role = getUserRole(user);
-    if (
-      contentLength &&
-      role.uploadLimit !== -1 &&
-      parseInt(contentLength) > role.uploadLimit
-    ) {
-      throw fileExceedsUploadLimit(role.uploadLimit);
+
+    // Check content length before processing if available
+    if (contentLength) {
+      checkFileSizeLimit(parseInt(contentLength), role);
     }
 
     const files = formData.getAll("sharex");
@@ -119,7 +142,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     }
 
     // Validate file types
-    if (!files.every(file => file instanceof File)) {
+    if (!files.every((file) => file instanceof File)) {
       throw new ApiError("Invalid file format", 400);
     }
 
@@ -131,10 +154,8 @@ export async function POST(request: Request): Promise<NextResponse> {
     const fileId = randomString(env.FILE_ID_LENGTH);
     let content = Buffer.from(file.content);
 
-    // Check upload limit before processing
-    if (role.uploadLimit !== -1 && file.size > role.uploadLimit) {
-      throw fileExceedsUploadLimit(role.uploadLimit);
-    }
+    // Check actual file size
+    checkFileSizeLimit(file.size, role);
 
     // Image compression
     if (

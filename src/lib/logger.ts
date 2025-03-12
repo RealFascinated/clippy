@@ -57,6 +57,10 @@ export default class Logger {
     const levelText = levelColor.bold(`[${level.toUpperCase()}]`);
     const appName = chalk.cyan("[Clippy]");
 
+    if (typeof message === "object") {
+      message = JSON.stringify(message);
+    }
+
     const prefix = `${timestamp} ${appName} ${levelText} ${symbol}`;
     const formattedMessage = `${prefix} ${message}`;
 

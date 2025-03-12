@@ -6,7 +6,7 @@ import { isProduction } from "@/lib/utils/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  return handleApiRequestWithUser(async user => {
+  return handleApiRequestWithUser(async (user) => {
     if (!user.uploadToken) {
       throw new ApiError("You do not have an upload token", 400);
     }
