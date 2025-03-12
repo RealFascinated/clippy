@@ -1,6 +1,5 @@
 import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
-import Logger from "./logger";
 
 declare global {
   interface Window {
@@ -10,20 +9,10 @@ declare global {
   }
 }
 
-/**
- * Gets the environment variable from the client or server
- *
- * @param env the environment variable to get
- * @returns the environment variable
- */
-function getClientEnv(env: string) {
-  if (typeof window !== "undefined" && window.__ENV) {
-    console.log(`Getting client env: ${env}`);
-    return window.__ENV[env];
-  }
-  console.log(`Getting server env: ${env}`);
-  return process.env[env];
-}
+const readVariable = (key: string) => {
+  if (typeof window === "undefined") return process.env[key];
+  return window.__ENV[key];
+};
 
 export const env = createEnv({
   client: {
@@ -76,16 +65,18 @@ export const env = createEnv({
 
   runtimeEnv: {
     // Client
-    NEXT_PUBLIC_WEBSITE_NAME: process.env.NEXT_PUBLIC_WEBSITE_NAME,
-    NEXT_PUBLIC_WEBSITE_DESCRIPTION:
-      process.env.NEXT_PUBLIC_WEBSITE_DESCRIPTION,
-    NEXT_PUBLIC_WEBSITE_LOGO: process.env.NEXT_PUBLIC_WEBSITE_LOGO,
-    NEXT_PUBLIC_WEBSITE_URL: process.env.NEXT_PUBLIC_WEBSITE_URL,
+    NEXT_PUBLIC_WEBSITE_NAME: readVariable("NEXT_PUBLIC_WEBSITE_NAME"),
+    NEXT_PUBLIC_WEBSITE_DESCRIPTION: readVariable(
+      "NEXT_PUBLIC_WEBSITE_DESCRIPTION"
+    ),
+    NEXT_PUBLIC_WEBSITE_LOGO: readVariable("NEXT_PUBLIC_WEBSITE_LOGO"),
+    NEXT_PUBLIC_WEBSITE_URL: readVariable("NEXT_PUBLIC_WEBSITE_URL"),
 
     // Shared
-    NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV,
-    NEXT_PUBLIC_ALLOW_REGISTRATIONS:
-      process.env.NEXT_PUBLIC_ALLOW_REGISTRATIONS === "true",
+    NEXT_PUBLIC_APP_ENV: readVariable("NEXT_PUBLIC_APP_ENV"),
+    NEXT_PUBLIC_ALLOW_REGISTRATIONS: readVariable(
+      "NEXT_PUBLIC_ALLOW_REGISTRATIONS"
+    ),
 
     // Server
     DATABASE_URL: process.env.DATABASE_URL,
