@@ -32,7 +32,7 @@ export default class Logger {
    */
   private static shouldLog(level: keyof typeof Logger.LogLevel): boolean {
     const configuredLevel = env.LOG_LEVEL || "info";
-    return Logger.LogLevel[level] <= Logger.LogLevel[configuredLevel];
+    return Logger.LogLevel[level] >= Logger.LogLevel[configuredLevel];
   }
 
   /**

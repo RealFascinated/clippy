@@ -102,8 +102,10 @@ runMigrations().then(async () => {
     );
     console.log("\n📊 Server Details:");
     console.log(`   ${chalk.bold("Environment:")}     ${environment}`);
+    console.log(`   ${chalk.bold("Log Level:")}       ${env.LOG_LEVEL}`);
     console.log(`   ${chalk.bold("Start Time:")}      ${startupTime}`);
     console.log(`   ${chalk.bold("Node.js Version:")} ${process.version}`);
+    console.log(`   ${chalk.bold("Bun Version:")}     v${Bun.version}`);
     console.log("=".repeat(50) + "\n");
   } catch (err) {
     Logger.error("Failed to start server:", err);

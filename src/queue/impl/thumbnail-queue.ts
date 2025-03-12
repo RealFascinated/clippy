@@ -71,7 +71,9 @@ export default class ThumbnailQueue extends Queue<FileType> {
         await storage.deleteFile(
           getFileThumbnailPath(file.userId, thumbnailMeta)
         );
-        Logger.debug("An error occurred whilst generating the thumbnail");
+        Logger.error(
+          `An error occurred whilst saving the thumbnail for ${fileName}`
+        );
         return;
       }
 
@@ -80,13 +82,13 @@ export default class ThumbnailQueue extends Queue<FileType> {
         hasThumbnail: true,
       });
 
-      Logger.debug(
-        `Finished processing thumbnail for ${fileName} in ${(
+      Logger.info(
+        `Generated thumbnail for ${fileName} in ${(
           performance.now() - before
         ).toFixed(2)}ms (${this.queue.length} files remaining)`
       );
     } catch (err) {
-      Logger.debug(`Failed to generate thumbnail for ${fileName}`, err);
+      Logger.error(`Failed to generate thumbnail for ${fileName}`, err);
     }
   }
 }

@@ -107,7 +107,7 @@ export const env = createEnv({
     SHORT_URL_LENGTH: Number(process.env.SHORT_URL_LENGTH ?? 6),
 
     // Misc
-    LOG_LEVEL: process.env.LOG_LEVEL,
+    LOG_LEVEL: (process.env.LOG_LEVEL ?? "info").toLowerCase(),
   },
 
   /**
