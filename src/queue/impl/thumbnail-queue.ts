@@ -12,7 +12,7 @@ import { and, eq, like, or } from "drizzle-orm";
 
 export default class ThumbnailQueue extends Queue<FileType> {
   constructor() {
-    super(1000);
+    super(1000, 4);
   }
 
   async loadFiles() {
