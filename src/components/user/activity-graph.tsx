@@ -4,6 +4,7 @@ import { ActivityGraphResponse } from "@/app/api/user/files/graph/route";
 import SimpleTooltip from "@/components/simple-tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 import request from "@/lib/request";
+import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { cn } from "@/lib/utils/utils";
 import { useQuery } from "@tanstack/react-query";
 
@@ -140,7 +141,9 @@ export default function ActivityGraph({
         {/* Total & Legend */}
         <div className="ml-auto mr-24 flex gap-1 items-center text-xs text-muted-foreground">
           {/* Total */}
-          <div>{activityData?.total ?? 0} total uploads</div>
+          <div>
+            {formatNumberWithCommas(activityData?.total ?? 0)} total uploads
+          </div>
 
           <span>-</span>
 
@@ -265,8 +268,8 @@ function generateCalendarData(
 
 function getColor(count: number) {
   if (count === 0) return "bg-zinc-200/10";
-  if (count <= 2) return "bg-zinc-300";
-  if (count <= 5) return "bg-zinc-400";
-  if (count <= 8) return "bg-zinc-500";
-  return "bg-zinc-700";
+  if (count <= 2) return "bg-zinc-700";
+  if (count <= 5) return "bg-zinc-500";
+  if (count <= 8) return "bg-zinc-400";
+  return "bg-zinc-300";
 }
