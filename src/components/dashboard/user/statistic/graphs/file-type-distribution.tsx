@@ -65,7 +65,7 @@ export default function UserFileTypeDistribution({
   };
 
   return (
-    <div className="w-full h-[250px] md:h-[350px] md:w-[350px] p-2 bg-background/70 rounded-md border border-muted">
+    <div className="w-full h-[350px] md:w-[350px] p-2 bg-background/70 rounded-md border border-muted">
       <Chart
         type="doughnut"
         options={options}

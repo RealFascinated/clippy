@@ -37,7 +37,7 @@ export default function ActivityGraph({
   const { isLoading, data: activityData } = useQuery({
     queryKey: ["activity-graph", userId],
     queryFn: () => request.get<ActivityGraphResponse>("/api/user/files/graph"),
-    placeholderData: (data) => data,
+    placeholderData: data => data,
   });
   const { weeks, monthPositions, dayLabels } = generateCalendarData(
     activityData?.graph

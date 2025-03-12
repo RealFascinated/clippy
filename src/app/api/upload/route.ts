@@ -142,7 +142,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     }
 
     // Validate file types
-    if (!files.every((file) => file instanceof File)) {
+    if (!files.every(file => file instanceof File)) {
       throw new ApiError("Invalid file format", 400);
     }
 

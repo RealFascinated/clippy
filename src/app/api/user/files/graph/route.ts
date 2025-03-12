@@ -13,7 +13,7 @@ export async function GET(): Promise<NextResponse | Response> {
     // Map the files to a record of dates and counts: <year>-<month>-<day>: <count>
     const activityGraph: Record<string, number> = {};
     let total: number = 0;
-    (await getUserFiles(user.id)).forEach((file) => {
+    (await getUserFiles(user.id)).forEach(file => {
       const date = new Date(file.createdAt);
       const dateString = date.toISOString().split("T")[0];
       activityGraph[dateString] = (activityGraph[dateString] || 0) + 1;

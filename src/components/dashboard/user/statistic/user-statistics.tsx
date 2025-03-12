@@ -2,6 +2,7 @@ import { env } from "@/lib/env";
 import request from "@/lib/request";
 import { UserStatisticsResponse } from "@/type/api/user/graph-response";
 import { headers } from "next/headers";
+import RecentFiles from "../files/recent-files";
 import FileTypeList from "./file-type-list";
 import UserFileTypeDistribution from "./graphs/file-type-distribution";
 import StatisticHistoryGraph from "./graphs/statistic-history-graph";
@@ -25,11 +26,12 @@ export default async function UserStatistics() {
     <div className="flex flex-col gap-4 w-full">
       <Statistics statisticsResponse={statisticsResponse} />
       <StatisticHistoryGraph userGraphData={statisticsResponse} />
-      <div className="flex flex-col md:flex-row gap-4 w-full">
+      <div className="flex flex-col xl:flex-row gap-4 w-full">
         <FileTypeList
           mimetypeDistribution={statisticsResponse.mimetypeDistribution}
         />
         <UserFileTypeDistribution userGraphData={statisticsResponse} />
+        <RecentFiles />
       </div>
     </div>
   );

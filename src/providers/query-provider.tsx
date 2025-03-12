@@ -17,7 +17,7 @@ const queryClient = new QueryClient({
       refetchInterval: 1000 * 60, // 1 minutes
       refetchIntervalInBackground: false,
       retry: 8, // 8 retries
-      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
     },
   },
 });

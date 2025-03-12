@@ -3,9 +3,9 @@ import { Toaster } from "@/components/ui/sonner";
 import { env } from "@/lib/env";
 import AppProvider from "@/providers/app-provider";
 import type { Metadata } from "next";
+import { PublicEnvScript } from "next-runtime-env";
 import { type NextFont } from "next/dist/compiled/@next/font";
 import localFont from "next/font/local";
-import { PublicEnvScript } from "next-runtime-env";
 import "./globals.css";
 
 const font: NextFont = localFont({

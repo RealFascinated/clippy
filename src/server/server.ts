@@ -1,17 +1,20 @@
-import Fastify, { FastifyReply, HookHandlerDoneFunction } from "fastify";
+import { isProduction } from "@/lib/utils/utils";
+import multipart from "@fastify/multipart";
+import chalk from "chalk";
+import Fastify, {
+  FastifyReply,
+  FastifyRequest,
+  HookHandlerDoneFunction,
+} from "fastify";
+import { networkInterfaces } from "os";
 import nextConfig from "../../next.config";
 import { env } from "../lib/env";
 import Logger from "../lib/logger";
 import { runMigrations } from "../lib/utils/drizzle";
+import { getResponseTimeColor, getStatusColor } from "../lib/utils/log-colors";
 import { thumbnailQueue } from "../queue/queues";
 import TasksManager from "../tasks/tasks-manager";
 import fastifyNext from "./plugins/fastify-next";
-import { FastifyRequest } from "fastify";
-import { isProduction } from "@/lib/utils/utils";
-import multipart from "@fastify/multipart";
-import { networkInterfaces } from "os";
-import chalk from "chalk";
-import { getStatusColor, getResponseTimeColor } from "../lib/utils/log-colors";
 
 // Extend FastifyRequest to include our custom log property
 declare module "fastify" {

@@ -1,6 +1,6 @@
+import chalk from "chalk";
 import { format } from "date-fns";
 import { env } from "./env";
-import chalk from "chalk";
 
 export default class Logger {
   private static readonly LogLevel = {

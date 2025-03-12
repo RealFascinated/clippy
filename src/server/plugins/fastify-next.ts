@@ -6,8 +6,7 @@ import {
 } from "fastify";
 import fastifyPlugin from "fastify-plugin";
 import next, { NextConfig } from "next";
-import { NextServer } from "next/dist/server/next";
-import { RequestHandler } from "next/dist/server/next";
+import { NextServer, RequestHandler } from "next/dist/server/next";
 
 interface FastifyNextOptions {
   dev?: boolean;
