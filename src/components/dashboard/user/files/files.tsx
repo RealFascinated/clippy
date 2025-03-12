@@ -28,6 +28,8 @@ import { ArrowDownWideNarrow, ArrowUpNarrowWide, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import UserFile from "./file";
+import { FilesLookupType } from "@/type/files-lookup-type";
+import { capitalize } from "@/lib/utils/utils";
 
 const sortNames: {
   name: string;
@@ -49,14 +51,12 @@ const sortNames: {
 
 export default function UserFiles({
   user,
-  favoritedOnly,
-  videosOnly,
+  type,
   initialSearch,
   initialPage,
 }: {
   user: UserType;
-  favoritedOnly?: boolean;
-  videosOnly?: boolean;
+  type: FilesLookupType;
   initialSearch?: string;
   initialPage?: number;
 }) {
@@ -152,34 +152,31 @@ export default function UserFiles({
     isRefetching,
     refetch,
   } = useQuery<Page<FileType>>({
-    queryKey: [
-      "userFiles",
-      page,
-      sort,
-      debouncedSearch,
-      favoritedOnly,
-      videosOnly,
-    ],
+    queryKey: ["userFiles", page, sort, debouncedSearch, type],
     queryFn: async () =>
       (await request.get<Page<FileType>>(`/api/user/files/${page}`, {
         searchParams: {
           sortKey: sort.key,
           sortDirection: sort.direction,
           ...(debouncedSearch && { search: debouncedSearch }),
-          ...(favoritedOnly && { favoritedOnly: "true" }),
-          ...(videosOnly && { videosOnly: "true" }),
+          ...(type === "favorited" && { favoritedOnly: "true" }),
+          ...(type === "videos" && { videosOnly: "true" }),
+          ...(type === "images" && { imagesOnly: "true" }),
+          ...(type === "gifs" && { gifsOnly: "true" }),
         },
       }))!,
-    placeholderData: data => data,
+    placeholderData: (data) => data,
   });
 
   return (
     <div className="flex flex-col gap-2 w-full bg-background/70 rounded-md p-2 border border-muted">
       <div className="flex flex-col gap-2 justify-between sm:flex-row sm:items-center md:flex-col md:items-start lg:flex-row lg:items-center">
         <div className="flex flex-col gap-1 select-none">
-          <span className="font-semibold">Uploads</span>
+          <span className="font-semibold">
+            Uploads - {capitalize(type ?? "overview")}
+          </span>
           <span className="text-muted-foreground">
-            All files associated with your account
+            {capitalize(type ?? "all")} files associated with your account
           </span>
         </div>
 
@@ -190,7 +187,7 @@ export default function UserFiles({
             <Input
               placeholder="Query..."
               value={search}
-              onChange={e => handleSearch(e.target.value)}
+              onChange={(e) => handleSearch(e.target.value)}
               className="pr-8"
             />
             {search && (
@@ -247,7 +244,7 @@ export default function UserFiles({
           {files.items.length > 0 ? (
             <>
               <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-2 items-center">
-                {files.items.map(fileMeta => (
+                {files.items.map((fileMeta) => (
                   <UserFile
                     user={user}
                     key={fileMeta.id}
@@ -260,11 +257,7 @@ export default function UserFiles({
               </div>
             </>
           ) : (
-            <span className="text-red-400">
-              {favoritedOnly
-                ? "No favorited files found"
-                : "No files found, or unknown page"}
-            </span>
+            <span className="text-red-400">No files found</span>
           )}
 
           <Pagination
@@ -273,7 +266,7 @@ export default function UserFiles({
             totalItems={files.metadata.totalItems}
             itemsPerPage={files.metadata.itemsPerPage}
             loadingPage={isLoading || isRefetching ? page : undefined}
-            onPageChange={newPage => setPage(newPage)}
+            onPageChange={(newPage) => setPage(newPage)}
           />
         </>
       )}

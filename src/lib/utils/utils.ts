@@ -73,18 +73,29 @@ export function formatBytes(bytes: number): string {
  * @param text the text to copy
  * @param toastText the text to display in the toast
  */
-export const copyWithToast = async (
+export async function copyWithToast(
   text: string,
   toastText: string | ReactNode
-) => {
+) {
   await copyToClipboard(text);
   toast.success(toastText);
-};
+}
 
 /**
  * Copy text to the clipboard.
  *
  * @param text the text to copy
  */
-export const copyToClipboard = async (text: string) =>
+export async function copyToClipboard(text: string) {
   await navigator.clipboard.writeText(text);
+}
+
+/**
+ * Capitalizes the first letter of a string.
+ *
+ * @param text the text to capitalize
+ * @returns the capitalized text
+ */
+export function capitalize(text: string) {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}

@@ -1,5 +1,6 @@
 import UserFiles from "@/components/dashboard/user/files/files";
 import { getUser } from "@/lib/helpers/user";
+import { FilesLookupType } from "@/type/files-lookup-type";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -17,16 +18,13 @@ export default async function FilesPage({
 }: FilesPageProps) {
   const user = await getUser();
   const id = (await params).id;
-  const favoritedOnly = id && id[0] === "favorited";
-  const videosOnly = id && id[0] === "videos";
   const { page, search } = await searchParams;
 
   return (
     <div className="flex flex-col gap-4 w-full items-center">
       <UserFiles
         user={user}
-        favoritedOnly={favoritedOnly}
-        videosOnly={videosOnly}
+        type={id?.[0] as FilesLookupType}
         initialSearch={search}
         initialPage={page ? Number(page) : undefined}
       />

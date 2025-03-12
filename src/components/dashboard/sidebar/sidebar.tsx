@@ -13,12 +13,14 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils/utils";
+import { GifIcon } from "@heroicons/react/16/solid";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import {
   Bell,
   FolderOpen,
   Heart,
   Home,
+  ImageIcon,
   Lock,
   NotebookText,
   Palette,
@@ -69,6 +71,16 @@ const groups: Group[] = [
         title: "Videos",
         url: "/dashboard/files/videos",
         icon: <Video />,
+      },
+      {
+        title: "Images",
+        url: "/dashboard/files/images",
+        icon: <ImageIcon />,
+      },
+      {
+        title: "GIFs",
+        url: "/dashboard/files/gifs",
+        icon: <GifIcon />,
       },
     ],
   },
@@ -150,12 +162,7 @@ export default function AppSidebar() {
                               prefetch={false}
                               draggable={false}
                             >
-                              <span
-                                className={cn(
-                                  "*:size-4",
-                                  active && "*:fill-white"
-                                )}
-                              >
+                              <span className={cn("*:size-4")}>
                                 {item.icon}
                               </span>
                               <span>{item.title}</span>

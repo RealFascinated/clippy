@@ -30,6 +30,8 @@ export async function GET(
     const favoritedOnly =
       (searchParams.get("favoritedOnly") ?? "false") === "true";
     const videosOnly = (searchParams.get("videosOnly") ?? "false") === "true";
+    const imagesOnly = (searchParams.get("imagesOnly") ?? "false") === "true";
+    const gifsOnly = (searchParams.get("gifsOnly") ?? "false") === "true";
 
     // todo: validate the sort query
 
@@ -39,6 +41,8 @@ export async function GET(
       search: search,
       favoritedOnly: favoritedOnly,
       videosOnly: videosOnly,
+      imagesOnly: imagesOnly,
+      gifsOnly: gifsOnly,
     };
 
     const totalFiles = await getUserFilesCount(user.id, options);

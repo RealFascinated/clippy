@@ -9,6 +9,13 @@ declare global {
   }
 }
 
+function getClientEnv(env: string) {
+  if (typeof window !== "undefined" && window.__ENV) {
+    return window.__ENV[env];
+  }
+  return process.env[env];
+}
+
 export const env = createEnv({
   client: {
     NEXT_PUBLIC_WEBSITE_NAME: z.string(),
@@ -66,34 +73,21 @@ export const env = createEnv({
      * Client
      */
     NEXT_PUBLIC_WEBSITE_NAME:
-      (typeof window !== "undefined"
-        ? window.__ENV.NEXT_PUBLIC_WEBSITE_NAME
-        : process.env.NEXT_PUBLIC_WEBSITE_NAME) ?? "Clippy",
+      getClientEnv("NEXT_PUBLIC_WEBSITE_NAME") ?? "Clippy",
     NEXT_PUBLIC_WEBSITE_DESCRIPTION:
-      (typeof window !== "undefined"
-        ? window.__ENV.NEXT_PUBLIC_WEBSITE_DESCRIPTION
-        : process.env.NEXT_PUBLIC_WEBSITE_DESCRIPTION) ??
+      getClientEnv("NEXT_PUBLIC_WEBSITE_DESCRIPTION") ??
       "Open Source ShareX Uploader.",
     NEXT_PUBLIC_WEBSITE_LOGO:
-      (typeof window !== "undefined"
-        ? window.__ENV.NEXT_PUBLIC_WEBSITE_LOGO
-        : process.env.NEXT_PUBLIC_WEBSITE_LOGO) ?? "/logo.png",
+      getClientEnv("NEXT_PUBLIC_WEBSITE_LOGO") ?? "/logo.png",
     NEXT_PUBLIC_WEBSITE_URL:
-      (typeof window !== "undefined"
-        ? window.__ENV.NEXT_PUBLIC_WEBSITE_URL
-        : process.env.NEXT_PUBLIC_WEBSITE_URL) ?? "http://localhost:3000",
+      getClientEnv("NEXT_PUBLIC_WEBSITE_URL") ?? "http://localhost:3000",
 
     /**
      * Shared
      */
-    NEXT_PUBLIC_APP_ENV:
-      (typeof window !== "undefined"
-        ? window.__ENV.NEXT_PUBLIC_APP_ENV
-        : process.env.NEXT_PUBLIC_APP_ENV) ?? "development",
+    NEXT_PUBLIC_APP_ENV: getClientEnv("NEXT_PUBLIC_APP_ENV") ?? "development",
     NEXT_PUBLIC_ALLOW_REGISTRATIONS:
-      (typeof window !== "undefined"
-        ? window.__ENV.NEXT_PUBLIC_ALLOW_REGISTRATIONS
-        : process.env.NEXT_PUBLIC_ALLOW_REGISTRATIONS) === "true",
+      getClientEnv("NEXT_PUBLIC_ALLOW_REGISTRATIONS") === "true",
 
     /**
      * Server

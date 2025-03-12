@@ -36,6 +36,8 @@ export type UserFilesOptions = {
   search?: string;
   favoritedOnly?: boolean;
   videosOnly?: boolean;
+  imagesOnly?: boolean;
+  gifsOnly?: boolean;
 };
 
 export type UserSessionResponse = {
@@ -117,6 +119,8 @@ export async function getUserFiles(id: string, options?: UserFilesOptions) {
           ? eq(fileTable.favorited, options.favoritedOnly)
           : undefined,
         options?.videosOnly ? like(fileTable.mimeType, "video/%") : undefined,
+        options?.imagesOnly ? like(fileTable.mimeType, "image/%") : undefined,
+        options?.gifsOnly ? like(fileTable.mimeType, "image/gif") : undefined,
         options?.search
           ? or(
               like(fileTable.id, `%${options.search}%`),
@@ -253,6 +257,8 @@ export async function getUserFilesCount(
           ? eq(fileTable.favorited, options.favoritedOnly)
           : undefined,
         options?.videosOnly ? like(fileTable.mimeType, "video%") : undefined,
+        options?.imagesOnly ? like(fileTable.mimeType, "image%") : undefined,
+        options?.gifsOnly ? like(fileTable.mimeType, "image/gif") : undefined,
         options?.search
           ? or(
               like(fileTable.id, `%${options.search}%`),
