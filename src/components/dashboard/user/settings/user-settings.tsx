@@ -1,4 +1,6 @@
 import AvatarInitials from "@/components/avatar-initials";
+import { Separator } from "@/components/ui/separator";
+import ActivityGraph from "@/components/user/activity-graph";
 import { UserType } from "@/lib/db/schemas/auth-schema";
 import { getUserRole } from "@/lib/helpers/role";
 import { format } from "date-fns";
@@ -7,6 +9,12 @@ export default function UserSettings({ user }: { user: UserType }) {
   return (
     <div className="flex flex-col gap-4">
       <UserDetails user={user} />
+      <Separator />
+      <ActivityGraph
+        header="Your Activity"
+        description="A graph of your upload activity over the past year."
+        userId={user.id}
+      />
     </div>
   );
 }
