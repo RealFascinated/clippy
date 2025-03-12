@@ -40,16 +40,9 @@ COPY --from=builder /app/src ./src
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./
 
-# Copy the update-env script
-COPY update-env.sh /app/update-env.sh
-RUN chmod +x /app/update-env.sh
-
 # Create entrypoint script
 RUN echo '#!/bin/sh' > /docker-entrypoint.sh && \
     echo 'set -e' >> /docker-entrypoint.sh && \
-    echo '' >> /docker-entrypoint.sh && \
-    echo '# Update environment variables in .next directory' >> /docker-entrypoint.sh && \
-    echo '/app/update-env.sh' >> /docker-entrypoint.sh && \
     echo '' >> /docker-entrypoint.sh && \
     echo '# Start the application' >> /docker-entrypoint.sh && \
     echo 'exec bun run start' >> /docker-entrypoint.sh && \
