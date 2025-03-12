@@ -1,4 +1,6 @@
 import AvatarInitials from "@/components/avatar-initials";
+import ConfirmationPopover from "@/components/confirmation-popover";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import ActivityGraph from "@/components/user/activity-graph";
 import { UserType } from "@/lib/db/schemas/auth-schema";
@@ -15,6 +17,8 @@ export default function UserSettings({ user }: { user: UserType }) {
         description="A graph of your upload activity over the past year."
         userId={user.id}
       />
+      <Separator />
+      <DangerZone />
     </div>
   );
 }
@@ -53,6 +57,43 @@ function UserDetails({ user }: { user: any }) {
             <span>{createdAt}</span>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function DangerZone() {
+  return (
+    <div className="flex flex-col gap-2 select-none">
+      {/* Header */}
+      <h1 className="text-base xs:text-lg font-bold transition-all transform-gpu">
+        Danger Zone
+      </h1>
+
+      <div className="flex gap-2 items-center">
+        {/* Delete Account */}
+        <ConfirmationPopover
+          message="Are you sure you would like to delete your account? This action is irreversible and all of your data will be lost."
+          confirmationButton="Delete Account"
+          doubleConfirmation
+          onConfirm={() => {}}
+        >
+          <Button variant="destructive" size="xs">
+            Delete Account
+          </Button>
+        </ConfirmationPopover>
+
+        {/* Delete All Files */}
+        <ConfirmationPopover
+          message="Are you sure you would like to delete all of your files? This action is irreversible and all of your files will be lost."
+          confirmationButton="Delete All Files"
+          doubleConfirmation
+          onConfirm={() => {}}
+        >
+          <Button variant="destructive" size="xs">
+            Delete All Files
+          </Button>
+        </ConfirmationPopover>
       </div>
     </div>
   );
