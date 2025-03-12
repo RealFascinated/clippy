@@ -1,11 +1,15 @@
 import AvatarInitials from "@/components/avatar-initials";
 import ConfirmationPopover from "@/components/confirmation-popover";
+import BooleanPreference from "@/components/dashboard/user/settings/types/boolean-preference";
+import Preference from "@/components/dashboard/user/settings/types/preference";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import ActivityGraph from "@/components/user/activity-graph";
 import { UserType } from "@/lib/db/schemas/auth-schema";
+import { env } from "@/lib/env";
 import { getUserRole } from "@/lib/helpers/role";
 import { format } from "date-fns";
+import { Trash2 } from "lucide-react";
 
 export default function UserSettings({ user }: { user: UserType }) {
   return (
@@ -17,6 +21,8 @@ export default function UserSettings({ user }: { user: UserType }) {
         description="A graph of your upload activity over the past year."
         userId={user.id}
       />
+      <Separator />
+      <DataAndPrivacy />
       <Separator />
       <DangerZone />
     </div>
@@ -62,6 +68,37 @@ function UserDetails({ user }: { user: any }) {
   );
 }
 
+function DataAndPrivacy() {
+  return (
+    <div className="flex flex-col gap-2 select-none">
+      {/* Header */}
+      <h1 className="text-base xs:text-lg font-bold transition-all transform-gpu">
+        Data & Privacy
+      </h1>
+
+      <div className="flex flex-col gap-2">
+        {/* Public Activity */}
+        <BooleanPreference
+          preferenceId="showKitty"
+          header="Public Activity"
+          description="Would you like to display your activity graph on your profile?"
+        />
+
+        {/* Download Data */}
+        <Preference
+          header="Request my data"
+          description={`Would you like to request a copy of your data that ${env.NEXT_PUBLIC_WEBSITE_NAME} has?`}
+          inline
+        >
+          <Button variant="secondary" size="xs">
+            Request Data
+          </Button>
+        </Preference>
+      </div>
+    </div>
+  );
+}
+
 function DangerZone() {
   return (
     <div className="flex flex-col gap-2 select-none">
@@ -79,6 +116,7 @@ function DangerZone() {
           onConfirm={() => {}}
         >
           <Button variant="destructive" size="xs">
+            <Trash2 />
             Delete Account
           </Button>
         </ConfirmationPopover>
