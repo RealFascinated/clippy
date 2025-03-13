@@ -47,7 +47,7 @@ export default function Device({
       <div className="group relative p-2.5 w-full h-14 flex gap-3 items-center select-none">
         {/* Device & Browser Icons */}
         <SimpleTooltip content={name}>
-          <div className="relative w-9 h-full flex justify-center items-center bg-muted rounded-full">
+          <div className="relative size-9 flex justify-center items-center bg-muted rounded-full">
             {/* Device */}
             <div className="*:size-5">
               {isMobile ? <Smartphone /> : <Monitor />}
@@ -55,11 +55,11 @@ export default function Device({
 
             {/* Browser */}
             <Image
-              className="absolute bottom-0 right-0 p-1 bg-muted rounded-full"
+              className="absolute bottom-0 right-0 p-0.5 bg-muted rounded-full"
               src={`/browser/${browserName.toLowerCase()}.svg`}
               alt={browserName}
-              width={20}
-              height={20}
+              width={16}
+              height={16}
               draggable={false}
             />
           </div>
@@ -72,7 +72,11 @@ export default function Device({
 
             {/* Current Session Badge */}
             {isCurrentSession && (
-              <Badge className="py-0 text-xs">Current</Badge>
+              <SimpleTooltip content="Oh look, it's you!">
+                <Badge className="py-0 text-xs hover:opacity-75 transition-all transform-gpu">
+                  Current
+                </Badge>
+              </SimpleTooltip>
             )}
           </div>
 
