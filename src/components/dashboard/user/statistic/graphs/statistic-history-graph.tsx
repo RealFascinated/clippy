@@ -313,7 +313,7 @@ export default function StatisticHistoryGraph({
       </div>
 
       <div className="w-full">
-        <div className="h-[400px] w-full p-4">
+        <div className="h-[400px] w-full px-4 pb-4">
           <Chart
             type="line"
             options={options}
@@ -321,7 +321,7 @@ export default function StatisticHistoryGraph({
             plugins={[
               {
                 id: "legend-padding",
-                beforeInit: chart => {
+                beforeInit: (chart) => {
                   if (chart.legend) {
                     const originalFit = chart.legend.fit;
                     chart.legend.fit = function fit() {
