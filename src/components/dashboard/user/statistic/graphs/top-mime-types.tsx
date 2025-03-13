@@ -24,7 +24,7 @@ const options: ChartOptions<ChartTypes> = {
   },
 };
 
-type UserFileTypeDistributionProps = {
+type TopMimeTypesProps = {
   userGraphData: UserStatisticsResponse;
 };
 
@@ -38,9 +38,7 @@ function generateColor(str: string, border: boolean = false): string {
   return `hsl(${hue}, 75%, 55%${border ? ", 0.7)" : ")"}`;
 }
 
-export default function UserFileTypeDistribution({
-  userGraphData,
-}: UserFileTypeDistributionProps) {
+export default function TopMimeTypes({ userGraphData }: TopMimeTypesProps) {
   const mimeTypeDistribution = Object.entries(
     userGraphData.mimetypeDistribution
   )
@@ -48,8 +46,8 @@ export default function UserFileTypeDistribution({
     .slice(0, 10);
 
   const mimeTypes = mimeTypeDistribution.map(([key]) => key);
-  const backgroundColor = mimeTypes.map(type => generateColor(type));
-  const borderColor = mimeTypes.map(type => generateColor(type, true));
+  const backgroundColor = mimeTypes.map((type) => generateColor(type));
+  const borderColor = mimeTypes.map((type) => generateColor(type, true));
 
   const chartData: ChartData<ChartTypes> = {
     labels: mimeTypes,
@@ -66,7 +64,7 @@ export default function UserFileTypeDistribution({
 
   return (
     <div className="w-[350px] h-[350px] bg-background/70 rounded-lg border border-muted shadow-sm flex flex-col">
-      <div className="p-3 border-b border-muted shrink-0">
+      <div className="px-3 py-2 border-b border-muted shrink-0">
         <h2 className="text-lg font-semibold">Top Mime Types</h2>
       </div>
 

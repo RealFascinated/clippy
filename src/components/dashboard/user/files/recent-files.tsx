@@ -22,7 +22,7 @@ export default async function RecentFiles() {
 
   return (
     <div className="w-full h-[350px] bg-background/70 rounded-lg border border-muted shadow-sm flex flex-col">
-      <div className="p-3 border-b border-muted shrink-0">
+      <div className="px-3 py-2 border-b border-muted shrink-0">
         <h2 className="text-lg font-semibold">Recent Files</h2>
       </div>
 

@@ -2,17 +2,17 @@ import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { MimetypeDistribution } from "@/type/api/user/mimetype-distrubution";
 import Link from "next/link";
 
-type FileTypeListProps = {
+type MimeTypeListProps = {
   mimetypeDistribution: MimetypeDistribution;
 };
 
-export default function FileTypeList({
+export default function MimeTypeList({
   mimetypeDistribution,
-}: FileTypeListProps) {
+}: MimeTypeListProps) {
   return (
     <div className="w-full xl:w-[1000px] h-[350px] bg-background/70 rounded-lg border border-muted shadow-sm flex flex-col">
-      <div className="p-3 border-b border-muted shrink-0">
-        <h2 className="text-lg font-semibold">File Types</h2>
+      <div className="px-3 py-2 border-b border-muted shrink-0">
+        <h2 className="text-lg font-semibold">Mime Types</h2>
       </div>
 
       <div className="flex-1 flex flex-col min-h-0">

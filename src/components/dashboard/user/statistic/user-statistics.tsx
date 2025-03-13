@@ -3,10 +3,10 @@ import request from "@/lib/request";
 import { UserStatisticsResponse } from "@/type/api/user/graph-response";
 import { headers } from "next/headers";
 import RecentFiles from "../files/recent-files";
-import FileTypeList from "./file-type-list";
-import UserFileTypeDistribution from "./graphs/file-type-distribution";
+import MimeTypeList from "./mime-type-list";
 import StatisticHistoryGraph from "./graphs/statistic-history-graph";
 import Statistics from "./statistics";
+import TopMimeTypes from "./graphs/top-mime-types";
 
 export default async function UserStatistics() {
   const statisticsResponse = await request.get<UserStatisticsResponse>(
@@ -28,10 +28,10 @@ export default async function UserStatistics() {
       <StatisticHistoryGraph userGraphData={statisticsResponse} />
       <div className="flex flex-col xl:flex-row gap-4 w-full">
         <RecentFiles />
-        <FileTypeList
+        <MimeTypeList
           mimetypeDistribution={statisticsResponse.mimetypeDistribution}
         />
-        <UserFileTypeDistribution userGraphData={statisticsResponse} />
+        <TopMimeTypes userGraphData={statisticsResponse} />
       </div>
     </div>
   );
