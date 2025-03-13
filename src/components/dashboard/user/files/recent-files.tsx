@@ -24,7 +24,10 @@ export default async function RecentFiles() {
   return (
     <div className="w-full h-[400px] flex flex-col">
       <div className="px-6 py-4 border-b border-muted/10">
-        <h2 className="text-lg font-semibold">Recent Files</h2>
+        <div className="flex items-center gap-2">
+          <Clock className="size-4 text-primary" />
+          <h2 className="text-lg font-semibold">Recent Files</h2>
+        </div>
         <p className="text-sm text-muted-foreground mt-1">
           Your most recently uploaded files
         </p>

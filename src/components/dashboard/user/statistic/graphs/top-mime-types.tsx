@@ -7,10 +7,13 @@ import {
   Chart as ChartJS,
   ChartOptions,
   DoughnutController,
+  Legend,
+  Tooltip,
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
+import { BarChart2 } from "lucide-react";
 
-ChartJS.register(ArcElement, DoughnutController);
+ChartJS.register(ArcElement, DoughnutController, Legend, Tooltip);
 
 type ChartTypes = "doughnut";
 
@@ -106,7 +109,10 @@ export default function TopMimeTypes({ userGraphData }: TopMimeTypesProps) {
   return (
     <div className="w-full h-[400px] flex flex-col">
       <div className="px-6 py-4 border-b border-muted/10">
-        <h2 className="text-lg font-semibold">Top File Types</h2>
+        <div className="flex items-center gap-2">
+          <BarChart2 className="size-4 text-primary" />
+          <h2 className="text-lg font-semibold">Top File Types</h2>
+        </div>
         <p className="text-sm text-muted-foreground mt-1">
           Most common file types in your uploads
         </p>

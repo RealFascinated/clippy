@@ -1,6 +1,7 @@
 import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { MimetypeDistribution } from "@/type/api/user/mimetype-distrubution";
 import Link from "next/link";
+import { FileType } from "lucide-react";
 
 type MimeTypeListProps = {
   mimetypeDistribution: MimetypeDistribution;
@@ -12,7 +13,10 @@ export default function MimeTypeList({
   return (
     <div className="w-full h-[400px] flex flex-col">
       <div className="px-6 py-4 border-b border-muted/10">
-        <h2 className="text-lg font-semibold">File Types</h2>
+        <div className="flex items-center gap-2">
+          <FileType className="size-4 text-primary" />
+          <h2 className="text-lg font-semibold">File Types</h2>
+        </div>
         <p className="text-sm text-muted-foreground mt-1">
           Distribution of your uploaded files by type
         </p>
