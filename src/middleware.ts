@@ -4,7 +4,7 @@ import { applyRateLimitHeaders, RateLimiter } from "./lib/rate-limiter";
 
 const rateLimiters = [
   new RateLimiter({
-    maxRequests: 5,
+    maxRequests: 10,
     windowSizeInSeconds: 60,
     identifier: "upload-api",
     path: "/api/upload",
