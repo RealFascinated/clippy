@@ -29,6 +29,7 @@ export default function UserStatistic({
           <CountUp
             end={value}
             duration={1.5}
+            start={0}
             formattingFn={
               format == "bytes" ? formatBytes : formatNumberWithCommas
             }
