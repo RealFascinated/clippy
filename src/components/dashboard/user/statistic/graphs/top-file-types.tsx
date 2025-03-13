@@ -38,58 +38,55 @@ type TopMimeTypesProps = {
 };
 
 type ColorMap = {
-  [key: string]: {
-    border: string;
-    background: string;
-  };
+  border: string;
+  background: string;
 };
 
-const mimeTypeColors: ColorMap = {
-  image: {
-    border: "rgb(59, 130, 246)",
-    background: "rgba(59, 130, 246, 0.5)",
+const colors: ColorMap[] = [
+  {
+    border: "rgb(99, 102, 241)", // Indigo
+    background: "rgba(99, 102, 241, 0.5)",
   },
-  video: {
-    border: "rgb(239, 68, 68)",
-    background: "rgba(239, 68, 68, 0.5)",
+  {
+    border: "rgb(14, 165, 233)", // Sky blue
+    background: "rgba(14, 165, 233, 0.5)",
   },
-  audio: {
-    border: "rgb(16, 185, 129)",
-    background: "rgba(16, 185, 129, 0.5)",
+  {
+    border: "rgb(34, 197, 94)", // Green
+    background: "rgba(34, 197, 94, 0.5)",
   },
-  text: {
-    border: "rgb(245, 158, 11)",
-    background: "rgba(245, 158, 11, 0.5)",
+  {
+    border: "rgb(249, 115, 22)", // Orange
+    background: "rgba(249, 115, 22, 0.5)",
   },
-  application: {
-    border: "rgb(139, 92, 246)",
-    background: "rgba(139, 92, 246, 0.5)",
+  {
+    border: "rgb(236, 72, 153)", // Pink
+    background: "rgba(236, 72, 153, 0.5)",
   },
-};
+  {
+    border: "rgb(168, 85, 247)", // Purple
+    background: "rgba(168, 85, 247, 0.5)",
+  },
+  {
+    border: "rgb(234, 179, 8)", // Yellow
+    background: "rgba(234, 179, 8, 0.5)",
+  },
+  {
+    border: "rgb(244, 63, 94)", // Rose
+    background: "rgba(244, 63, 94, 0.5)",
+  },
+];
 
-function generateColor(type: string, border = false): string {
-  // Find matching type prefix
-  const matchingType = Object.keys(mimeTypeColors).find(key =>
-    type.startsWith(key)
-  );
-  if (matchingType) {
-    return border
-      ? mimeTypeColors[matchingType].border
-      : mimeTypeColors[matchingType].background;
-  }
-  return border ? "rgb(107, 114, 128)" : "rgba(107, 114, 128, 0.5)";
-}
-
-export default function TopMimeTypes({ userGraphData }: TopMimeTypesProps) {
+export default function TopFileTypes({ userGraphData }: TopMimeTypesProps) {
   const mimeTypeDistribution = Object.entries(
     userGraphData.mimetypeDistribution
   )
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 10);
+    .slice(0, 8);
 
   const mimeTypes = mimeTypeDistribution.map(([key]) => key);
-  const backgroundColor = mimeTypes.map(type => generateColor(type));
-  const borderColor = mimeTypes.map(type => generateColor(type, true));
+  const backgroundColor = mimeTypes.map((_, index) => colors[index].background);
+  const borderColor = mimeTypes.map((_, index) => colors[index].border);
 
   const chartData: ChartData<ChartTypes> = {
     labels: mimeTypes,
@@ -126,7 +123,7 @@ export default function TopMimeTypes({ userGraphData }: TopMimeTypesProps) {
           plugins={[
             {
               id: "legend-padding",
-              beforeInit: chart => {
+              beforeInit: (chart) => {
                 if (chart.legend) {
                   const originalFit = chart.legend.fit;
                   chart.legend.fit = function fit() {

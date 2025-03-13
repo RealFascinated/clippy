@@ -1,6 +1,6 @@
 import RecentFiles from "@/components/dashboard/user/files/recent-files";
 import StatisticHistoryGraph from "@/components/dashboard/user/statistic/graphs/statistic-history-graph";
-import TopMimeTypes from "@/components/dashboard/user/statistic/graphs/top-mime-types";
+import TopFileTypes from "@/components/dashboard/user/statistic/graphs/top-file-types";
 import MimeTypeList from "@/components/dashboard/user/statistic/mime-type-list";
 import Statistics from "@/components/dashboard/user/statistic/statistics";
 import WelcomeBanner from "@/components/dashboard/user/welcome-banner";
@@ -53,7 +53,7 @@ export default async function DashboardPage() {
             />
           </div>
           <div className="bg-background/80 backdrop-blur-sm rounded-xl border border-muted/50 shadow-lg">
-            <TopMimeTypes userGraphData={statisticsResponse} />
+            <TopFileTypes userGraphData={statisticsResponse} />
           </div>
         </div>
       </div>
