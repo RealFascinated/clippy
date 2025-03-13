@@ -19,10 +19,12 @@ import FileVideoPlayer from "@/components/file/video-player";
 export default function FilePreview({
   fileMeta,
   user,
+  className,
   children,
 }: {
   fileMeta: FileType;
   user: UserType;
+  className?: string;
   children: ReactNode;
 }) {
   const url = `/${getFileName(fileMeta)}?incrementviews=false`;
@@ -71,7 +73,10 @@ export default function FilePreview({
 
   return (
     <>
-      <div className="w-full h-full" onClick={() => setIsOpen(true)}>
+      <div
+        className={cn("w-full h-full cursor-pointer", className)}
+        onClick={() => setIsOpen(true)}
+      >
         {children}
       </div>
 
