@@ -203,7 +203,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       {
         path: getFileName(fileMeta),
         url: env.NEXT_PUBLIC_WEBSITE_URL,
-        deletionUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/file/delete/${fileMeta.deleteKey}`,
+        deletionUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/api/file/delete/${fileMeta.deleteKey}`,
       } as SuccessResponse,
       { status: 200 }
     );

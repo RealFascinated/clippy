@@ -45,7 +45,7 @@ export default function UserFile({ user, fileMeta, refetch }: UserFileProps) {
 
   async function favoriteFile() {
     const response = await fetch(
-      `/api/user/file/favorite/${getFileName(fileMeta)}`,
+      `/api/user/@me/file/favorite/${getFileName(fileMeta)}`,
       {
         method: fileMeta.favorited ? "DELETE" : "POST",
       }

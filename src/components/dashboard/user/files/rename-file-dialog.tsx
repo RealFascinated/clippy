@@ -47,7 +47,7 @@ export default function RenameFileDialog({
 
   async function onSubmit({ newId }: z.infer<typeof formSchema>) {
     try {
-      await request.post(`/api/user/file/rename/${fileMeta.id}`, {
+      await request.post(`/api/user/@me/file/rename/${fileMeta.id}`, {
         throwOnError: true,
         withCredentials: true,
         headers: {

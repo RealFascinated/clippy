@@ -49,9 +49,9 @@ export default class UserMetricsTask extends Task {
         });
 
       Logger.info(
-        `Generated metrics for ${user.username} in ${
+        `Generated metrics for ${user.username} in ${(
           performance.now() - before
-        }ms`
+        ).toFixed(2)}ms`
       );
     }
   }

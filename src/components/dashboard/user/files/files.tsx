@@ -154,7 +154,7 @@ export default function UserFiles({
   } = useQuery<Page<FileType>>({
     queryKey: ["userFiles", page, sort, debouncedSearch, type],
     queryFn: async () =>
-      (await request.get<Page<FileType>>(`/api/user/files/${page}`, {
+      (await request.get<Page<FileType>>(`/api/user/@me/files/${page}`, {
         searchParams: {
           sortKey: sort.key,
           sortDirection: sort.direction,
@@ -165,7 +165,7 @@ export default function UserFiles({
           ...(type === "gifs" && { gifsOnly: "true" }),
         },
       }))!,
-    placeholderData: data => data,
+    placeholderData: (data) => data,
   });
 
   return (

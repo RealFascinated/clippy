@@ -10,7 +10,7 @@ export default function FileTypeList({
   mimetypeDistribution,
 }: FileTypeListProps) {
   return (
-    <div className="w-[1000px] h-[350px] bg-background/70 rounded-lg border border-muted shadow-sm flex flex-col">
+    <div className="w-full xl:w-[1000px] h-[350px] bg-background/70 rounded-lg border border-muted shadow-sm flex flex-col">
       <div className="p-3 border-b border-muted shrink-0">
         <h2 className="text-lg font-semibold">File Types</h2>
       </div>

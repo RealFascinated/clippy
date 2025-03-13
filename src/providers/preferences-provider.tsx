@@ -62,7 +62,7 @@ const PreferencesProvider = ({ user, children }: PreferencesProviderProps) => {
 
   const updatePreferences = async (updates: Partial<PreferencesType>) => {
     setPreferences(prev => ({ ...prev, ...updates }));
-    await request.post("/api/user/update-preference", {
+    await request.post("/api/user/@me/update-preference", {
       data: updates,
     });
   };

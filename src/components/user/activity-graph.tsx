@@ -1,6 +1,6 @@
 "use client";
 
-import { ActivityGraphResponse } from "@/app/api/user/files/graph/route";
+import { ActivityGraphResponse } from "@/app/api/user/[@me]/files/graph/route";
 import SimpleTooltip from "@/components/simple-tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 import request from "@/lib/request";
@@ -36,8 +36,9 @@ export default function ActivityGraph({
 }: ActivityGraphProps) {
   const { isLoading, data: activityData } = useQuery({
     queryKey: ["activity-graph", userId],
-    queryFn: () => request.get<ActivityGraphResponse>("/api/user/files/graph"),
-    placeholderData: data => data,
+    queryFn: () =>
+      request.get<ActivityGraphResponse>("/api/user/@me/files/graph"),
+    placeholderData: (data) => data,
   });
   const { weeks, monthPositions, dayLabels } = generateCalendarData(
     activityData?.graph

@@ -32,7 +32,7 @@ export default function DeleteFileDialog({
    */
   async function deleteFile(fileMeta: FileType) {
     try {
-      await request.get(`/api/user/file/delete/${fileMeta.deleteKey}`, {
+      await request.get(`/api/user/@me/file/delete/${fileMeta.deleteKey}`, {
         throwOnError: true,
         withCredentials: true, // use cookies
       });

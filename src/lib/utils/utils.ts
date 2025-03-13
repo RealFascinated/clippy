@@ -52,19 +52,21 @@ export function randomString(length: number): string {
 /**
  * Formats file bytes to human readable format.
  *
- * @param bytes - The number of bytes to format.
- * @returns A string representing the formatted size.
+ * @param bytes the number of bytes to format
+ * @param decimalPlaces the number of decimal places to display
+ * @returns the formatted size
  */
-export function formatBytes(bytes: number): string {
+export function formatBytes(bytes: number, decimalPlaces: number = 2): string {
   if (bytes === 0) return "0 Bytes";
 
   const k = 1024;
-  const dm = 2; // decimal places
   const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  return (
+    parseFloat((bytes / Math.pow(k, i)).toFixed(decimalPlaces)) + " " + sizes[i]
+  );
 }
 
 /**

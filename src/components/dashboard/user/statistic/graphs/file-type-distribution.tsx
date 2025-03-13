@@ -65,28 +65,35 @@ export default function UserFileTypeDistribution({
   };
 
   return (
-    <div className="w-full h-[350px] md:w-[350px] p-2 bg-background/70 rounded-md border border-muted">
-      <Chart
-        type="doughnut"
-        options={options}
-        data={chartData}
-        plugins={[
-          {
-            id: "legend-padding",
-            beforeInit: chart => {
-              if (chart.legend) {
-                const originalFit = chart.legend.fit;
-                chart.legend.fit = function fit() {
-                  originalFit.bind(chart.legend)();
-                  if (this.height !== undefined) {
-                    this.height += 6;
-                  }
-                };
-              }
+    <div className="w-[350px] h-[350px] bg-background/70 rounded-lg border border-muted shadow-sm flex flex-col">
+      <div className="p-3 border-b border-muted shrink-0">
+        <h2 className="text-lg font-semibold">Top Mime Types</h2>
+      </div>
+
+      {/* Chart */}
+      <div className="flex-1 flex items-center justify-center pb-2">
+        <Chart
+          type="doughnut"
+          options={options}
+          data={chartData}
+          plugins={[
+            {
+              id: "legend-padding",
+              beforeInit: (chart) => {
+                if (chart.legend) {
+                  const originalFit = chart.legend.fit;
+                  chart.legend.fit = function fit() {
+                    originalFit.bind(chart.legend)();
+                    if (this.height !== undefined) {
+                      this.height += 6;
+                    }
+                  };
+                }
+              },
             },
-          },
-        ]}
-      />
+          ]}
+        />
+      </div>
     </div>
   );
 }

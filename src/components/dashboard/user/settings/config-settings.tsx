@@ -32,13 +32,13 @@ export default function ConfigSettings({ user }: { user: any }) {
         <DownloadConfig
           hasUploadToken={!!user.uploadToken}
           configName="ShareX File Uploader"
-          configUrl="/api/user/config/sharex/file"
+          configUrl="/api/user/@me/config/sharex/file"
           logoUrl="/sharex.svg"
         />
         <DownloadConfig
           hasUploadToken={!!user.uploadToken}
           configName="ShareX URL Shortener"
-          configUrl="/api/user/config/sharex/shorten"
+          configUrl="/api/user/@me/config/sharex/shorten"
           logoUrl="/sharex.svg"
         />
       </div>
@@ -51,7 +51,7 @@ function UploadToken({ user }: { user: any }) {
   const hasUploadToken: boolean = !!user.uploadToken;
 
   async function resetToken() {
-    await Request.post("/api/user/reset-upload-token");
+    await Request.post("/api/user/@me/reset-upload-token");
     router.refresh();
     toast("Your upload token has been rotated!");
   }

@@ -1,4 +1,4 @@
-import { RecentFilesResponse } from "@/app/api/user/files/recent/route";
+import { RecentFilesResponse } from "@/app/api/user/[@me]/files/recent/route";
 import { env } from "@/lib/env";
 import request from "@/lib/request";
 import { getFileName } from "@/lib/utils/file";
@@ -9,7 +9,7 @@ import Link from "next/link";
 
 export default async function RecentFiles() {
   const files = await request.get<RecentFilesResponse>(
-    `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/files/recent`,
+    `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/@me/files/recent`,
     {
       headers: {
         cookie: (await headers()).get("cookie"),
@@ -28,7 +28,7 @@ export default async function RecentFiles() {
 
       <div className="flex-1 flex flex-col min-h-0">
         <div className="p-4 border-b border-muted/50 shrink-0">
-          <div className="grid grid-cols-[2fr_1fr_0.7fr_1.5fr] gap-4">
+          <div className="grid grid-cols-[2fr_1fr_0.7fr_1.5fr] gap-2">
             <div className="text-sm font-medium text-muted-foreground">
               File Name
             </div>
@@ -46,17 +46,17 @@ export default async function RecentFiles() {
 
         <div className="flex-1 overflow-y-auto min-h-0 p-4">
           <div className="space-y-1">
-            {files.files.map(file => (
+            {files.files.map((file) => (
               <Link
                 href={`/${getFileName(file)}`}
                 prefetch={false}
                 key={file.id}
                 target="_blank"
-                className="grid grid-cols-[2fr_1fr_0.7fr_1.5fr] gap-4 py-2 px-1 rounded-md hover:bg-muted/50 transition-colors"
+                className="grid grid-cols-[2fr_1fr_0.7fr_1.5fr] gap-2 py-2 px-1 rounded-md hover:bg-muted/50 transition-colors"
               >
                 <div className="text-sm truncate">{getFileName(file)}</div>
                 <div className="text-sm text-muted-foreground">
-                  {formatBytes(file.size)}
+                  {formatBytes(file.size, 1)}
                 </div>
                 <div className="text-sm text-muted-foreground text-center">
                   {file.views}

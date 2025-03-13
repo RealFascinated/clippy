@@ -10,7 +10,7 @@ import Statistics from "./statistics";
 
 export default async function UserStatistics() {
   const statisticsResponse = await request.get<UserStatisticsResponse>(
-    `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/statistics`,
+    `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/@me/statistics`,
     {
       headers: {
         cookie: (await headers()).get("cookie"),
@@ -27,11 +27,11 @@ export default async function UserStatistics() {
       <Statistics statisticsResponse={statisticsResponse} />
       <StatisticHistoryGraph userGraphData={statisticsResponse} />
       <div className="flex flex-col xl:flex-row gap-4 w-full">
+        <RecentFiles />
         <FileTypeList
           mimetypeDistribution={statisticsResponse.mimetypeDistribution}
         />
         <UserFileTypeDistribution userGraphData={statisticsResponse} />
-        <RecentFiles />
       </div>
     </div>
   );
