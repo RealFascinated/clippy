@@ -65,18 +65,20 @@ export const env = createEnv({
 
   runtimeEnv: {
     // Client
-    NEXT_PUBLIC_WEBSITE_NAME: readVariable("NEXT_PUBLIC_WEBSITE_NAME"),
-    NEXT_PUBLIC_WEBSITE_DESCRIPTION: readVariable(
-      "NEXT_PUBLIC_WEBSITE_DESCRIPTION"
-    ),
-    NEXT_PUBLIC_WEBSITE_LOGO: readVariable("NEXT_PUBLIC_WEBSITE_LOGO"),
-    NEXT_PUBLIC_WEBSITE_URL: readVariable("NEXT_PUBLIC_WEBSITE_URL"),
+    NEXT_PUBLIC_WEBSITE_NAME:
+      readVariable("NEXT_PUBLIC_WEBSITE_NAME") ?? "Clippy",
+    NEXT_PUBLIC_WEBSITE_DESCRIPTION:
+      readVariable("NEXT_PUBLIC_WEBSITE_DESCRIPTION") ??
+      "Open Source ShareX Uploader",
+    NEXT_PUBLIC_WEBSITE_LOGO:
+      readVariable("NEXT_PUBLIC_WEBSITE_LOGO") ?? "/logo.png",
+    NEXT_PUBLIC_WEBSITE_URL:
+      readVariable("NEXT_PUBLIC_WEBSITE_URL") ?? "http://localhost:3000",
 
     // Shared
     NEXT_PUBLIC_APP_ENV: readVariable("NEXT_PUBLIC_APP_ENV"),
-    NEXT_PUBLIC_ALLOW_REGISTRATIONS: readVariable(
-      "NEXT_PUBLIC_ALLOW_REGISTRATIONS"
-    ),
+    NEXT_PUBLIC_ALLOW_REGISTRATIONS:
+      readVariable("NEXT_PUBLIC_ALLOW_REGISTRATIONS") === "true",
 
     // Server
     DATABASE_URL: process.env.DATABASE_URL,
