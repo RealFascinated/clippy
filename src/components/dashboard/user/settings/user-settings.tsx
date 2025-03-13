@@ -1,7 +1,9 @@
 import AvatarInitials from "@/components/avatar-initials";
 import ConfirmationPopover from "@/components/confirmation-popover";
 import BooleanPreference from "@/components/dashboard/user/settings/types/boolean-preference";
-import Preference from "@/components/dashboard/user/settings/types/preference";
+import Preference, {
+  PreferenceCategory,
+} from "@/components/dashboard/user/settings/types/preference";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import ActivityGraph from "@/components/user/activity-graph";
@@ -9,7 +11,7 @@ import { UserType } from "@/lib/db/schemas/auth-schema";
 import { env } from "@/lib/env";
 import { getUserRole } from "@/lib/helpers/role";
 import { format } from "date-fns";
-import { FolderX, Trash2 } from "lucide-react";
+import { FolderDown, FolderX, Trash2 } from "lucide-react";
 
 export default function UserSettings({ user }: { user: UserType }) {
   return (
@@ -70,82 +72,62 @@ function UserDetails({ user }: { user: any }) {
 
 function DataAndPrivacy() {
   return (
-    <div className="flex flex-col gap-2 select-none">
-      {/* Header */}
-      <h1 className="text-base xs:text-lg font-bold transition-all transform-gpu">
-        Data & Privacy
-      </h1>
+    <PreferenceCategory name="Data & Privacy">
+      {/* Public Activity */}
+      <BooleanPreference
+        preferenceId="showKitty"
+        header="Public Activity"
+        description="Would you like to display your activity graph on your public profile?"
+      />
 
-      <div className="flex flex-col gap-2">
-        {/* Public Activity */}
-        <BooleanPreference
-          preferenceId="showKitty"
-          header="Public Activity"
-          description="Would you like to display your activity graph on your public profile?"
-        />
-
-        {/* Download Data */}
-        <Preference
-          header="Request my data"
-          description={`Would you like to request a copy of your data that ${env.NEXT_PUBLIC_WEBSITE_NAME} has?`}
-          inline
-        >
-          <Button variant="secondary" size="xs">
-            Request Data
-          </Button>
-        </Preference>
-      </div>
-    </div>
+      {/* Download Data */}
+      <Preference
+        header="Request my data"
+        description={`Would you like to request a copy of your data that ${env.NEXT_PUBLIC_WEBSITE_NAME} has?`}
+      >
+        <Button variant="secondary" size="xs">
+          <FolderDown />
+          Request Data
+        </Button>
+      </Preference>
+    </PreferenceCategory>
   );
 }
 
 function DangerZone() {
   return (
-    <div className="flex flex-col gap-2 select-none">
-      {/* Header */}
-      <h1 className="text-base xs:text-lg font-bold transition-all transform-gpu">
-        Danger Zone
-      </h1>
-
-      <div className="flex flex-col gap-2">
-        {/* Delete Account */}
-        <Preference
-          header="Delete My Account"
-          description="Deleting your account will remove all of your data and is irreversible."
-          inline
-        >
-          <ConfirmationPopover
-            message="Are you sure you would like to delete your account? This action is irreversible and all of your data will be lost."
-            confirmationButton="Delete Account"
-            doubleConfirmation
-            onConfirm={() => {}}
-          >
-            <Button variant="destructive" size="xs">
-              <Trash2 />
-              Delete Account
-            </Button>
-          </ConfirmationPopover>
-        </Preference>
-
+    <PreferenceCategory name="Danger Zone">
+      {/* Data Deletion */}
+      <Preference
+        header="Data Deletion"
+        description={`Here is where you can delete your account, or delete all of your files from ${env.NEXT_PUBLIC_WEBSITE_NAME}.`}
+      >
         {/* Delete All Files */}
-        <Preference
-          header="Delete My Files"
-          description="Deleting all of your files is irreversible."
-          inline
+        <ConfirmationPopover
+          message="Are you sure you would like to delete all of your files? This action is irreversible and all of your files will be lost."
+          confirmationButton="Delete All Files"
+          doubleConfirmation
+          onConfirm={() => {}}
         >
-          <ConfirmationPopover
-            message="Are you sure you would like to delete all of your files? This action is irreversible and all of your files will be lost."
-            confirmationButton="Delete All Files"
-            doubleConfirmation
-            onConfirm={() => {}}
-          >
-            <Button variant="destructive" size="xs">
-              <FolderX />
-              Delete Files
-            </Button>
-          </ConfirmationPopover>
-        </Preference>
-      </div>
-    </div>
+          <Button variant="destructive" size="xs">
+            <FolderX />
+            Delete Files
+          </Button>
+        </ConfirmationPopover>
+
+        {/* Delete Account */}
+        <ConfirmationPopover
+          message="Are you sure you would like to delete your account? This action is irreversible and all of your data will be lost."
+          confirmationButton="Delete Account"
+          doubleConfirmation
+          onConfirm={() => {}}
+        >
+          <Button className="text-destructive" variant="secondary" size="xs">
+            <Trash2 />
+            Delete Account
+          </Button>
+        </ConfirmationPopover>
+      </Preference>
+    </PreferenceCategory>
   );
 }

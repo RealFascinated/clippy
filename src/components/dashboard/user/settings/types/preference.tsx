@@ -28,13 +28,13 @@ export default function Preference({
   return (
     <div
       className={cn(
-        "flex flex-col gap-2 justify-between",
+        "flex flex-col gap-3 justify-between",
         inline && "flex-row gap-10 items-center"
       )}
     >
       <div className="flex flex-col select-none">
         <div className="flex gap-3 items-center">
-          <h1 className="text-base xs:text-lg font-bold transition-all transform-gpu">
+          <h1 className="text-sm xs:text-base font-bold transition-all transform-gpu">
             {header}
           </h1>
           {badge}
@@ -58,11 +58,11 @@ export function PreferenceCategory({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <h2 className="text-sm xs:text-base text-muted-foreground font-medium transition-all transform-gpu">
+    <div className="flex flex-col gap-4 select-none">
+      <h2 className="text-lg xs:text-xl font-bold transition-all transform-gpu">
         {name}
       </h2>
-      {children}
+      <div className="flex flex-col gap-2">{children}</div>
     </div>
   );
 }
