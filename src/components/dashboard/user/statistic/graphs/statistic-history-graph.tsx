@@ -319,7 +319,7 @@ export default function StatisticHistoryGraph({
             plugins={[
               {
                 id: "legend-padding",
-                beforeInit: (chart) => {
+                beforeInit: chart => {
                   if (chart.legend) {
                     const originalFit = chart.legend.fit;
                     chart.legend.fit = function fit() {

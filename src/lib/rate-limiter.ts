@@ -1,6 +1,5 @@
-import { env } from "./env";
-import Logger from "./logger";
 import { NextResponse } from "next/server";
+import Logger from "./logger";
 
 export interface RateLimiterOptions {
   /**

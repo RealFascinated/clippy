@@ -17,9 +17,7 @@ export async function middleware(request: NextRequest) {
   // Handle API rate limiting
   if (pathname.startsWith("/api/")) {
     // Find the first matching rate limiter
-    const rateLimiter = rateLimiters.find((limiter) =>
-      limiter.matches(pathname)
-    );
+    const rateLimiter = rateLimiters.find(limiter => limiter.matches(pathname));
 
     if (rateLimiter) {
       const ip = request.headers.get("x-forwarded-for") || "unknown";

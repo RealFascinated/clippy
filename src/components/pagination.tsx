@@ -6,10 +6,10 @@ import {
 } from "@heroicons/react/16/solid";
 import clsx from "clsx";
 import React, { useEffect, useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import Loader from "./ui/loader";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 type PaginationItemWrapperProps = {
   isLoadingPage: boolean;
@@ -113,7 +113,7 @@ export default function Pagination({
                 min={1}
                 max={totalPages}
                 value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
+                onChange={e => setInputValue(e.target.value)}
                 placeholder={`Page (1-${totalPages})`}
                 className="w-full"
                 autoFocus
@@ -149,7 +149,7 @@ export default function Pagination({
     children: React.ReactNode;
   }) => (
     <button
-      onClick={(e) => handleLinkClick(page, e)}
+      onClick={e => handleLinkClick(page, e)}
       disabled={isLoading || page === currentPage}
       className={cn(
         "relative h-8 min-w-[2rem] px-2 flex items-center justify-center rounded-md text-sm transition-all cursor-pointer",
@@ -173,7 +173,7 @@ export default function Pagination({
     children: React.ReactNode;
   }) => (
     <button
-      onClick={(e) => handleLinkClick(page, e)}
+      onClick={e => handleLinkClick(page, e)}
       disabled={disabled || isLoading}
       className={cn(
         "relative flex h-8 w-8 items-center justify-center rounded-md transition-all cursor-pointer",

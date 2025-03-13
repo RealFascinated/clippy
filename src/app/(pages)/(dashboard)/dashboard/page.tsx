@@ -31,7 +31,7 @@ export default async function DashboardPage() {
 
   const user = await getUser();
   return (
-    <div className="flex flex-col gap-6 w-full items-center max-w-[1600px] mx-auto px-4">
+    <div className="flex flex-col gap-6 w-full items-center max-w-[1600px] mx-auto">
       <WelcomeBanner username={user.name} />
 
       <div className="flex flex-col gap-6 w-full">
