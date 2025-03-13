@@ -45,7 +45,7 @@ export default async function DashboardPage() {
 
         <div className="grid xl:grid-cols-3 gap-6 w-full">
           <div className="bg-background/80 backdrop-blur-sm rounded-xl border border-muted/50 shadow-lg">
-            <RecentFiles />
+            <RecentFiles user={user} />
           </div>
           <div className="bg-background/80 backdrop-blur-sm rounded-xl border border-muted/50 shadow-lg">
             <MimeTypeList

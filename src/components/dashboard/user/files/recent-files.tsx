@@ -7,8 +7,10 @@ import { format } from "date-fns";
 import { Clock } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
+import FilePreview from "./file-preview";
+import { UserType } from "@/lib/db/schemas/auth-schema";
 
-export default async function RecentFiles() {
+export default async function RecentFiles({ user }: { user: UserType }) {
   const files = await request.get<RecentFilesResponse>(
     `${env.NEXT_PUBLIC_WEBSITE_URL}/api/user/@me/files/recent`,
     {
@@ -52,23 +54,22 @@ export default async function RecentFiles() {
           <div className="space-y-1 py-2">
             {files.files.length > 0 ? (
               files.files.map((file) => (
-                <Link
-                  href={`/${getFileName(file)}`}
-                  prefetch={false}
-                  key={file.id}
-                  target="_blank"
-                  className="grid grid-cols-[2fr_1fr_2fr] gap-4 py-2 px-2 rounded-lg hover:bg-muted/20 transition-all duration-200 group"
-                >
-                  <div className="text-sm font-medium truncate group-hover:text-primary transition-colors">
-                    {getFileName(file)}
+                <FilePreview fileMeta={file} user={user} key={file.id}>
+                  <div
+                    key={file.id}
+                    className="grid grid-cols-[2fr_1fr_2fr] gap-4 py-2 px-2 rounded-lg hover:bg-muted/20 transition-all duration-200 group w-full"
+                  >
+                    <div className="text-sm font-medium truncate group-hover:text-primary transition-colors">
+                      {getFileName(file)}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {formatBytes(file.size, 1)}
+                    </div>
+                    <div className="text-sm text-muted-foreground text-right">
+                      {format(file.createdAt, "MMM d, yyyy HH:mm")}
+                    </div>
                   </div>
-                  <div className="text-sm text-muted-foreground">
-                    {formatBytes(file.size, 1)}
-                  </div>
-                  <div className="text-sm text-muted-foreground text-right">
-                    {format(file.createdAt, "MMM d, yyyy HH:mm")}
-                  </div>
-                </Link>
+                </FilePreview>
               ))
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
