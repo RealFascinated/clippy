@@ -9,6 +9,7 @@ import { authClient } from "@/lib/client-auth";
 import { UserSessionResponse } from "@/lib/helpers/user";
 import { useQuery } from "@tanstack/react-query";
 import { Session } from "better-auth";
+import { LogOut } from "lucide-react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useRouter } from "next/navigation";
 
@@ -96,6 +97,7 @@ function DeviceList({
               size="xs"
               variant="destructive"
             >
+              <LogOut />
               Logout All Devices
             </Button>
           </ConfirmationPopover>

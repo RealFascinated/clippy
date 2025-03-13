@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/client-auth";
 import { Session } from "better-auth";
 import { format, formatDistanceToNow } from "date-fns";
-import { Monitor, Smartphone, X } from "lucide-react";
+import { LogOut, Monitor, Smartphone } from "lucide-react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -94,7 +94,7 @@ export default function Device({
         </div>
 
         {/* Actions */}
-        <div className="opacity-0 group-hover:opacity-100 ml-auto flex gap-2 items-center transition-all duration-300 transform-gpu">
+        <div className="lg:opacity-0 group-hover:opacity-100 ml-auto flex gap-2 items-center transition-all duration-300 transform-gpu">
           {/* Logout */}
           <SimpleTooltip content="Logout Device">
             <div>
@@ -104,7 +104,7 @@ export default function Device({
                 onConfirm={logoutDevice}
               >
                 <Button variant="ghost" size="icon" onClick={logoutDevice}>
-                  <X className="size-4 text-muted-foreground" />
+                  <LogOut className="size-4 text-muted-foreground" />
                 </Button>
               </ConfirmationPopover>
             </div>
