@@ -73,7 +73,7 @@ export default function Statistics({ statisticsResponse }: StatisticsProps) {
     statisticsResponse.statisticHistory[format(new Date(), "yyyy-MM-dd")];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full justify-between gap-4 items-center select-none">
+    <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full justify-between gap-3 sm:gap-4 items-center select-none">
       {statistics.map((statistic, index) => {
         const value = getValueFromKey(statisticsToday, statistic.key);
 

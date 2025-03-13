@@ -39,7 +39,7 @@ export default async function DashboardPage() {
           <Statistics statisticsResponse={statisticsResponse} />
         </div>
 
-        <div className="bg-background/80 backdrop-blur-sm rounded-xl border border-muted/50 shadow-lg p-6">
+        <div className="bg-background/80 backdrop-blur-sm rounded-xl border border-muted/50 shadow-lg">
           <StatisticHistoryGraph userGraphData={statisticsResponse} />
         </div>
 
