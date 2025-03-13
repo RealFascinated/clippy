@@ -189,15 +189,15 @@ export default function UserFiles({
         </div>
 
         {/* File Sorting */}
-        <div className="flex gap-3 sm:mr-2 items-center">
+        <div className="flex gap-3 flex-col md:flex-row w-full md:w-auto">
           {/* Search */}
-          <div className="relative flex-1 min-w-[200px]">
+          <div className="relative flex-1 min-w-0 md:min-w-[250px] max-w-full md:max-w-[300px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <Input
               placeholder="Search files..."
               value={search}
               onChange={(e) => handleSearch(e.target.value)}
-              className="pl-9 pr-8"
+              className="pl-9 pr-8 w-full"
             />
             {search && (
               <button
@@ -209,10 +209,10 @@ export default function UserFiles({
             )}
           </div>
 
-          <div className="flex items-center gap-2 border-l border-muted/50 pl-3">
+          <div className="flex items-center gap-2 md:border-l md:border-muted/50 md:pl-3">
             {/* Sort By */}
             <Select value={sort.key} onValueChange={handleSortChange}>
-              <SelectTrigger className="w-[140px] bg-background/50">
+              <SelectTrigger className="w-full md:w-[140px] bg-background/50">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -233,7 +233,7 @@ export default function UserFiles({
             <Button
               variant="outline"
               size="icon"
-              className="bg-background/50"
+              className="bg-background/50 border-muted/50 shrink-0"
               onClick={handleDirectionChange}
             >
               {sort.direction === "asc" ? (
