@@ -10,6 +10,7 @@ import {
   ChartData,
   Chart as ChartJS,
   ChartOptions,
+  Filler,
   Legend,
   LinearScale,
   LineController,
@@ -31,7 +32,8 @@ ChartJS.register(
   CategoryScale,
   Legend,
   Tooltip,
-  BarElement
+  BarElement,
+  Filler
 );
 
 type ChartTypes = "line" | "bar";

@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/tooltip";
 import { ScreenSize, useIsScreenSize } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils/utils";
+import { useEffect } from "react";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -91,11 +92,13 @@ const SidebarProvider = React.forwardRef<
 
     // Helper to toggle the sidebar.
     const toggleSidebar = React.useCallback(() => {
-      return isMobile ? setOpenMobile(open => !open) : setOpen(open => !open);
+      return isMobile
+        ? setOpenMobile((open) => !open)
+        : setOpen((open) => !open);
     }, [isMobile, setOpen, setOpenMobile]);
 
     // Adds a keyboard shortcut to toggle the sidebar.
-    React.useEffect(() => {
+    useEffect(() => {
       const handleKeyDown = (event: KeyboardEvent) => {
         if (
           event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
@@ -109,6 +112,48 @@ const SidebarProvider = React.forwardRef<
       window.addEventListener("keydown", handleKeyDown);
       return () => window.removeEventListener("keydown", handleKeyDown);
     }, [toggleSidebar]);
+
+    // Adds swipe gesture to toggle the sidebar on mobile.
+    useEffect(() => {
+      if (!isMobile) return;
+
+      const SWIPE_THRESHOLD = 50; // Threshold distance from the left edge
+      const START_THRESHOLD = 50; // Start swipe within 50px from the left edge
+      let startX = 0;
+      let validSwipe = false;
+
+      const handleTouchStart = (event: TouchEvent) => {
+        startX = event.touches[0].clientX;
+        validSwipe = startX <= START_THRESHOLD;
+      };
+
+      const handleTouchMove = (event: TouchEvent) => {
+        if (!validSwipe) return;
+        const touch = event.touches[0];
+        const swipeDistance = touch.clientX - startX;
+        if (swipeDistance > SWIPE_THRESHOLD) {
+          setOpenMobile(true);
+        } else if (swipeDistance < -SWIPE_THRESHOLD) {
+          setOpenMobile(false);
+        }
+      };
+
+      window.addEventListener("touchstart", handleTouchStart);
+      window.addEventListener("touchmove", handleTouchMove);
+      window.addEventListener("touchend", () => {
+        startX = 0;
+        validSwipe = false;
+      });
+
+      return () => {
+        window.removeEventListener("touchstart", handleTouchStart);
+        window.removeEventListener("touchmove", handleTouchMove);
+        window.removeEventListener("touchend", () => {
+          startX = 0;
+          validSwipe = false;
+        });
+      };
+    }, [isMobile, setOpenMobile]);
 
     // We add a state so that we can do data-state="expanded" or "collapsed".
     // This makes it easier to style the sidebar with Tailwind classes.
