@@ -38,7 +38,7 @@ export default function ActivityGraph({
     queryKey: ["activity-graph", userId],
     queryFn: () =>
       request.get<ActivityGraphResponse>("/api/user/@me/files/graph"),
-    placeholderData: data => data,
+    placeholderData: (data) => data,
   });
   const { weeks, monthPositions, dayLabels } = generateCalendarData(
     activityData?.graph
@@ -57,7 +57,7 @@ export default function ActivityGraph({
       </div>
 
       {/* Graph */}
-      <div className="overflow-scroll">
+      <div className="overflow-x-auto">
         <div className="mx-auto w-fit flex flex-col gap-1.5">
           <div className="p-2 relative border border-muted/50 rounded-lg">
             {/* Month labels row */}
