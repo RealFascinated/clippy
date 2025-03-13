@@ -69,7 +69,7 @@ export default function SettingTabs({
     >
       {/* Headers */}
       <TabsList className="w-full h-full flex flex-wrap bg-transparent rounded-sm">
-        {tabs.map((tab) => (
+        {tabs.map(tab => (
           <TabsTrigger
             key={tab.id}
             className="flex-1 min-w-24 border-b border-border data-[state=active]:border-primary/75 data-[state=active]:text-primary rounded-none hover:opacity-75 cursor-pointer transition-all transform-gpu"
@@ -81,7 +81,7 @@ export default function SettingTabs({
       </TabsList>
 
       {/* Content */}
-      {tabs.map((tab) => (
+      {tabs.map(tab => (
         <TabsContent
           key={tab.id}
           className="p-6 flex flex-col gap-6 bg-background/70 rounded-md border border-muted/50"

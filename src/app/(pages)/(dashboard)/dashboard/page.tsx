@@ -1,6 +1,8 @@
 import RecentFiles from "@/components/dashboard/user/files/recent-files";
-import Statistics from "@/components/dashboard/user/statistic/statistics";
 import StatisticHistoryGraph from "@/components/dashboard/user/statistic/graphs/statistic-history-graph";
+import TopMimeTypes from "@/components/dashboard/user/statistic/graphs/top-mime-types";
+import MimeTypeList from "@/components/dashboard/user/statistic/mime-type-list";
+import Statistics from "@/components/dashboard/user/statistic/statistics";
 import WelcomeBanner from "@/components/dashboard/user/welcome-banner";
 import { env } from "@/lib/env";
 import { getUser } from "@/lib/helpers/user";
@@ -8,8 +10,6 @@ import request from "@/lib/request";
 import { UserStatisticsResponse } from "@/type/api/user/graph-response";
 import { Metadata } from "next";
 import { headers } from "next/headers";
-import MimeTypeList from "@/components/dashboard/user/statistic/mime-type-list";
-import TopMimeTypes from "@/components/dashboard/user/statistic/graphs/top-mime-types";
 
 export const metadata: Metadata = {
   title: "Dashboard",

@@ -4,9 +4,9 @@ import request from "@/lib/request";
 import { getFileName } from "@/lib/utils/file";
 import { formatBytes } from "@/lib/utils/utils";
 import { format } from "date-fns";
+import { Clock } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
-import { Clock } from "lucide-react";
 
 export default async function RecentFiles() {
   const files = await request.get<RecentFilesResponse>(
@@ -54,7 +54,7 @@ export default async function RecentFiles() {
         <div className="flex-1 overflow-y-auto min-h-0 px-4">
           <div className="space-y-1 py-2">
             {files.files.length > 0 ? (
-              files.files.map((file) => (
+              files.files.map(file => (
                 <Link
                   href={`/${getFileName(file)}`}
                   prefetch={false}

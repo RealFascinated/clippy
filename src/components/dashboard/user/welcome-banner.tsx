@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { CalendarDays, Clock } from "lucide-react";
 import { format } from "date-fns";
+import { CalendarDays, Clock } from "lucide-react";
+import { useEffect, useState } from "react";
 
 type WelcomeBannerProps = {
   username: string;

@@ -29,10 +29,10 @@ import { useDebounce, useIsFirstRender } from "@uidotdev/usehooks";
 import {
   ArrowDownWideNarrow,
   ArrowUpNarrowWide,
-  X,
   FileText,
   Search,
   SlidersHorizontal,
+  X,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -172,7 +172,7 @@ export default function UserFiles({
           ...(type === "gifs" && { gifsOnly: "true" }),
         },
       }))!,
-    placeholderData: (data) => data,
+    placeholderData: data => data,
   });
 
   return (
@@ -196,7 +196,7 @@ export default function UserFiles({
             <Input
               placeholder="Search files..."
               value={search}
-              onChange={(e) => handleSearch(e.target.value)}
+              onChange={e => handleSearch(e.target.value)}
               className="pl-9 pr-8 w-full"
             />
             {search && (
@@ -261,7 +261,7 @@ export default function UserFiles({
           {files.items.length > 0 ? (
             <>
               <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4">
-                {files.items.map((fileMeta) => (
+                {files.items.map(fileMeta => (
                   <UserFile
                     user={user}
                     key={fileMeta.id}
@@ -279,7 +279,7 @@ export default function UserFiles({
                 totalItems={files.metadata.totalItems}
                 itemsPerPage={files.metadata.itemsPerPage}
                 loadingPage={isLoading || isRefetching ? page : undefined}
-                onPageChange={(newPage) => setPage(newPage)}
+                onPageChange={newPage => setPage(newPage)}
               />
             </>
           ) : (

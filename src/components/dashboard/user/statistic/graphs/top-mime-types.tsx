@@ -10,8 +10,8 @@ import {
   Legend,
   Tooltip,
 } from "chart.js";
-import { Chart } from "react-chartjs-2";
 import { BarChart2 } from "lucide-react";
+import { Chart } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, DoughnutController, Legend, Tooltip);
 
@@ -69,7 +69,7 @@ const mimeTypeColors: ColorMap = {
 
 function generateColor(type: string, border = false): string {
   // Find matching type prefix
-  const matchingType = Object.keys(mimeTypeColors).find((key) =>
+  const matchingType = Object.keys(mimeTypeColors).find(key =>
     type.startsWith(key)
   );
   if (matchingType) {
@@ -88,8 +88,8 @@ export default function TopMimeTypes({ userGraphData }: TopMimeTypesProps) {
     .slice(0, 10);
 
   const mimeTypes = mimeTypeDistribution.map(([key]) => key);
-  const backgroundColor = mimeTypes.map((type) => generateColor(type));
-  const borderColor = mimeTypes.map((type) => generateColor(type, true));
+  const backgroundColor = mimeTypes.map(type => generateColor(type));
+  const borderColor = mimeTypes.map(type => generateColor(type, true));
 
   const chartData: ChartData<ChartTypes> = {
     labels: mimeTypes,
@@ -126,7 +126,7 @@ export default function TopMimeTypes({ userGraphData }: TopMimeTypesProps) {
           plugins={[
             {
               id: "legend-padding",
-              beforeInit: (chart) => {
+              beforeInit: chart => {
                 if (chart.legend) {
                   const originalFit = chart.legend.fit;
                   chart.legend.fit = function fit() {

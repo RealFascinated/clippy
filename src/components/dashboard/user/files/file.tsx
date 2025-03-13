@@ -4,7 +4,7 @@ import FileContextMenu from "@/components/dashboard/user/files/file-context-menu
 import FileExtensionIcon from "@/components/file-icon";
 import FileVideoPlayer from "@/components/file/video-player";
 import SimpleTooltip from "@/components/simple-tooltip";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { UserType } from "@/lib/db/schemas/auth-schema";
 import { FileType } from "@/lib/db/schemas/file";
@@ -64,7 +64,7 @@ export default function UserFile({ user, fileMeta, refetch }: UserFileProps) {
       <div className="bg-card h-full flex flex-col items-center rounded-lg overflow-hidden group">
         <div className="h-full w-full flex flex-col">
           {/* Preview Section */}
-          <div className="relative aspect-square w-full bg-muted/50">
+          <div className="relative h-48 w-full bg-muted/50">
             {hasThumbnail ? (
               <FilePreview fileMeta={fileMeta} user={user} />
             ) : (
@@ -196,6 +196,7 @@ function FilePreview({
               src={`/thumbnails/${fileMeta.id}.webp`}
               alt="Recent File Image Preview"
               className="w-full h-full object-cover"
+              loading="lazy"
             />
             {isVideo && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/20">

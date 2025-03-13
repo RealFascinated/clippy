@@ -1,7 +1,7 @@
 import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { MimetypeDistribution } from "@/type/api/user/mimetype-distrubution";
-import Link from "next/link";
 import { FileType } from "lucide-react";
+import Link from "next/link";
 
 type MimeTypeListProps = {
   mimetypeDistribution: MimetypeDistribution;

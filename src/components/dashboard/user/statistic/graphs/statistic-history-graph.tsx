@@ -18,9 +18,9 @@ import {
   Tooltip,
 } from "chart.js";
 import { format } from "date-fns";
-import { Chart } from "react-chartjs-2";
-import { useMemo } from "react";
 import { TrendingUp } from "lucide-react";
+import { useMemo } from "react";
+import { Chart } from "react-chartjs-2";
 
 ChartJS.register(
   LineController,
@@ -223,7 +223,7 @@ export default function StatisticHistoryGraph({
           type: "line",
           label: "Storage Used",
           data: lookupLabels.map(
-            (label) =>
+            label =>
               userGraphData.statisticHistory[label]?.storageMetrics
                 ?.usedStorage ?? null
           ),
@@ -240,7 +240,7 @@ export default function StatisticHistoryGraph({
           type: "line",
           label: "Total Views",
           data: lookupLabels.map(
-            (label) =>
+            label =>
               userGraphData.statisticHistory[label]?.fileMetrics?.views ?? null
           ),
           borderColor: colors.views.line,
@@ -256,7 +256,7 @@ export default function StatisticHistoryGraph({
           type: "line",
           label: "Total Uploads",
           data: lookupLabels.map(
-            (label) =>
+            label =>
               userGraphData.statisticHistory[label]?.userMetrics?.uploads ??
               null
           ),
@@ -273,7 +273,7 @@ export default function StatisticHistoryGraph({
           type: "bar",
           label: "Daily Uploads",
           data: lookupLabels.map(
-            (label) =>
+            label =>
               userGraphData.statisticHistory[label]?.userMetrics
                 ?.dailyUploads ?? null
           ),
@@ -285,7 +285,7 @@ export default function StatisticHistoryGraph({
           type: "bar",
           label: "Daily Views",
           data: lookupLabels.map(
-            (label) =>
+            label =>
               userGraphData.statisticHistory[label]?.fileMetrics?.dailyViews ??
               null
           ),
@@ -319,7 +319,7 @@ export default function StatisticHistoryGraph({
             plugins={[
               {
                 id: "legend-padding",
-                beforeInit: (chart) => {
+                beforeInit: chart => {
                   if (chart.legend) {
                     const originalFit = chart.legend.fit;
                     chart.legend.fit = function fit() {
