@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <PublicEnvScript />
+        {/* <PublicEnvScript /> */}
       </head>
       <body
         className={`${font.className} antialiased`}
