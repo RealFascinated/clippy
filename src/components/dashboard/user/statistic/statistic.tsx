@@ -22,13 +22,15 @@ export default function UserStatistic({
   tooltip,
 }: StatisticProps) {
   const base = (
-    <div className="p-2 bg-background/70 flex justify-between rounded-md border border-muted">
-      <div className="flex flex-col">
-        <span className="font-semibold">{name}</span>
-        <span className="text-muted-foreground">
+    <div className="p-6 bg-gradient-to-br from-background/90 to-background/70 hover:from-background/95 hover:to-background/75 transition-all duration-300 flex justify-between rounded-xl border border-muted/50 shadow-md hover:shadow-lg group">
+      <div className="flex flex-col gap-2">
+        <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground/80 transition-colors">
+          {name}
+        </span>
+        <span className="text-2xl font-bold tracking-tight">
           <CountUp
             end={value}
-            duration={1.5}
+            duration={1.3}
             start={0}
             formattingFn={
               format == "bytes" ? formatBytes : formatNumberWithCommas
@@ -36,7 +38,9 @@ export default function UserStatistic({
           />
         </span>
       </div>
-      {icon}
+      <div className="text-muted-foreground group-hover:text-primary/80 transition-colors">
+        {icon}
+      </div>
     </div>
   );
 

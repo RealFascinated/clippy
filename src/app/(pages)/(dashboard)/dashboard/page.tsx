@@ -31,18 +31,30 @@ export default async function DashboardPage() {
 
   const user = await getUser();
   return (
-    <div className="flex flex-col gap-4 w-full items-center">
+    <div className="flex flex-col gap-6 w-full items-center max-w-[1600px] mx-auto px-4">
       <WelcomeBanner username={user.name} />
 
-      <div className="flex flex-col gap-4 w-full">
-        <Statistics statisticsResponse={statisticsResponse} />
-        <StatisticHistoryGraph userGraphData={statisticsResponse} />
-        <div className="flex flex-col xl:flex-row gap-4 w-full">
-          <RecentFiles />
-          <MimeTypeList
-            mimetypeDistribution={statisticsResponse.mimetypeDistribution}
-          />
-          <TopMimeTypes userGraphData={statisticsResponse} />
+      <div className="flex flex-col gap-6 w-full">
+        <div className="bg-background/80 backdrop-blur-sm rounded-xl border border-muted/50 shadow-lg p-6">
+          <Statistics statisticsResponse={statisticsResponse} />
+        </div>
+
+        <div className="bg-background/80 backdrop-blur-sm rounded-xl border border-muted/50 shadow-lg p-6">
+          <StatisticHistoryGraph userGraphData={statisticsResponse} />
+        </div>
+
+        <div className="grid xl:grid-cols-3 gap-6 w-full">
+          <div className="bg-background/80 backdrop-blur-sm rounded-xl border border-muted/50 shadow-lg">
+            <RecentFiles />
+          </div>
+          <div className="bg-background/80 backdrop-blur-sm rounded-xl border border-muted/50 shadow-lg">
+            <MimeTypeList
+              mimetypeDistribution={statisticsResponse.mimetypeDistribution}
+            />
+          </div>
+          <div className="bg-background/80 backdrop-blur-sm rounded-xl border border-muted/50 shadow-lg">
+            <TopMimeTypes userGraphData={statisticsResponse} />
+          </div>
         </div>
       </div>
     </div>

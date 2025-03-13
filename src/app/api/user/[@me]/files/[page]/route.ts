@@ -8,7 +8,7 @@ import { Pagination } from "@/lib/pagination";
 import { UserFilesSort } from "@/type/user/user-file-sort";
 import { NextRequest, NextResponse } from "next/server";
 
-const ITEMS_PER_PAGE = 15;
+const ITEMS_PER_PAGE = 18;
 
 export async function GET(
   request: NextRequest,

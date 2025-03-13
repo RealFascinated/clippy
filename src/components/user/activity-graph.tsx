@@ -59,7 +59,7 @@ export default function ActivityGraph({
       {/* Graph */}
       <div className="overflow-scroll">
         <div className="mx-auto w-fit flex flex-col gap-1.5">
-          <div className="p-2 relative border border-muted rounded-lg">
+          <div className="p-2 relative border border-muted/50 rounded-lg">
             {/* Month labels row */}
             <div className="mb-1 ml-8 flex text-xs text-muted-foreground">
               {monthPositions.map((position, i) => (

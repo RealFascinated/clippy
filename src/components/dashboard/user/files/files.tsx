@@ -26,7 +26,14 @@ import { SortDirection } from "@/type/sort-direction";
 import { UserFilesSort } from "@/type/user/user-file-sort";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce, useIsFirstRender } from "@uidotdev/usehooks";
-import { ArrowDownWideNarrow, ArrowUpNarrowWide, X } from "lucide-react";
+import {
+  ArrowDownWideNarrow,
+  ArrowUpNarrowWide,
+  X,
+  FileText,
+  Search,
+  SlidersHorizontal,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import UserFile from "./file";
@@ -169,30 +176,32 @@ export default function UserFiles({
   });
 
   return (
-    <div className="flex flex-col gap-2 w-full bg-background/70 rounded-md p-2 border border-muted">
-      <div className="flex flex-col gap-2 justify-between sm:flex-row sm:items-center md:flex-col md:items-start lg:flex-row lg:items-center">
-        <div className="flex flex-col gap-1 select-none">
-          <span className="font-semibold">
-            Uploads - {capitalize(type ?? "overview")}
-          </span>
-          <span className="text-muted-foreground">
-            {capitalize(type ?? "all")} files associated with your account
-          </span>
+    <div className="flex flex-col gap-6 w-full bg-gradient-to-r from-background/80 via-background/50 to-background/80 backdrop-blur-sm rounded-xl border border-muted/50 shadow-lg p-6">
+      <div className="flex flex-col gap-4 justify-between sm:flex-row sm:items-center md:flex-col md:items-start lg:flex-row lg:items-center">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-2xl font-semibold tracking-tight">
+            {capitalize(type ?? "overview")} Files
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            View and manage{" "}
+            {type ? `your ${type} files` : "all your uploaded files"}
+          </p>
         </div>
 
         {/* File Sorting */}
-        <div className="flex gap-2 sm:mr-2 select-none">
+        <div className="flex gap-3 sm:mr-2 items-center">
           {/* Search */}
-          <div className="relative flex-1 w-full">
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <Input
-              placeholder="Query..."
+              placeholder="Search files..."
               value={search}
-              onChange={e => handleSearch(e.target.value)}
-              className="pr-8"
+              onChange={(e) => handleSearch(e.target.value)}
+              className="pl-9 pr-8"
             />
             {search && (
               <button
-                className="absolute right-0 top-0 h-full w-6.5 p-0"
+                className="absolute right-3 top-1/2 -translate-y-1/2 hover:text-foreground text-muted-foreground transition-colors"
                 onClick={handleClearSearch}
               >
                 <X className="size-4" />
@@ -200,41 +209,49 @@ export default function UserFiles({
             )}
           </div>
 
-          {/* Sort By */}
-          <Select value={sort.key} onValueChange={handleSortChange}>
-            <SelectTrigger className="w-[140px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Sort By</SelectLabel>
-                {sortNames.map((value, index) => (
-                  <SelectItem key={index} value={value.key}>
-                    {value.name}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-2 border-l border-muted/50 pl-3">
+            {/* Sort By */}
+            <Select value={sort.key} onValueChange={handleSortChange}>
+              <SelectTrigger className="w-[140px] bg-background/50">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel className="flex items-center gap-2">
+                    <SlidersHorizontal className="size-4" /> Sort By
+                  </SelectLabel>
+                  {sortNames.map((value, index) => (
+                    <SelectItem key={index} value={value.key}>
+                      {value.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
 
-          {/* Sort Direction */}
-          <Button
-            variant="outline"
-            className="border-input"
-            onClick={handleDirectionChange}
-          >
-            {sort.direction === "asc" ? (
-              <ArrowUpNarrowWide className="size-5" />
-            ) : (
-              <ArrowDownWideNarrow className="size-5" />
-            )}
-          </Button>
+            {/* Sort Direction */}
+            <Button
+              variant="outline"
+              size="icon"
+              className="bg-background/50"
+              onClick={handleDirectionChange}
+            >
+              {sort.direction === "asc" ? (
+                <ArrowUpNarrowWide className="size-4" />
+              ) : (
+                <ArrowDownWideNarrow className="size-4" />
+              )}
+            </Button>
+          </div>
         </div>
       </div>
 
       {isLoading && (
-        <div className="w-full flex justify-center">
-          <Loader />
+        <div className="w-full min-h-[300px] flex flex-col items-center justify-center gap-4">
+          <Loader className="size-8" />
+          <span className="text-muted-foreground animate-pulse">
+            Loading your files...
+          </span>
         </div>
       )}
 
@@ -243,8 +260,8 @@ export default function UserFiles({
         <>
           {files.items.length > 0 ? (
             <>
-              <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-2 items-center">
-                {files.items.map(fileMeta => (
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4">
+                {files.items.map((fileMeta) => (
                   <UserFile
                     user={user}
                     key={fileMeta.id}
@@ -255,19 +272,27 @@ export default function UserFiles({
                   />
                 ))}
               </div>
+
+              <Pagination
+                mobilePagination={isMobile}
+                page={page}
+                totalItems={files.metadata.totalItems}
+                itemsPerPage={files.metadata.itemsPerPage}
+                loadingPage={isLoading || isRefetching ? page : undefined}
+                onPageChange={(newPage) => setPage(newPage)}
+              />
             </>
           ) : (
-            <span className="text-red-400">No files found</span>
+            <div className="w-full min-h-[300px] flex flex-col items-center justify-center gap-4 text-muted-foreground">
+              <FileText className="size-16 opacity-50" />
+              <div className="text-center">
+                <p className="text-lg font-medium">No files found</p>
+                <p className="text-sm mt-1">
+                  Upload some files or try a different search
+                </p>
+              </div>
+            </div>
           )}
-
-          <Pagination
-            mobilePagination={isMobile}
-            page={page}
-            totalItems={files.metadata.totalItems}
-            itemsPerPage={files.metadata.itemsPerPage}
-            loadingPage={isLoading || isRefetching ? page : undefined}
-            onPageChange={newPage => setPage(newPage)}
-          />
         </>
       )}
     </div>

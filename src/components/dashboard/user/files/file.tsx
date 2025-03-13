@@ -58,13 +58,27 @@ export default function UserFile({ user, fileMeta, refetch }: UserFileProps) {
 
   return (
     <FileContextMenu user={user} fileMeta={fileMeta} refetch={refetch}>
-      <div className="bg-card h-full flex flex-col items-center rounded-md">
-        <div className="h-full p-2 flex flex-col gap-1">
-          <div className="flex flex-col items-center select-none">
+      <div className="bg-card h-full flex flex-col items-center rounded-lg overflow-hidden group">
+        <div className="h-full w-full flex flex-col">
+          {/* Preview Section */}
+          <div className="relative aspect-square w-full bg-muted/50">
+            {hasThumbnail ? (
+              <FilePreview fileMeta={fileMeta} />
+            ) : (
+              <div className="flex justify-center items-center h-full">
+                <div className="w-16">
+                  <FileExtensionIcon extension={fileMeta.extension} />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Info Section */}
+          <div className="p-3 flex flex-col gap-2">
             {/* File Name */}
             <Link
               href={url}
-              className="hover:opacity-80 cursor-pointer transition-all transform-gpu"
+              className="font-medium truncate hover:text-primary transition-colors text-sm sm:text-base"
               target="_blank"
               prefetch={false}
             >
@@ -73,56 +87,39 @@ export default function UserFile({ user, fileMeta, refetch }: UserFileProps) {
 
             {/* Upload Date */}
             <SimpleTooltip content={`Uploaded on ${exactDate}`}>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-xs sm:text-sm text-muted-foreground">
                 {formattedDate}
               </span>
             </SimpleTooltip>
-          </div>
 
-          {/* Preview */}
-          <div className="flex-1 flex items-center w-full justify-center">
-            {hasThumbnail ? (
-              <FilePreview fileMeta={fileMeta} />
-            ) : (
-              <div className="flex justify-center items-center">
-                <div className="w-16">
-                  <FileExtensionIcon extension={fileMeta.extension} />
-                </div>
+            {/* Stats */}
+            <div className="flex items-center justify-between pt-1 border-t border-border/50">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
+                <span>{formatBytes(fileMeta.size)}</span>
+                <span className="hidden sm:inline">•</span>
+                <span>
+                  {formatNumberWithCommas(fileMeta.views)} View
+                  {fileMeta.views === 1 ? "" : "s"}
+                </span>
               </div>
-            )}
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="flex gap-2 items-center justify-between w-full px-1.5 bg-zinc-800/65 py-1 rounded-bl-md rounded-br-md">
-          <div className="flex flex-col xs:flex-row xs:divide-x-2 xs:divide-card">
-            <span className="text-sm text-muted-foreground xs:pr-2">
-              {formatBytes(fileMeta.size)}
-            </span>
-            <span className="text-sm text-muted-foreground xs:pl-2">
-              {formatNumberWithCommas(fileMeta.views)} View
-              {fileMeta.views == 1 ? "" : "s"}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <SimpleTooltip
-              content={fileMeta.favorited ? "Unfavorite" : "Favorite"}
-            >
-              <button
-                className="text-sm text-muted-foreground cursor-pointer"
-                onClick={favoriteFile}
+              <SimpleTooltip
+                content={fileMeta.favorited ? "Unfavorite" : "Favorite"}
               >
-                <HeartIcon
-                  className={cn(
-                    fileMeta.favorited
-                      ? "text-red-400 hover:text-muted-foreground"
-                      : "text-muted-foreground hover:text-red-400",
-                    "size-4 transition-all transform-gpu"
-                  )}
-                />
-              </button>
-            </SimpleTooltip>
+                <button
+                  className="hover:text-red-400 transition-colors cursor-pointer"
+                  onClick={favoriteFile}
+                >
+                  <HeartIcon
+                    className={cn(
+                      fileMeta.favorited
+                        ? "text-red-400"
+                        : "text-muted-foreground",
+                      "size-5 transition-all transform-gpu"
+                    )}
+                  />
+                </button>
+              </SimpleTooltip>
+            </div>
           </div>
         </div>
       </div>
@@ -134,32 +131,42 @@ function FilePreview({ fileMeta }: { fileMeta: FileType }) {
   const url = `/${getFileName(fileMeta)}?incrementviews=false`;
   const isImage = fileMeta.mimeType.startsWith("image");
   const isVideo = fileMeta.mimeType.startsWith("video");
+  const [isOpen, setIsOpen] = useState(false);
 
   const [loading, setLoading] = useState<boolean>(
     isVideo || isImage ? true : false
   );
 
   return (
-    <Dialog>
-      <DialogTrigger className="relative cursor-pointer w-full flex items-center justify-center min-h-36">
-        {isImage || (isVideo && fileMeta.hasThumbnail) ? (
-          <>
-            <img
-              src={`/thumbnails/${fileMeta.id}.webp`}
-              alt="Recent File Image Preview"
-              className="transparent max-h-36 rounded-sm"
-            />
-            {isVideo && (
-              <PlayIcon className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 size-10" />
-            )}
-          </>
-        ) : (
-          loading && (
-            <div className="w-full flex justify-center items-center">
-              Missing Thumbnail
-            </div>
-          )
-        )}
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild onClick={() => setIsOpen(true)}>
+        <div className="relative cursor-pointer w-full h-full flex items-center justify-center group">
+          {isImage || (isVideo && fileMeta.hasThumbnail) ? (
+            <>
+              <img
+                src={`/thumbnails/${fileMeta.id}.webp`}
+                alt="Recent File Image Preview"
+                className="w-full h-full object-cover"
+              />
+              {isVideo && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                  <PlayIcon className="size-12 text-white" />
+                </div>
+              )}
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                <span className="text-white text-sm font-medium">
+                  Click to open
+                </span>
+              </div>
+            </>
+          ) : (
+            loading && (
+              <div className="w-full flex justify-center items-center text-muted-foreground">
+                Missing Thumbnail
+              </div>
+            )
+          )}
+        </div>
       </DialogTrigger>
       <DialogContent className="flex flex-col items-center w-full sm:w-fit lg:max-w-4xl min-w-80">
         <DialogHeader>
@@ -169,12 +176,14 @@ function FilePreview({ fileMeta }: { fileMeta: FileType }) {
           <img
             src={url}
             alt={`Image for ${getFileName(fileMeta)}`}
-            className="max-h-[70vh]"
+            className="max-h-[70vh] rounded-lg"
             draggable={false}
           />
         )}
 
-        {isVideo && <FileVideoPlayer url={url} className="max-h-[70vh]" />}
+        {isVideo && isOpen && (
+          <FileVideoPlayer url={url} className="max-h-[70vh] rounded-lg" />
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -54,7 +54,7 @@ export class Pagination<T> {
     }
 
     // Calculate the range of items to fetch for the current page
-    const start = (page - 1) * this.itemsPerPage;
+    const start = page > 1 ? (page - 1) * this.itemsPerPage : 0;
     const end = start + this.itemsPerPage;
 
     let pageItems: T[];
