@@ -15,6 +15,8 @@ import SimpleTooltip from "@/components/simple-tooltip";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import FileVideoPlayer from "@/components/file/video-player";
+import { env } from "@/lib/env";
+import Loader from "@/components/ui/loader";
 
 export default function FilePreview({
   fileMeta,
@@ -28,13 +30,12 @@ export default function FilePreview({
   children: ReactNode;
 }) {
   const url = `/${getFileName(fileMeta)}?incrementviews=false`;
-  const fullUrl =
-    typeof window !== "undefined" ? `${window.location.origin}${url}` : url;
   const isImage = fileMeta.mimeType.startsWith("image");
   const isVideo = fileMeta.mimeType.startsWith("video");
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -129,7 +130,10 @@ export default function FilePreview({
                     variant="ghost"
                     className="text-white hover:text-white hover:bg-white/20"
                     onClick={() =>
-                      copyWithToast(fullUrl, "URL copied to clipboard!")
+                      copyWithToast(
+                        `${env.NEXT_PUBLIC_WEBSITE_URL}/${getFileName(fileMeta)}`,
+                        "URL copied to clipboard!"
+                      )
                     }
                   >
                     <Link2 className="size-5" />
@@ -161,21 +165,35 @@ export default function FilePreview({
             </div>
 
             {/* Content Container */}
-            <div className="max-w-7xl w-fit flex items-center justify-center">
+            <div className="relative max-w-7xl w-fit flex items-center justify-center">
+              {isLoading && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Loader className="size-10 animate-spin" />
+                </div>
+              )}
+
               {isImage && (
                 <img
                   src={url}
                   alt={`Image for ${getFileName(fileMeta)}`}
-                  className="max-h-[85vh] w-auto object-contain"
+                  className={cn(
+                    "max-h-[85vh] w-auto object-contain",
+                    isLoading && "opacity-0"
+                  )}
                   draggable={false}
                   onClick={(e: React.MouseEvent) => e.stopPropagation()}
+                  onLoad={() => setIsLoading(false)}
                 />
               )}
               {isVideo && (
                 <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
                   <FileVideoPlayer
                     url={url}
-                    className="max-h-[85vh] w-auto rounded-none"
+                    className={cn(
+                      "max-h-[85vh] w-auto rounded-none",
+                      isLoading && "opacity-0"
+                    )}
+                    onLoad={() => setIsLoading(false)}
                   />
                 </div>
               )}

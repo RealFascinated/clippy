@@ -9,7 +9,7 @@ services:
       NEXT_PUBLIC_WEBSITE_URL: http://localhost:3000
 
       # Postgres
-      DATABASE_URL: postgres://clippy:clippy@localhost:5432/clippy
+      DATABASE_URL: postgres://clippy:clippy@db:5432/clippy
 
       # Better Auth
       BETTER_AUTH_SECRET: CHANGE_ME
@@ -40,8 +40,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      minio:
-        condition: service_started
 
   db:
     image: postgres:17
