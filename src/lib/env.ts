@@ -10,9 +10,8 @@ declare global {
 }
 
 const readVariable = (key: string) => {
-  // if (typeof window === "undefined") return process.env[key];
-  // return window.__ENV[key];
-  return process.env[key];
+  if (typeof window === "undefined") return process.env[key];
+  return window.__ENV[key];
 };
 
 export const env = createEnv({
