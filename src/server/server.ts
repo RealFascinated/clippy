@@ -13,7 +13,7 @@ import { getResponseTimeColor, getStatusColor } from "@/lib/utils/log-colors";
 import { isProduction } from "@/lib/utils/utils";
 
 const port = parseInt(process.env.PORT || "3000", 10);
-const dev = process.env.NODE_ENV !== "production";
+const dev = !isProduction();
 const app = next({ dev, conf: nextConfig, turbopack: dev, port });
 const handle = app.getRequestHandler();
 
