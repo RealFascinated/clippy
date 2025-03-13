@@ -131,7 +131,7 @@ const socials: Item[] = [
 
 export default function AppSidebar() {
   const path: string = usePathname();
-  const { isMobile } = useSidebar();
+  const { isMobile, setOpenMobile } = useSidebar();
 
   return (
     <div className="h-[90vh] overflow-hidden">
@@ -156,6 +156,11 @@ export default function AppSidebar() {
                                 "bg-primary/85 hover:bg-primary/90 text-sidebar-accent-foreground"
                             )}
                             asChild
+                            onClick={() => {
+                              if (isMobile) {
+                                setOpenMobile(false);
+                              }
+                            }}
                           >
                             <Link
                               href={item.url}
@@ -181,7 +186,7 @@ export default function AppSidebar() {
         {/* Social Links */}
         <SidebarFooter className={cn("gap-0", !isMobile && "pb-14")}>
           <div className="bg-zinc-800/75 rounded-lg p-2">
-            {socials.map(item => (
+            {socials.map((item) => (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild>
                   <Link
