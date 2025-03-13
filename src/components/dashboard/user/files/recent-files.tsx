@@ -44,7 +44,7 @@ export default async function RecentFiles() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto min-h-0 p-4">
+        <div className="flex-1 overflow-y-auto min-h-0 p-3">
           <div className="space-y-1">
             {files.files.map((file) => (
               <Link
@@ -52,7 +52,7 @@ export default async function RecentFiles() {
                 prefetch={false}
                 key={file.id}
                 target="_blank"
-                className="grid grid-cols-[2fr_1fr_0.7fr_1.5fr] gap-2 py-2 px-1 rounded-md hover:bg-muted/50 transition-colors"
+                className="grid grid-cols-[2fr_1fr_0.7fr_1.5fr] gap-2 py-1 px-1 rounded-md hover:bg-muted/50 transition-colors"
               >
                 <div className="text-sm truncate">{getFileName(file)}</div>
                 <div className="text-sm text-muted-foreground">
