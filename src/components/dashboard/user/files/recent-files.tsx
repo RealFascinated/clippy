@@ -35,15 +35,12 @@ export default async function RecentFiles() {
 
       <div className="flex-1 flex flex-col min-h-0">
         <div className="px-6 py-3 border-b border-muted/10 shrink-0">
-          <div className="grid grid-cols-[2fr_1fr_0.7fr_1.5fr] gap-4">
+          <div className="grid grid-cols-[2fr_1fr_2fr] gap-4">
             <div className="text-sm font-medium text-muted-foreground">
               File Name
             </div>
             <div className="text-sm font-medium text-muted-foreground">
               Size
-            </div>
-            <div className="text-sm font-medium text-muted-foreground text-center">
-              Views
             </div>
             <div className="text-sm font-medium text-muted-foreground text-right">
               Uploaded
@@ -54,13 +51,13 @@ export default async function RecentFiles() {
         <div className="flex-1 overflow-y-auto min-h-0 px-4">
           <div className="space-y-1 py-2">
             {files.files.length > 0 ? (
-              files.files.map(file => (
+              files.files.map((file) => (
                 <Link
                   href={`/${getFileName(file)}`}
                   prefetch={false}
                   key={file.id}
                   target="_blank"
-                  className="grid grid-cols-[2fr_1fr_0.7fr_1.5fr] gap-4 py-2 px-2 rounded-lg hover:bg-muted/20 transition-all duration-200 group"
+                  className="grid grid-cols-[2fr_1fr_2fr] gap-4 py-2 px-2 rounded-lg hover:bg-muted/20 transition-all duration-200 group"
                 >
                   <div className="text-sm font-medium truncate group-hover:text-primary transition-colors">
                     {getFileName(file)}
@@ -68,11 +65,8 @@ export default async function RecentFiles() {
                   <div className="text-sm text-muted-foreground">
                     {formatBytes(file.size, 1)}
                   </div>
-                  <div className="text-sm text-muted-foreground text-center">
-                    {file.views}
-                  </div>
                   <div className="text-sm text-muted-foreground text-right">
-                    {format(file.createdAt, "MMM d, yyyy HH:mm a")}
+                    {format(file.createdAt, "MMM d, yyyy HH:mm")}
                   </div>
                 </Link>
               ))
