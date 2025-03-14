@@ -1,42 +1,14 @@
 "use client";
 
+import GenericChart, {
+  ChartDatasetConfig,
+} from "@/components/charts/generic-chart";
 import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { formatBytes } from "@/lib/utils/utils";
 import { UserStatisticsResponse } from "@/type/api/user/graph-response";
-import {
-  BarController,
-  BarElement,
-  CategoryScale,
-  ChartData,
-  Chart as ChartJS,
-  ChartOptions,
-  Filler,
-  Legend,
-  LinearScale,
-  LineController,
-  LineElement,
-  PointElement,
-  Tooltip,
-} from "chart.js";
 import { format } from "date-fns";
 import { TrendingUp } from "lucide-react";
 import { useMemo } from "react";
-import { Chart } from "react-chartjs-2";
-
-ChartJS.register(
-  LineController,
-  BarController,
-  LineElement,
-  PointElement,
-  LinearScale,
-  CategoryScale,
-  Legend,
-  Tooltip,
-  BarElement,
-  Filler
-);
-
-type ChartTypes = "line" | "bar";
 
 const colors = {
   storage: {
@@ -66,9 +38,9 @@ type StatisticHistoryGraphProps = {
 export default function StatisticHistoryGraph({
   userGraphData,
 }: StatisticHistoryGraphProps) {
-  const { labels, lookupLabels } = useMemo(() => {
-    const labels = [];
-    const lookupLabels = [];
+  const { labels, labelToLookup } = useMemo(() => {
+    const labels: string[] = [];
+    const labelToLookup = new Map<string, string>();
 
     for (let previous = 0; previous < 60; previous++) {
       const previousDate = new Date();
@@ -76,267 +48,137 @@ export default function StatisticHistoryGraph({
       const currentYear = new Date().getFullYear();
       const formatString =
         previousDate.getFullYear() === currentYear ? "MMM dd" : "yyyy-MM-dd";
-      labels.push(format(previousDate, formatString));
-      lookupLabels.push(format(previousDate, "yyyy-MM-dd"));
+      const displayLabel = format(previousDate, formatString);
+      const lookupLabel = format(previousDate, "yyyy-MM-dd");
+      labels.push(displayLabel);
+      labelToLookup.set(displayLabel, lookupLabel);
     }
+
     return {
       labels: labels.reverse(),
-      lookupLabels: lookupLabels.reverse(),
+      labelToLookup,
     };
   }, []);
 
-  const options = useMemo<ChartOptions<ChartTypes>>(
-    () => ({
-      maintainAspectRatio: false,
-      responsive: true,
-      interaction: {
-        mode: "index",
-        intersect: false,
-      },
-      scales: {
-        x: {
-          grid: {
-            color: "rgba(255, 255, 255, 0.05)",
-            tickLength: 0,
-          },
-          ticks: {
-            font: {
-              size: 11,
-            },
-            maxRotation: 0,
-            color: "rgb(156, 163, 175)", // text-gray-400
-          },
-          border: {
-            display: false,
-          },
-        },
-        y: {
-          type: "linear",
-          grid: {
-            color: "rgba(255, 255, 255, 0.05)",
-          },
-          border: {
-            display: false,
-          },
-          display: true,
-          ticks: { display: false },
-        },
-        y1: {
-          type: "linear",
+  const datasetConfigs: ChartDatasetConfig<UserStatisticsResponse>[] = useMemo(
+    () => [
+      {
+        title: "Storage Used",
+        field: "storageMetrics.usedStorage",
+        color: colors.storage.line,
+        axisId: "y1",
+        legendId: "storage-used",
+        backgroundColor: colors.storage.fill,
+        type: "line",
+        fill: true,
+        defaultLegendState: true,
+        axisConfig: {
+          reverse: false,
           display: true,
           position: "left",
-          grid: {
-            drawOnChartArea: false,
-          },
-          ticks: {
-            font: {
-              size: 11,
-            },
-            padding: 8,
-            color: "rgb(156, 163, 175)", // text-gray-400
-            callback: function (tickValue: number | string) {
-              if (typeof tickValue === "number") {
-                return formatBytes(tickValue);
-              }
-              return tickValue;
-            },
-          },
-          border: {
-            display: false,
-          },
+          valueFormatter: formatBytes,
         },
-        y2: {
-          type: "linear",
-          display: false,
-          position: "right",
-          border: {
-            display: false,
-          },
-        },
-        y3: {
-          type: "linear",
-          display: false,
-          position: "right",
-          border: {
-            display: false,
-          },
-        },
-        y4: {
-          type: "linear",
-          display: false,
-          position: "right",
-          border: {
-            display: false,
-          },
-        },
+        labelFormatter: (title, value) => `${title}: ${formatBytes(value)}`,
       },
-      plugins: {
-        legend: {
-          position: "top",
-          align: "center",
-          labels: {
-            padding: 20,
-            usePointStyle: true,
-            pointStyle: "circle",
-            boxWidth: 8,
-            boxHeight: 8,
-            font: {
-              size: 13,
-              family: "system-ui",
-              weight: "normal",
-            },
-            color: "rgb(156, 163, 175)", // text-gray-400
-          },
+      {
+        title: "Total Views",
+        field: "fileMetrics.views",
+        color: colors.views.line,
+        axisId: "y2",
+        legendId: "total-views",
+        backgroundColor: colors.views.fill,
+        type: "line",
+        fill: true,
+        defaultLegendState: true,
+        axisConfig: {
+          reverse: false,
+          display: false,
+          position: "left",
         },
-        tooltip: {
-          padding: 10,
-          backgroundColor: "rgba(0, 0, 0, 0.8)",
-          titleFont: {
-            size: 12,
-          },
-          bodyFont: {
-            size: 11,
-          },
-          callbacks: {
-            label: function (context) {
-              const value = context.parsed.y;
-              if (value === null || value === undefined) {
-                return "";
-              }
-
-              const label = context.dataset.label || "";
-              if (label === "Storage Used") {
-                return `${label}: ${formatBytes(value)}`;
-              }
-              return `${label}: ${formatNumberWithCommas(value)}`;
-            },
-          },
-        },
+        labelFormatter: (title, value) =>
+          `${title}: ${formatNumberWithCommas(value)}`,
       },
-    }),
+      {
+        title: "Total Uploads",
+        field: "userMetrics.uploads",
+        color: colors.uploads.line,
+        axisId: "y3",
+        legendId: "total-uploads",
+        backgroundColor: colors.uploads.fill,
+        type: "line",
+        fill: true,
+        defaultLegendState: true,
+        axisConfig: {
+          reverse: false,
+          display: false,
+          position: "left",
+        },
+        labelFormatter: (title, value) =>
+          `${title}: ${formatNumberWithCommas(value)}`,
+      },
+      {
+        title: "Daily Uploads",
+        field: "userMetrics.dailyUploads",
+        color: colors.dailyUploads.bar,
+        axisId: "y4",
+        type: "bar",
+        legendId: "daily-uploads",
+        defaultLegendState: true,
+        axisConfig: {
+          reverse: false,
+          display: false,
+          position: "right",
+        },
+        labelFormatter: (title, value) =>
+          `${title}: ${formatNumberWithCommas(value)}`,
+      },
+      {
+        title: "Daily Views",
+        field: "fileMetrics.dailyViews",
+        color: colors.dailyViews.bar,
+        axisId: "y4",
+        type: "bar",
+        legendId: "daily-views",
+        defaultLegendState: true,
+        axisConfig: {
+          reverse: false,
+          display: false,
+          position: "right",
+        },
+        labelFormatter: (title, value) =>
+          `${title}: ${formatNumberWithCommas(value)}`,
+      },
+    ],
     []
   );
 
-  const chartData = useMemo<ChartData<ChartTypes>>(
-    () => ({
-      labels,
-      datasets: [
-        {
-          type: "line",
-          label: "Storage Used",
-          data: lookupLabels.map(
-            label =>
-              userGraphData.statisticHistory[label]?.storageMetrics
-                ?.usedStorage ?? null
-          ),
-          borderColor: colors.storage.line,
-          backgroundColor: colors.storage.fill,
-          borderWidth: 2,
-          fill: true,
-          tension: 0.4,
-          pointRadius: 0,
-          pointHoverRadius: 4,
-          yAxisID: "y1",
-        },
-        {
-          type: "line",
-          label: "Total Views",
-          data: lookupLabels.map(
-            label =>
-              userGraphData.statisticHistory[label]?.fileMetrics?.views ?? null
-          ),
-          borderColor: colors.views.line,
-          backgroundColor: colors.views.fill,
-          borderWidth: 2,
-          fill: true,
-          tension: 0.4,
-          pointRadius: 0,
-          pointHoverRadius: 4,
-          yAxisID: "y2",
-        },
-        {
-          type: "line",
-          label: "Total Uploads",
-          data: lookupLabels.map(
-            label =>
-              userGraphData.statisticHistory[label]?.userMetrics?.uploads ??
-              null
-          ),
-          borderColor: colors.uploads.line,
-          backgroundColor: colors.uploads.fill,
-          borderWidth: 2,
-          fill: true,
-          tension: 0.4,
-          pointRadius: 0,
-          pointHoverRadius: 4,
-          yAxisID: "y3",
-        },
-        {
-          type: "bar",
-          label: "Daily Uploads",
-          data: lookupLabels.map(
-            label =>
-              userGraphData.statisticHistory[label]?.userMetrics
-                ?.dailyUploads ?? null
-          ),
-          backgroundColor: colors.dailyUploads.bar,
-          borderRadius: 3,
-          yAxisID: "y4",
-        },
-        {
-          type: "bar",
-          label: "Daily Views",
-          data: lookupLabels.map(
-            label =>
-              userGraphData.statisticHistory[label]?.fileMetrics?.dailyViews ??
-              null
-          ),
-          backgroundColor: colors.dailyViews.bar,
-          borderRadius: 3,
-          yAxisID: "y4",
-        },
-      ],
-    }),
-    [labels, lookupLabels, userGraphData]
-  );
+  const getDataValue = (
+    data: UserStatisticsResponse,
+    field: string,
+    displayLabel: string
+  ) => {
+    const lookupLabel = labelToLookup.get(displayLabel);
+    if (!lookupLabel) return null;
+
+    const fieldParts = field.split(".");
+    let value: any = data.statisticHistory[lookupLabel];
+    for (const part of fieldParts) {
+      value = value?.[part];
+    }
+    return value ?? null;
+  };
 
   return (
-    <div className="w-full flex flex-col">
-      <div className="px-6 py-4 border-b border-muted/10">
-        <div className="flex items-center gap-2">
-          <TrendingUp className="size-4 text-primary" />
-          <h2 className="text-lg font-semibold">Activity Overview</h2>
-        </div>
-        <p className="text-sm text-muted-foreground mt-1">
-          Your account statistics over the past {labels.length} days
-        </p>
-      </div>
-
-      <div className="w-full">
-        <div className="h-[400px] w-full px-4 pb-4">
-          <Chart
-            type="line"
-            options={options}
-            data={chartData}
-            plugins={[
-              {
-                id: "legend-padding",
-                beforeInit: (chart) => {
-                  if (chart.legend) {
-                    const originalFit = chart.legend.fit;
-                    chart.legend.fit = function fit() {
-                      originalFit.bind(chart.legend)();
-                      if (this.height !== undefined) {
-                        this.height += 12;
-                      }
-                    };
-                  }
-                },
-              },
-            ]}
-          />
-        </div>
-      </div>
-    </div>
+    <GenericChart
+      data={userGraphData}
+      labels={labels}
+      datasetConfigs={datasetConfigs}
+      title="Activity Overview"
+      subtitle={`Your account statistics over the past ${labels.length} days`}
+      icon={<TrendingUp className="size-4 text-primary" />}
+      chartId="statistic-history-chart"
+      getDataValue={getDataValue}
+      height={450}
+    />
   );
 }

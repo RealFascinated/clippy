@@ -1,16 +1,16 @@
-import { createServer } from "http";
-import { parse } from "url";
-import next from "next";
-import nextConfig from "../../next.config";
-import { thumbnailQueue } from "@/queue/queues";
-import TasksManager from "@/tasks/tasks-manager";
-import { runMigrations } from "@/lib/utils/drizzle";
-import chalk from "chalk";
-import { networkInterfaces } from "os";
 import { env } from "@/lib/env";
 import Logger from "@/lib/logger";
+import { runMigrations } from "@/lib/utils/drizzle";
 import { getResponseTimeColor, getStatusColor } from "@/lib/utils/log-colors";
 import { isProduction } from "@/lib/utils/utils";
+import { thumbnailQueue } from "@/queue/queues";
+import TasksManager from "@/tasks/tasks-manager";
+import chalk from "chalk";
+import { createServer } from "http";
+import next from "next";
+import { networkInterfaces } from "os";
+import { parse } from "url";
+import nextConfig from "../../next.config";
 
 const port = parseInt(process.env.PORT || "3000", 10);
 const dev = !isProduction();
