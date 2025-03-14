@@ -121,7 +121,7 @@ export default function UserFile({ user, fileMeta, refetch }: UserFileProps) {
                 content={fileMeta.favorited ? "Unfavorite" : "Favorite"}
               >
                 <button
-                  className="hover:text-red-400 transition-colors cursor-pointer"
+                  className="hover:text-red-400 transition-colors cursor-pointer flex items-center"
                   onClick={favoriteFile}
                 >
                   <HeartIcon
