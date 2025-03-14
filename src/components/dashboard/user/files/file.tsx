@@ -84,15 +84,21 @@ export default function UserFile({ user, fileMeta, refetch }: UserFileProps) {
 
           {/* Info Section */}
           <div className="p-3 flex flex-col gap-2">
-            {/* File Name */}
-            <Link
-              href={url}
-              className="font-medium truncate hover:text-primary transition-colors text-sm sm:text-base"
-              target="_blank"
-              prefetch={false}
-            >
-              {getFileName(fileMeta)}
-            </Link>
+            <div className="flex items-center justify-between gap-2">
+              {/* File Name */}
+              <Link
+                href={url}
+                className="font-medium truncate hover:text-primary transition-colors text-sm sm:text-base"
+                target="_blank"
+                prefetch={false}
+              >
+                {getFileName(fileMeta)}
+              </Link>
+
+              <span className="text-xs sm:text-sm bg-muted/50 px-1.5 py-0.5 rounded-md select-none">
+                {fileMeta.extension.toUpperCase()}
+              </span>
+            </div>
 
             {/* Upload Date */}
             <SimpleTooltip content={`Uploaded on ${exactDate}`}>
