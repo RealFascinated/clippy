@@ -4,10 +4,18 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { useState } from "react";
 
 export function TwoFactorInput() {
+  const [value, setValue] = useState<string>("");
   return (
-    <InputOTP name="pin" maxLength={6} required>
+    <InputOTP
+      name="pin"
+      maxLength={6}
+      value={value}
+      onChange={(newValue: string) => setValue(newValue.replace(/[^0-9]/g, ""))}
+      required
+    >
       <InputOTPGroup>
         <InputOTPSlot index={0} />
         <InputOTPSlot index={1} />
