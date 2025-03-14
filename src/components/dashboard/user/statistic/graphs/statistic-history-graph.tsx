@@ -169,45 +169,6 @@ export default function StatisticHistoryGraph({
   };
 
   return (
-<<<<<<< HEAD
-    <div className="w-full flex flex-col">
-      <div className="px-6 py-4 border-b border-muted/10">
-        <div className="flex items-center gap-2">
-          <TrendingUp className="size-4 text-primary" />
-          <h2 className="text-lg font-semibold">Activity Overview</h2>
-        </div>
-        <p className="text-sm text-muted-foreground mt-1">
-          Your account statistics over the past {labels.length} days
-        </p>
-      </div>
-
-      <div className="w-full">
-        <div className="h-[400px] w-full px-4 pb-4">
-          <Chart
-            type="line"
-            options={options}
-            data={chartData}
-            plugins={[
-              {
-                id: "legend-padding",
-                beforeInit: chart => {
-                  if (chart.legend) {
-                    const originalFit = chart.legend.fit;
-                    chart.legend.fit = function fit() {
-                      originalFit.bind(chart.legend)();
-                      if (this.height !== undefined) {
-                        this.height += 12;
-                      }
-                    };
-                  }
-                },
-              },
-            ]}
-          />
-        </div>
-      </div>
-    </div>
-=======
     <GenericChart
       data={userGraphData}
       labels={labels}
@@ -219,6 +180,5 @@ export default function StatisticHistoryGraph({
       getDataValue={getDataValue}
       height={450}
     />
->>>>>>> f5bd613610b5e4250ceb918bf36541922e3d334b
   );
 }
