@@ -64,6 +64,20 @@
       "when": 1741709343837,
       "tag": "0008_odd_vision",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1741907453274,
+      "tag": "0009_sleepy_dark_phoenix",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1741910318979,
+      "tag": "0010_normal_human_cannonball",
+      "breakpoints": true
     }
   ]
 }

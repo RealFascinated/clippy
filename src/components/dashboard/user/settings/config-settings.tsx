@@ -206,6 +206,7 @@ function DownloadConfig({
       >
         <Button
           variant="secondary"
+          size="xs"
           disabled={loading || !hasUploadToken}
           onClick={handleDownload}
         >

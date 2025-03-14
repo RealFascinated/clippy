@@ -2,21 +2,21 @@
 
 import { ReactNode, useEffect } from "react";
 
+import FileVideoPlayer from "@/components/file/video-player";
+import SimpleTooltip from "@/components/simple-tooltip";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import Loader from "@/components/ui/loader";
 import { UserType } from "@/lib/db/schemas/auth-schema";
 import { FileType } from "@/lib/db/schemas/file";
-import { getFileName } from "@/lib/utils/file";
-import { useState } from "react";
-import { Download, ExternalLink, Link2, PlayIcon, X } from "lucide-react";
-import { createPortal } from "react-dom";
-import { cn, copyWithToast } from "@/lib/utils/utils";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { format } from "date-fns";
-import SimpleTooltip from "@/components/simple-tooltip";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import FileVideoPlayer from "@/components/file/video-player";
 import { env } from "@/lib/env";
-import Loader from "@/components/ui/loader";
+import { getFileName } from "@/lib/utils/file";
+import { cn, copyWithToast } from "@/lib/utils/utils";
+import { format } from "date-fns";
+import { Download, ExternalLink, Link2, X } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { createPortal } from "react-dom";
 
 export default function FilePreview({
   fileMeta,

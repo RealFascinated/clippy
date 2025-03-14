@@ -1,15 +1,18 @@
 "use client";
 
 import ConfirmationPopover from "@/components/confirmation-popover";
+import Preference from "@/components/dashboard/user/settings/types/preference";
 import SimpleTooltip from "@/components/simple-tooltip";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import Device from "@/components/user/device";
+import TwoFactorDialog from "@/components/user/two-factor-dialog";
 import { authClient } from "@/lib/client-auth";
 import { UserSessionResponse } from "@/lib/helpers/user";
 import { useQuery } from "@tanstack/react-query";
 import { Session } from "better-auth";
-import { LogOut } from "lucide-react";
+import { Lock, LockOpen, LogOut } from "lucide-react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useRouter } from "next/navigation";
 
@@ -20,8 +23,40 @@ export default function SecuritySettings({
 }) {
   return (
     <div className="flex flex-col gap-4">
+      <TwoFactorButton session={session} />
+      <Separator />
       <DeviceList session={session} />
     </div>
+  );
+}
+
+function TwoFactorButton({ session }: { session: UserSessionResponse }) {
+  return (
+    <Preference
+      header="Two Factor Authentication"
+      description="Enable two factor authentication to add an extra layer of security to your account."
+    >
+      <TwoFactorDialog
+        user={session.user}
+        mode={session.user.twoFactorEnabled ? "disable" : "enable"}
+      >
+        <Button
+          variant={session.user.twoFactorEnabled ? "destructive" : "secondary"}
+          size="xs"
+        >
+          {session.user.twoFactorEnabled ? (
+            <>
+              <LockOpen /> Disable
+            </>
+          ) : (
+            <>
+              <Lock /> Enable
+            </>
+          )}{" "}
+          Two Factor Auth
+        </Button>
+      </TwoFactorDialog>
+    </Preference>
   );
 }
 

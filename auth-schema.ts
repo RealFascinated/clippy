@@ -1,4 +1,3 @@
-import { PreferencesType } from "@/lib/db/schemas/preference";
 import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -11,12 +10,12 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").notNull(),
   username: text("username").unique(),
   displayUsername: text("display_username"),
+  twoFactorEnabled: boolean("two_factor_enabled"),
   role: text("role"),
   banned: boolean("banned"),
   banReason: text("ban_reason"),
   banExpires: timestamp("ban_expires"),
   uploadToken: text("upload_token"),
-  twoFactorEnabled: boolean("two_factor_enabled"),
 });
 
 export const sessions = pgTable("sessions", {
@@ -60,15 +59,11 @@ export const verifications = pgTable("verifications", {
   updatedAt: timestamp("updated_at"),
 });
 
-export const twoFactors = pgTable("two_factor", {
+export const twoFactors = pgTable("two_factors", {
   id: text("id").primaryKey(),
+  secret: text("secret").notNull(),
+  backupCodes: text("backup_codes").notNull(),
   userId: text("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  secret: text("secret"),
-  backupCodes: text("backup_codes"),
 });
-
-export type UserType = typeof users.$inferSelect & {
-  preferences: PreferencesType;
-};
