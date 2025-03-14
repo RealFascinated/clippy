@@ -44,6 +44,7 @@ export default function UserFiles({
     key: "createdAt",
     direction: "desc",
   });
+  const [page, setPage] = useState(initialPage ?? 1);
 
   const {
     data: files,
@@ -53,28 +54,24 @@ export default function UserFiles({
   } = useQuery<Page<FileType>>({
     queryKey: [
       "userFiles",
-      initialPage,
+      page,
       initialSearch,
       type,
       sort.key,
       sort.direction,
     ],
     queryFn: async () =>
-      (await request.get<Page<FileType>>(
-        `/api/user/@me/files/${initialPage ?? 1}`,
-        {
-          searchParams: {
-            ...(initialSearch && { search: initialSearch }),
-            ...(type === "favorited" && { favoritedOnly: "true" }),
-            ...(type === "videos" && { videosOnly: "true" }),
-            ...(type === "images" && { imagesOnly: "true" }),
-            ...(type === "gifs" && { gifsOnly: "true" }),
-            sortKey: sort.key,
-            sortDirection: sort.direction,
-          },
-        }
-      ))!,
-    placeholderData: data => data,
+      (await request.get<Page<FileType>>(`/api/user/@me/files/${page}`, {
+        searchParams: {
+          ...(initialSearch && { search: initialSearch }),
+          ...(type && {
+            [`${type}Only`]: "true",
+          }),
+          sortKey: sort.key,
+          sortDirection: sort.direction,
+        },
+      }))!,
+    placeholderData: (data) => data,
   });
 
   return (
@@ -91,11 +88,12 @@ export default function UserFiles({
       initialSearch={initialSearch}
       initialPage={initialPage}
       sortKey="userFiles"
-      onSortChange={newSort => setSort(newSort)}
+      onSortChange={(newSort) => setSort(newSort)}
       initialSort={sort}
+      onPageChange={(newPage) => setPage(newPage)}
     >
       <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4">
-        {files?.items.map(fileMeta => (
+        {files?.items.map((fileMeta) => (
           <UserFile
             user={user}
             key={fileMeta.id}

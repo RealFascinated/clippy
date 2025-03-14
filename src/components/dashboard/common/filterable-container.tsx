@@ -54,6 +54,7 @@ interface FilterableContainerProps<T> {
   sortKey: string;
   onSortChange?: (sort: { key: string; direction: SortDirection }) => void;
   initialSort?: { key: string; direction: SortDirection };
+  onPageChange?: (page: number) => void;
 }
 
 export default function FilterableContainer<T>({
@@ -72,6 +73,7 @@ export default function FilterableContainer<T>({
   sortKey,
   onSortChange,
   initialSort,
+  onPageChange,
 }: FilterableContainerProps<T>) {
   const pathname = usePathname();
   const initialRender = useIsFirstRender();
@@ -188,7 +190,7 @@ export default function FilterableContainer<T>({
             <Input
               placeholder={searchPlaceholder}
               value={search}
-              onChange={e => handleSearch(e.target.value)}
+              onChange={(e) => handleSearch(e.target.value)}
               className="pl-9 pr-8 w-full"
             />
             {search && (
@@ -257,7 +259,10 @@ export default function FilterableContainer<T>({
                 totalItems={data.metadata.totalItems}
                 itemsPerPage={data.metadata.itemsPerPage}
                 loadingPage={isLoading || isRefetching ? page : undefined}
-                onPageChange={newPage => setPage(newPage)}
+                onPageChange={(newPage) => {
+                  setPage(newPage);
+                  onPageChange?.(newPage);
+                }}
               />
             </>
           ) : (

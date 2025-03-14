@@ -34,6 +34,7 @@ export default function UserShortLinks({
     key: "createdAt",
     direction: "desc",
   });
+  const [page, setPage] = useState(initialPage ?? 1);
 
   const {
     data: links,
@@ -41,16 +42,10 @@ export default function UserShortLinks({
     isRefetching,
     refetch,
   } = useQuery<Page<ShortenedUrlType>>({
-    queryKey: [
-      "userFiles",
-      initialPage,
-      initialSearch,
-      sort.key,
-      sort.direction,
-    ],
+    queryKey: ["userFiles", page, initialSearch, sort.key, sort.direction],
     queryFn: async () =>
       (await request.get<Page<ShortenedUrlType>>(
-        `/api/user/@me/short-links/${initialPage ?? 1}`,
+        `/api/user/@me/short-links/${page}`,
         {
           searchParams: {
             ...(initialSearch && { search: initialSearch }),
@@ -59,7 +54,7 @@ export default function UserShortLinks({
           },
         }
       ))!,
-    placeholderData: data => data,
+    placeholderData: (data) => data,
   });
 
   const gridCols =
@@ -79,8 +74,9 @@ export default function UserShortLinks({
       initialSearch={initialSearch}
       initialPage={initialPage}
       sortKey="shortLinks"
-      onSortChange={newSort => setSort(newSort)}
+      onSortChange={(newSort) => setSort(newSort)}
       initialSort={sort}
+      onPageChange={(newPage) => setPage(newPage)}
     >
       <div className="flex flex-col gap-2">
         <div className={cn("grid gap-2", gridCols)}>
@@ -94,7 +90,7 @@ export default function UserShortLinks({
           </span>
         </div>
         <ul className="flex flex-col gap-1">
-          {links?.items.map(link => (
+          {links?.items.map((link) => (
             <UserShortUrl
               key={link.id}
               link={link}
