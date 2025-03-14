@@ -5,10 +5,11 @@ import FileExtensionIcon from "@/components/file-icon";
 import SimpleTooltip from "@/components/simple-tooltip";
 import { UserType } from "@/lib/db/schemas/auth-schema";
 import { FileType } from "@/lib/db/schemas/file";
+import { formatTimeAgo } from "@/lib/utils/date";
 import { getFileName } from "@/lib/utils/file";
 import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { cn, formatBytes } from "@/lib/utils/utils";
-import { format, formatDistance } from "date-fns";
+import { format } from "date-fns";
 import { HeartIcon, PlayIcon } from "lucide-react";
 import Link from "next/link";
 import FilePreview from "./file-preview";
@@ -24,16 +25,7 @@ export default function UserFile({ user, fileMeta, refetch }: UserFileProps) {
   const isVideo = fileMeta.mimeType.startsWith("video");
   const isImage = fileMeta.mimeType.startsWith("image");
   const hasThumbnail = (isImage || isVideo) && fileMeta.hasThumbnail;
-
-  const currentDate = new Date();
-  const uploadedDate = new Date(fileMeta.createdAt);
-  const difference = currentDate.getTime() - uploadedDate.getTime();
-
   const exactDate: string = format(fileMeta.createdAt, "dd/MM/yyyy - HH:mm a");
-  const formattedDate =
-    difference > 86400000 // 24 hours in milliseconds
-      ? format(uploadedDate, "MM/dd/yyyy HH:mm a")
-      : formatDistance(uploadedDate, currentDate) + " ago";
 
   async function favoriteFile() {
     const response = await fetch(
@@ -105,7 +97,7 @@ export default function UserFile({ user, fileMeta, refetch }: UserFileProps) {
             {/* Upload Date */}
             <SimpleTooltip content={`Uploaded on ${exactDate}`}>
               <span className="text-xs sm:text-sm text-muted-foreground">
-                {formattedDate}
+                {formatTimeAgo(fileMeta.createdAt)}
               </span>
             </SimpleTooltip>
 

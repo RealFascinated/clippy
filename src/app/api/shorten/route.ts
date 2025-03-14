@@ -57,7 +57,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     const shortenedUrl = await createShortenedUrl(url, user.id);
 
     return NextResponse.json({
-      url: `${env.NEXT_PUBLIC_WEBSITE_URL}/short/${shortenedUrl.id}`,
+      url: `${env.NEXT_PUBLIC_WEBSITE_URL}/s/${shortenedUrl.id}`,
       deletionUrl: `${env.NEXT_PUBLIC_WEBSITE_URL}/api/shorten/delete/${shortenedUrl.deleteKey}`,
     } as SuccessResponse);
   });

@@ -21,6 +21,7 @@ import {
   Heart,
   Home,
   ImageIcon,
+  Link2,
   Lock,
   NotebookText,
   Palette,
@@ -81,6 +82,16 @@ const groups: Group[] = [
         title: "GIFs",
         url: "/dashboard/files/gifs",
         icon: <GifIcon />,
+      },
+    ],
+  },
+  {
+    title: "Short Links",
+    items: [
+      {
+        title: "Links",
+        url: "/dashboard/short-links",
+        icon: <Link2 />,
       },
     ],
   },

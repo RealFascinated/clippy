@@ -18,7 +18,6 @@ const app = next({ dev, conf: nextConfig, turbopack: dev, port });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
-
   const server = createServer(async (request, response) => {
     const parsedUrl = parse(request.url!, true);
 

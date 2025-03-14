@@ -1,4 +1,3 @@
-import { UserFileProps } from "@/components/dashboard/user/files/file";
 import { Button } from "@/components/ui/button";
 import { InlineCodeBlock } from "@/components/ui/code-block";
 import {
@@ -10,36 +9,36 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { FileType } from "@/lib/db/schemas/file";
+import { ShortenedUrlType } from "@/lib/db/schemas/shortened-urls";
 import request from "@/lib/request";
-import { getFileName } from "@/lib/utils/file";
-import { ReactElement } from "react";
+import { ReactNode } from "react";
 import { toast } from "sonner";
+import { UserShortUrlProps } from "./short-url";
 
-type DeleteFileDialogProps = UserFileProps & {
-  children: ReactElement;
+type DeleteShortUrlDialogProps = UserShortUrlProps & {
+  children: ReactNode;
 };
 
-export default function DeleteFileDialog({
-  fileMeta,
+export default function DeleteShortUrlDialog({
+  link,
   refetch,
   children,
-}: DeleteFileDialogProps) {
+}: DeleteShortUrlDialogProps) {
   /**
-   * Deletes a file
+   * Deletes a short link
    *
-   * @param fileMeta the file to delete
+   * @param link the short link to delete
    */
-  async function deleteFile(fileMeta: FileType) {
+  async function deleteShortLink(link: ShortenedUrlType) {
     try {
-      await request.get(`/api/file/delete/${fileMeta.deleteKey}`, {
+      await request.get(`/api/shorten/delete/${link.deleteKey}`, {
         throwOnError: true,
         withCredentials: true, // use cookies
       });
       await refetch();
-      toast(`Successfully deleted the file ${getFileName(fileMeta)}!`);
+      toast(`Successfully deleted the short link ${link.id}!`);
     } catch {
-      toast(`Failed to delete the file ${getFileName(fileMeta)}`);
+      toast(`Failed to delete the short link ${link.id}`);
     }
   }
 
@@ -50,9 +49,9 @@ export default function DeleteFileDialog({
         <DialogHeader>
           <DialogTitle>Are you absolutely sure?</DialogTitle>
           <DialogDescription>
-            This will delete the file{" "}
-            <InlineCodeBlock>{getFileName(fileMeta)}</InlineCodeBlock>, this
-            action cannot be undone.
+            This will delete the short link{" "}
+            <InlineCodeBlock>{link.id}</InlineCodeBlock>, this action cannot be
+            undone.
           </DialogDescription>
         </DialogHeader>
 
@@ -60,7 +59,7 @@ export default function DeleteFileDialog({
           <Button
             className="w-fit"
             variant="destructive"
-            onClick={() => deleteFile(fileMeta)}
+            onClick={() => deleteShortLink(link)}
           >
             Delete
           </Button>

@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, AnyColumn, asc, count, desc, eq, like } from "drizzle-orm";
 import { db } from "../db/drizzle";
 import {
   shortenedUrlsTable,
@@ -6,6 +6,16 @@ import {
 } from "../db/schemas/shortened-urls";
 import { env } from "../env";
 import { randomString } from "../utils/utils";
+
+export type ShortenedUrlOptions = {
+  limit?: number;
+  offset?: number;
+  sort?: {
+    key: string;
+    direction: "asc" | "desc";
+  };
+  search?: string;
+};
 
 /**
  * Creates a shortened URL.
@@ -88,4 +98,66 @@ export async function updateShortenedUrl(
     .update(shortenedUrlsTable)
     .set(values)
     .where(eq(shortenedUrlsTable.id, id));
+}
+
+/**
+ * Gets a list of shortened URLs.
+ *
+ * @param options The options for the shortened URLs.
+ * @returns The shortened URLs.
+ */
+export async function getShortenedUrls(options: ShortenedUrlOptions) {
+  const { limit, offset, sort, search } = options;
+
+  const query = db.select().from(shortenedUrlsTable);
+
+  if (search) {
+    query.where(like(shortenedUrlsTable.url, `%${search}%`));
+  }
+
+  if (sort) {
+    const { key, direction } = sort;
+
+    // Ensure the key is a valid column from fileTable
+    const column = shortenedUrlsTable[
+      key as keyof typeof shortenedUrlsTable
+    ] as AnyColumn;
+    if (!column) {
+      throw new Error(
+        `Column "${key}" on ${shortenedUrlsTable._.name} was not found.`
+      );
+    }
+
+    // Apply sorting based on the direction
+    query.orderBy(direction === "asc" ? asc(column) : desc(column));
+  }
+
+  if (limit) {
+    query.limit(limit);
+  }
+
+  if (offset) {
+    query.offset(offset);
+  }
+
+  return await query;
+}
+
+/**
+ * Gets the total number of shortened URLs.
+ *
+ * @returns The total number of shortened URLs.
+ */
+export async function getShortenedUrlsCount(options: ShortenedUrlOptions) {
+  const query = await db
+    .select({ count: count() })
+    .from(shortenedUrlsTable)
+    .where(
+      and(
+        options?.search
+          ? like(shortenedUrlsTable.url, `%${options.search}%`)
+          : undefined
+      )
+    );
+  return query[0].count ?? undefined;
 }
