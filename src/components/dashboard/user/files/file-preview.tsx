@@ -12,11 +12,11 @@ import { FileType } from "@/lib/db/schemas/file";
 import { env } from "@/lib/env";
 import { getFileName } from "@/lib/utils/file";
 import { cn, copyWithToast } from "@/lib/utils/utils";
-import { format } from "date-fns";
 import { Download, ExternalLink, Link2, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { createPortal } from "react-dom";
+import { DATE_FORMATS, formatDate } from "@/lib/utils/date";
 
 export default function FilePreview({
   fileMeta,
@@ -105,7 +105,7 @@ export default function FilePreview({
                     @{user.username}
                   </span>
                   <span className="text-white/60 text-sm">
-                    {format(fileMeta.createdAt, "MMM d, yyyy")}
+                    {formatDate(fileMeta.createdAt, DATE_FORMATS.DATE_TIME)}
                   </span>
                 </div>
               </div>

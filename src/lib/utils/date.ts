@@ -17,7 +17,12 @@ export function getMidightAllignedDate(date: Date): Date {
 }
 
 /**
- * Format a date as a time ago string (e.g. 1 day ago, or 12/12/2024 12:00 PM)
+ * Format a date as a time ago string with precise time format:
+ * - Less than 1 hour: "X minutes ago"
+ * - Less than 24 hours: "X hour(s), Y minutes ago" (e.g. "1 hour, 30 minutes ago")
+ * - Less than 7 days: "X days ago"
+ * - Less than 30 days: Shows short date (e.g. "Mar 15")
+ * - Older: Shows full date and time
  *
  * @param date The date to format
  * @returns The formatted date
@@ -25,13 +30,35 @@ export function getMidightAllignedDate(date: Date): Date {
 export function formatTimeAgo(date: Date): string {
   const now = dayjs();
   const then = dayjs(date);
-  const diffInHours = now.diff(then, "hour");
 
-  if (diffInHours >= 24) {
-    return then.format("DD/MM/YYYY HH:mm A");
+  const diffInMinutes = now.diff(then, "minute");
+  const diffInHours = now.diff(then, "hour");
+  const diffInDays = now.diff(then, "day");
+
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes} ${diffInMinutes === 1 ? "minute" : "minutes"} ago`;
   }
 
-  return then.fromNow();
+  if (diffInHours < 24) {
+    const hours = Math.floor(diffInMinutes / 60);
+    const minutes = diffInMinutes % 60;
+
+    if (minutes === 0) {
+      return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
+    }
+
+    return `${hours} ${hours === 1 ? "hour" : "hours"}, ${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
+  }
+
+  if (diffInDays < 7) {
+    return then.fromNow(); // "X days ago"
+  }
+
+  if (diffInDays < 30) {
+    return then.format(DATE_FORMATS.SHORT_DATE);
+  }
+
+  return then.format(DATE_FORMATS.DATE_TIME);
 }
 
 /**
@@ -59,7 +86,7 @@ export function getDateString(date: Date): string {
 export const DATE_FORMATS = {
   TIME: "h:mm A",
   DATE_TIME: "DD/MM/YYYY HH:mm A",
-  FULL_DATE: "EEEE, MMMM D, YYYY",
+  FULL_DATE: "dddd, MMMM D, YYYY",
   SHORT_DATE: "MMM DD",
   ISO_DATE: "YYYY-MM-DD",
 } as const;

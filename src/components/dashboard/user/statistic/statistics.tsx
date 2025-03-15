@@ -2,10 +2,10 @@ import { UserMetricsType } from "@/lib/db/schemas/metrics";
 import { getValueFromKey } from "@/lib/utils/object";
 import { formatBytes } from "@/lib/utils/utils";
 import { UserStatisticsResponse } from "@/type/api/user/graph-response";
-import { format } from "date-fns";
 import { ClockIcon, EyeIcon, FileIcon, ServerIcon } from "lucide-react";
 import { ReactElement } from "react";
 import UserStatistic from "./statistic";
+import { DATE_FORMATS, formatDate } from "@/lib/utils/date";
 
 type Format = "number" | "bytes";
 type Statistic = {
@@ -34,7 +34,7 @@ const statistics: Statistic[] = [
     name: "Storage Used",
     format: "bytes",
     icon: <ServerIcon className="size-5" />,
-    tooltip: statistics => {
+    tooltip: (statistics) => {
       if (!statistics.storageMetrics) {
         return undefined;
       }
@@ -70,7 +70,9 @@ type StatisticsProps = {
 
 export default function Statistics({ statisticsResponse }: StatisticsProps) {
   const statisticsToday =
-    statisticsResponse.statisticHistory[format(new Date(), "yyyy-MM-dd")];
+    statisticsResponse.statisticHistory[
+      formatDate(new Date(), DATE_FORMATS.ISO_DATE)
+    ];
 
   return (
     <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full justify-between gap-3 sm:gap-4 items-center select-none">

@@ -4,10 +4,10 @@ import { env } from "@/lib/env";
 import request from "@/lib/request";
 import { getFileName } from "@/lib/utils/file";
 import { formatBytes } from "@/lib/utils/utils";
-import { format } from "date-fns";
 import { Clock } from "lucide-react";
 import { headers } from "next/headers";
 import FilePreview from "./file-preview";
+import { DATE_FORMATS, formatDate } from "@/lib/utils/date";
 
 export default async function RecentFiles({ user }: { user: UserType }) {
   const files = await request.get<RecentFilesResponse>(
@@ -66,7 +66,7 @@ export default async function RecentFiles({ user }: { user: UserType }) {
                         {formatBytes(file.size, 1)}
                       </div>
                       <div className="text-sm text-muted-foreground text-right">
-                        {format(file.createdAt, "MMM d, yyyy HH:mm")}
+                        {formatDate(file.createdAt, DATE_FORMATS.DATE_TIME)}
                       </div>
                     </div>
                   </FilePreview>

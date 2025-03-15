@@ -2,12 +2,11 @@ import { users, UserType } from "@/lib/db/schemas/auth-schema";
 import { env } from "@/lib/env";
 import { getUserPreferences } from "@/lib/preference";
 import request from "@/lib/request";
-import { getDateString } from "@/lib/utils/date";
+import { DATE_FORMATS, formatDate, getDateString } from "@/lib/utils/date";
 import { MimetypeDistribution } from "@/type/api/user/mimetype-distrubution";
 import { DiscordEmbed } from "@/type/discord";
 import { UserFilesSort } from "@/type/user/user-file-sort";
 import { Session } from "better-auth";
-import { format } from "date-fns";
 import {
   and,
   AnyColumn,
@@ -372,7 +371,7 @@ export async function dispatchWebhookEvent(
         {
           ...embed,
           footer: {
-            text: format(new Date(), "MM/dd/yyyy HH:mm a"),
+            text: formatDate(new Date(), DATE_FORMATS.DATE_TIME),
           },
         },
       ],

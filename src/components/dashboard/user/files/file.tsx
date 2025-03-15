@@ -5,11 +5,10 @@ import FileExtensionIcon from "@/components/file-icon";
 import SimpleTooltip from "@/components/simple-tooltip";
 import { UserType } from "@/lib/db/schemas/auth-schema";
 import { FileType } from "@/lib/db/schemas/file";
-import { formatTimeAgo } from "@/lib/utils/date";
+import { DATE_FORMATS, formatDate, formatTimeAgo } from "@/lib/utils/date";
 import { getFileName } from "@/lib/utils/file";
 import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { cn, formatBytes } from "@/lib/utils/utils";
-import { format } from "date-fns";
 import { HeartIcon, PlayIcon } from "lucide-react";
 import Link from "next/link";
 import FilePreview from "./file-preview";
@@ -25,7 +24,10 @@ export default function UserFile({ user, fileMeta, refetch }: UserFileProps) {
   const isVideo = fileMeta.mimeType.startsWith("video");
   const isImage = fileMeta.mimeType.startsWith("image");
   const hasThumbnail = (isImage || isVideo) && fileMeta.hasThumbnail;
-  const exactDate: string = format(fileMeta.createdAt, "dd/MM/yyyy - HH:mm a");
+  const exactDate: string = formatDate(
+    fileMeta.createdAt,
+    DATE_FORMATS.DATE_TIME
+  );
 
   async function favoriteFile() {
     const response = await fetch(
