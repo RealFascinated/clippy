@@ -44,7 +44,7 @@ export default class Logger {
   private static log(
     level: keyof typeof Logger.LogLevel,
     message: string,
-    args?: any[]
+    ...args: unknown[]
   ): void {
     if (!Logger.shouldLog(level)) {
       return;
@@ -55,7 +55,7 @@ export default class Logger {
     const timestamp = formatDate(new Date(), "HH:mm:ss");
     console.log(
       `${color(level.toUpperCase())} ${symbol} ${chalk.gray(timestamp)} ${message}`,
-      ...(args || [])
+      ...args
     );
   }
 
@@ -64,8 +64,8 @@ export default class Logger {
    *
    * @param message the message to log
    */
-  public static debug(message: string, args?: any[]): void {
-    Logger.log("debug", message);
+  public static debug(message: string, ...args: unknown[]): void {
+    Logger.log("debug", message, ...args);
   }
 
   /**
@@ -73,8 +73,8 @@ export default class Logger {
    *
    * @param message the message to log
    */
-  public static info(message: string, args?: any[]): void {
-    Logger.log("info", message, args);
+  public static info(message: string, ...args: unknown[]): void {
+    Logger.log("info", message, ...args);
   }
 
   /**
@@ -82,8 +82,8 @@ export default class Logger {
    *
    * @param message the message to log
    */
-  public static warn(message: string, args?: any[]): void {
-    Logger.log("warn", message, args);
+  public static warn(message: string, ...args: unknown[]): void {
+    Logger.log("warn", message, ...args);
   }
 
   /**
@@ -91,7 +91,7 @@ export default class Logger {
    *
    * @param message the message to log
    */
-  public static error(message: string, args?: any[]): void {
-    Logger.log("error", message, args);
+  public static error(message: string, ...args: unknown[]): void {
+    Logger.log("error", message, ...args);
   }
 }
