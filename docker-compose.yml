@@ -1,42 +1,11 @@
 services:
   clippy:
     image: fascinated/clippy:latest
-    environment:
-      # Website
-      NEXT_PUBLIC_WEBSITE_NAME: Clippy
-      NEXT_PUBLIC_WEBSITE_DESCRIPTION: Open Source ShareX Uploader.
-      NEXT_PUBLIC_WEBSITE_LOGO: /logo.png
-      NEXT_PUBLIC_WEBSITE_URL: http://localhost:3000
-
-      # Postgres
-      DATABASE_URL: postgres://clippy:clippy@db:5432/clippy
-
-      # Better Auth
-      BETTER_AUTH_SECRET: CHANGE_ME
-      NEXT_PUBLIC_ALLOW_REGISTRATIONS: true
-
-      # File Storage
-      STORAGE_PROVIDER: LOCAL
-
-      # Local Storage
-      STORAGE_LOCAL_PATH: ./uploads
-
-      # S3 Storage
-      #STORAGE_S3_ENDPOINT: localhost
-      #STORAGE_S3_PORT: 9000
-      #STORAGE_S3_USE_SSL: false
-      #STORAGE_S3_ACCESS_KEY: clippysupersecretpassword
-      #STORAGE_S3_SECRET_KEY: clippysupersecretpassword
-      #STORAGE_S3_BUCKET: clippy
-
-      # Configuration
-      FILE_ID_LENGTH: 8
-      ALLOWED_MIME_TYPES: "*/*"
-      COMPRESS_IMAGES: true
+    env_file: .env
     ports:
       - "3000:3000"
     volumes:
-      - ./uploads:/app/uploads
+      - ${STORAGE_LOCAL_PATH:-./uploads}:/app/uploads
     depends_on:
       db:
         condition: service_healthy
@@ -44,11 +13,11 @@ services:
   db:
     image: postgres:17
     environment:
-      POSTGRES_PASSWORD: clippy
-      POSTGRES_USER: clippy
-      POSTGRES_DB: clippy
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-clippy}
+      POSTGRES_USER: ${POSTGRES_USER:-clippy}
+      POSTGRES_DB: ${POSTGRES_DB:-clippy}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
@@ -61,19 +30,19 @@ services:
   #minio:
   #  image: minio/minio:latest
   #  environment:
-  #    MINIO_ROOT_USER: clippysupersecretpassword
-  #    MINIO_ROOT_PASSWORD: clippysupersecretpassword
+  #    MINIO_ROOT_USER: ${MINIO_ROOT_USER:-clippysupersecretpassword}
+  #    MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-clippysupersecretpassword}
   #  ports:
-  #    - "9000:9000"
-  #    - "9001:9001" # MinIO console
+  #    - "${MINIO_API_PORT:-9000}:9000"
+  #    - "${MINIO_CONSOLE_PORT:-9001}:9001" # MinIO console
   #  volumes:
   #    - minio_data:/data
   #  command: server /data --console-address ":9001"
   #  healthcheck:
   #    test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-  #  interval: 10s
-  #  timeout: 5s
-  #  retries: 3
+  #    interval: 10s
+  #    timeout: 5s
+  #    retries: 3
 
 volumes:
   postgres_data:
