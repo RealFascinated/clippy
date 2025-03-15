@@ -16,6 +16,7 @@ import {
   LinearScale,
   LineController,
   LineElement,
+  PieController,
   PointElement,
   Tooltip,
 } from "chart.js";
@@ -34,10 +35,11 @@ ChartJS.register(
   BarElement,
   Filler,
   DoughnutController,
+  PieController,
   ArcElement
 );
 
-type ChartTypeOptions = "line" | "bar" | "doughnut";
+type ChartTypeOptions = "line" | "bar" | "doughnut" | "pie";
 type AxisPosition = "left" | "right";
 
 interface AxisConfig {
@@ -244,15 +246,19 @@ export default function GenericChart<TData extends Record<string, unknown>>({
         mode: "index",
         intersect: false,
       },
-      scales: datasetConfigs.some((config) => config.type === "doughnut")
+      scales: datasetConfigs.some(
+        (config) => config.type === "doughnut" || config.type === "pie"
+      )
         ? {}
         : axes,
       cutout:
         datasetConfigs.find((config) => config.type === "doughnut")
-          ?.cutoutPercentage ?? "75%",
+          ?.cutoutPercentage ?? undefined,
       plugins: {
         legend: {
-          position: datasetConfigs.some((config) => config.type === "doughnut")
+          position: datasetConfigs.some(
+            (config) => config.type === "doughnut" || config.type === "pie"
+          )
             ? "bottom"
             : "top",
           align: "center",
@@ -274,7 +280,7 @@ export default function GenericChart<TData extends Record<string, unknown>>({
               const index = legendItem.datasetIndex;
               const chart = legend.chart;
               const dataset = chart.data.datasets[index] as ChartDataset<
-                "line" | "bar" | "doughnut",
+                "line" | "bar" | "doughnut" | "pie",
                 (number | null | undefined)[]
               > & { legendId?: string };
               const legendId = dataset.legendId || `dataset-${index}`;
@@ -307,10 +313,10 @@ export default function GenericChart<TData extends Record<string, unknown>>({
           },
           callbacks: {
             beforeBody: function (tooltipItems) {
-              const isDoughnut = datasetConfigs.some(
-                (config) => config.type === "doughnut"
+              const isDoughnutOrPie = datasetConfigs.some(
+                (config) => config.type === "doughnut" || config.type === "pie"
               );
-              if (isDoughnut) return [];
+              if (isDoughnutOrPie) return [];
 
               // If all values are null/undefined/NaN, show "No data"
               const allMissing = tooltipItems.every((item) => {
@@ -322,17 +328,17 @@ export default function GenericChart<TData extends Record<string, unknown>>({
               return allMissing ? ["No data"] : [];
             },
             label: function (context) {
-              const isDoughnut = datasetConfigs.some(
-                (config) => config.type === "doughnut"
+              const isDoughnutOrPie = datasetConfigs.some(
+                (config) => config.type === "doughnut" || config.type === "pie"
               );
-              const value = isDoughnut ? context.parsed : context.parsed.y;
+              const value = isDoughnutOrPie ? context.parsed : context.parsed.y;
 
               if (
                 value === null ||
                 value === undefined ||
                 Number.isNaN(value)
               ) {
-                return isDoughnut ? "No data" : "";
+                return isDoughnutOrPie ? "No data" : "";
               }
 
               const config = datasetConfigs.find(

@@ -197,7 +197,10 @@ export async function POST(request: Request): Promise<NextResponse> {
       user
     );
 
-    thumbnailQueue.add(fileMeta);
+    if (file.type.startsWith("image/") || file.type.startsWith("video/")) {
+      thumbnailQueue.add(fileMeta);
+    }
+
     Notifications.sendUploadFileNotification(user, fileMeta);
     return NextResponse.json(
       {

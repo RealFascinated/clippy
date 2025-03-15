@@ -13,28 +13,28 @@ type TopMimeTypesProps = {
 
 const colors = [
   {
-    background: "rgba(99, 102, 241, 0.5)", // Indigo
+    background: "rgba(79, 70, 229, 0.75)", // Deep indigo
   },
   {
-    background: "rgba(14, 165, 233, 0.5)", // Sky blue
+    background: "rgba(6, 182, 212, 0.75)", // Cyan
   },
   {
-    background: "rgba(34, 197, 94, 0.5)", // Green
+    background: "rgba(16, 185, 129, 0.75)", // Emerald
   },
   {
-    background: "rgba(249, 115, 22, 0.5)", // Orange
+    background: "rgba(245, 158, 11, 0.75)", // Amber
   },
   {
-    background: "rgba(236, 72, 153, 0.5)", // Pink
+    background: "rgba(219, 39, 119, 0.75)", // Deep pink
   },
   {
-    background: "rgba(168, 85, 247, 0.5)", // Purple
+    background: "rgba(139, 92, 246, 0.75)", // Violet
   },
   {
-    background: "rgba(234, 179, 8, 0.5)", // Yellow
+    background: "rgba(59, 130, 246, 0.75)", // Blue
   },
   {
-    background: "rgba(244, 63, 94, 0.5)", // Rose
+    background: "rgba(239, 68, 68, 0.75)", // Red
   },
 ];
 
@@ -66,8 +66,7 @@ export default function TopFileTypes({ userGraphData }: TopMimeTypesProps) {
           backgroundColor: labels.map((_, i) => colors[i].background),
           axisId: "y",
           legendId: "amount",
-          type: "doughnut",
-          cutoutPercentage: "75%",
+          type: "pie",
           borderWidth: 0,
           hoverOffset: 4,
           axisConfig: {
@@ -75,7 +74,7 @@ export default function TopFileTypes({ userGraphData }: TopMimeTypesProps) {
             display: false,
             position: "left",
           },
-          labelFormatter: (_, value) => `${value} files`,
+          labelFormatter: (_, value) => `${value} file${value > 1 ? "s" : ""}`,
         },
       ],
       [labels]
@@ -93,14 +92,14 @@ export default function TopFileTypes({ userGraphData }: TopMimeTypesProps) {
         </p>
       </div>
 
-      <div className="flex-1">
+      <>
         {labels.length > 0 ? (
           <GenericChart
             data={mimeTypeDistribution}
             labels={labels}
             datasetConfigs={datasetConfigs}
             chartId="top-file-types"
-            getDataValue={(data, _, label) => data[label] ?? null}
+            getDataValue={(data, _, label) => data[label]}
           />
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
@@ -111,7 +110,7 @@ export default function TopFileTypes({ userGraphData }: TopMimeTypesProps) {
             </p>
           </div>
         )}
-      </div>
+      </>
     </div>
   );
 }
