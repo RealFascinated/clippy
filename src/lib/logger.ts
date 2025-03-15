@@ -43,7 +43,7 @@ export default class Logger {
    */
   private static log(
     level: keyof typeof Logger.LogLevel,
-    message: string,
+    message: unknown,
     ...args: unknown[]
   ): void {
     if (!Logger.shouldLog(level)) {
@@ -64,7 +64,7 @@ export default class Logger {
    *
    * @param message the message to log
    */
-  public static debug(message: string, ...args: unknown[]): void {
+  public static debug(message: unknown, ...args: unknown[]): void {
     Logger.log("debug", message, ...args);
   }
 
@@ -73,7 +73,7 @@ export default class Logger {
    *
    * @param message the message to log
    */
-  public static info(message: string, ...args: unknown[]): void {
+  public static info(message: unknown, ...args: unknown[]): void {
     Logger.log("info", message, ...args);
   }
 
@@ -82,7 +82,7 @@ export default class Logger {
    *
    * @param message the message to log
    */
-  public static warn(message: string, ...args: unknown[]): void {
+  public static warn(message: unknown, ...args: unknown[]): void {
     Logger.log("warn", message, ...args);
   }
 
@@ -91,7 +91,7 @@ export default class Logger {
    *
    * @param message the message to log
    */
-  public static error(message: string, ...args: unknown[]): void {
+  public static error(message: unknown, ...args: unknown[]): void {
     Logger.log("error", message, ...args);
   }
 }
