@@ -10,7 +10,7 @@ import ActivityGraph from "@/components/user/activity-graph";
 import { UserType } from "@/lib/db/schemas/auth-schema";
 import { env } from "@/lib/env";
 import { getUserRole } from "@/lib/helpers/role";
-import { format } from "date-fns";
+import { DATE_FORMATS, formatDate } from "@/lib/utils/date";
 import { FolderDown, FolderX, Trash2 } from "lucide-react";
 
 export default function UserSettings({ user }: { user: UserType }) {
@@ -32,7 +32,7 @@ export default function UserSettings({ user }: { user: UserType }) {
 }
 
 function UserDetails({ user }: { user: any }) {
-  const createdAt = `Created on ${format(user.createdAt, "MMM dd, yyyy")}`;
+  const createdAt = `Created on ${formatDate(user.createdAt, DATE_FORMATS.FULL_DATE)}`;
   return (
     <div className="flex gap-3 items-center select-none">
       {/* Avatar */}

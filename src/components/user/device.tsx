@@ -4,8 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/client-auth";
+import { DATE_FORMATS, formatDate, formatTimeAgo } from "@/lib/utils/date";
 import { Session } from "better-auth";
-import { format, formatDistanceToNow } from "date-fns";
 import { LogOut, Monitor, Smartphone } from "lucide-react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import Image from "next/image";
@@ -85,10 +85,10 @@ export default function Device({
           <div className="flex gap-1 items-center text-xs text-muted-foreground">
             {ipAddress} -{" "}
             <SimpleTooltip
-              content={`Device logged in on ${format(session.createdAt, "MMM d, yyyy h:mm a")}`}
+              content={`Device logged in on ${formatDate(session.createdAt, DATE_FORMATS.DATE_TIME)}`}
             >
               <span className="cursor-pointer hover:opacity-75 transition-all transform-gpu">
-                {formatDistanceToNow(session.createdAt, { addSuffix: true })}
+                {formatTimeAgo(session.createdAt)}
               </span>
             </SimpleTooltip>
           </div>
