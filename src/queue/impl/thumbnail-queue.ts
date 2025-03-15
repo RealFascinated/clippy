@@ -47,13 +47,15 @@ export default class ThumbnailQueue extends Queue<FileType> {
     const fileName = getFileName(file);
     Logger.debug(`Processing thumbnail for file ${fileName}`);
     try {
-      const buffer = await storage.getFile(getFilePath(file.userId, file));
-      if (!buffer) {
-        Logger.debug(`Failed to get buffer for ${fileName}`);
+      const stream = await storage.getFileStream(
+        getFilePath(file.userId, file)
+      );
+      if (!stream) {
+        Logger.debug(`Failed to get stream for ${fileName}`);
         return;
       }
 
-      const thumbnail = await getThumbnail(fileName, buffer, file.mimeType);
+      const thumbnail = await getThumbnail(fileName, stream, file.mimeType);
       const thumbnailMeta: ThumbnailType = {
         id: file.id,
         extension: "webp",
