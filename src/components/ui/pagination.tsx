@@ -1,5 +1,4 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 import * as React from "react";
 
 import { buttonVariants } from "@/components/ui/button";
@@ -66,7 +65,7 @@ const PaginationPrevious = ({
     className={cn("gap-1", className)}
     {...props}
   >
-    <ChevronLeftIcon className="h-4 w-4" />
+    <ChevronLeft className="h-4 w-4" />
   </PaginationLink>
 );
 PaginationPrevious.displayName = "PaginationPrevious";
@@ -80,7 +79,7 @@ const PaginationNext = ({
     className={cn("gap-1", className)}
     {...props}
   >
-    <ChevronRightIcon className="h-4 w-4" />
+    <ChevronRight className="h-4 w-4" />
   </PaginationLink>
 );
 PaginationNext.displayName = "PaginationNext";
@@ -94,7 +93,7 @@ const PaginationEllipsis = ({
     className={cn("flex h-9 w-5 items-center justify-center", className)}
     {...props}
   >
-    <DotsHorizontalIcon className="h-4 w-4" />
+    <MoreHorizontal className="h-4 w-4" />
     <span className="sr-only">More pages</span>
   </span>
 );

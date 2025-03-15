@@ -1,4 +1,10 @@
-import { format, formatDistance } from "date-fns";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+// Initialize plugins
+dayjs.extend(relativeTime);
+dayjs.extend(customParseFormat);
 
 /**
  * Get the date at midnight
@@ -7,9 +13,7 @@ import { format, formatDistance } from "date-fns";
  * @returns The date at midnight
  */
 export function getMidightAllignedDate(date: Date): Date {
-  const newDate = new Date(date);
-  newDate.setHours(0, 0, 0, 0);
-  return newDate;
+  return dayjs(date).startOf("day").toDate();
 }
 
 /**
@@ -19,13 +23,43 @@ export function getMidightAllignedDate(date: Date): Date {
  * @returns The formatted date
  */
 export function formatTimeAgo(date: Date): string {
-  const currentDate = new Date();
-  const oldDate = new Date(date);
-  const difference = currentDate.getTime() - oldDate.getTime();
+  const now = dayjs();
+  const then = dayjs(date);
+  const diffInHours = now.diff(then, "hour");
 
-  if (difference > 86400000) {
-    return format(oldDate, "dd/MM/yyyy HH:mm a");
+  if (diffInHours >= 24) {
+    return then.format("DD/MM/YYYY HH:mm A");
   }
 
-  return formatDistance(oldDate, currentDate) + " ago";
+  return then.fromNow();
 }
+
+/**
+ * Format a date using the specified format string
+ *
+ * @param date The date to format
+ * @param formatStr The format string (using Day.js format tokens)
+ * @returns The formatted date string
+ */
+export function formatDate(date: Date, formatStr: string): string {
+  return dayjs(date).format(formatStr);
+}
+
+/**
+ * Get a date string in YYYY-MM-DD format
+ *
+ * @param date The date to format
+ * @returns The date string in YYYY-MM-DD format
+ */
+export function getDateString(date: Date): string {
+  return dayjs(date).format("YYYY-MM-DD");
+}
+
+// Common format strings used across the application
+export const DATE_FORMATS = {
+  TIME: "h:mm A",
+  DATE_TIME: "DD/MM/YYYY HH:mm A",
+  FULL_DATE: "EEEE, MMMM D, YYYY",
+  SHORT_DATE: "MMM DD",
+  ISO_DATE: "YYYY-MM-DD",
+} as const;

@@ -2,6 +2,7 @@ import { users, UserType } from "@/lib/db/schemas/auth-schema";
 import { env } from "@/lib/env";
 import { getUserPreferences } from "@/lib/preference";
 import request from "@/lib/request";
+import { getDateString } from "@/lib/utils/date";
 import { MimetypeDistribution } from "@/type/api/user/mimetype-distrubution";
 import { DiscordEmbed } from "@/type/discord";
 import { UserFilesSort } from "@/type/user/user-file-sort";
@@ -188,7 +189,7 @@ export async function getStatisticHistory(id: string) {
   );
 
   // Add today's metrics to the statistic history
-  statisticHistory[format(new Date(), "yyyy-MM-dd")] = {
+  statisticHistory[getDateString(new Date())] = {
     ...(await getUserMetrics(id)),
   };
 

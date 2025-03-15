@@ -6,10 +6,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { FileType } from "@/lib/db/schemas/file";
+import { formatDate, DATE_FORMATS } from "@/lib/utils/date";
 import { getFileName } from "@/lib/utils/file";
 import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { formatBytes } from "@/lib/utils/utils";
-import { format } from "date-fns";
 import { ReactNode } from "react";
 
 type FileInfoDialogProps = {
@@ -29,40 +29,41 @@ export default function FileInfoDialog({
           <DialogTitle>File Information</DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col">
-          {/* File Name */}
-          <span>
-            <span className="font-semibold">Name:</span> {getFileName(fileMeta)}
-          </span>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-medium">Name</span>
+            <span className="text-sm text-muted-foreground">
+              {getFileName(fileMeta)}
+            </span>
+          </div>
 
-          {/* Original File Name */}
-          <span>
-            <span className="font-semibold">Original Name:</span>{" "}
-            {fileMeta.originalName ?? "Unknown"}
-          </span>
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-medium">Size</span>
+            <span className="text-sm text-muted-foreground">
+              {formatBytes(fileMeta.size)}
+            </span>
+          </div>
 
-          {/* File Size */}
-          <span>
-            <span className="font-semibold">Size:</span>{" "}
-            {formatBytes(fileMeta.size)}
-          </span>
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-medium">Views</span>
+            <span className="text-sm text-muted-foreground">
+              {formatNumberWithCommas(fileMeta.views)}
+            </span>
+          </div>
 
-          {/* Mime Type */}
-          <span>
-            <span className="font-semibold">Mimetype:</span> {fileMeta.mimeType}
-          </span>
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-medium">Uploaded</span>
+            <span className="text-sm text-muted-foreground">
+              {formatDate(new Date(fileMeta.createdAt), DATE_FORMATS.DATE_TIME)}
+            </span>
+          </div>
 
-          {/* Views */}
-          <span>
-            <span className="font-semibold">Views:</span>{" "}
-            {formatNumberWithCommas(fileMeta.views)}
-          </span>
-
-          {/* Upload Date */}
-          <span>
-            <span className="font-semibold">Uploaded Date:</span>{" "}
-            {format(fileMeta.createdAt, "dd/MM/yyyy - HH:mm a")}
-          </span>
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-medium">MIME Type</span>
+            <span className="text-sm text-muted-foreground">
+              {fileMeta.mimeType}
+            </span>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

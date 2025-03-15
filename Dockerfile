@@ -14,8 +14,14 @@ RUN bun run build && rm -rf .git .github .next/cache/*
 FROM base AS prod-deps
 WORKDIR /app
 COPY package.json* bun.lock* ./
-RUN bun install --frozen-lockfile --production --quiet
-RUN curl -sf https://gobinaries.com/tj/node-prune | sh && node-prune
+RUN apt-get update && apt-get install -y curl && \
+    bun install --frozen-lockfile --production --quiet && \
+    curl -sf https://gobinaries.com/tj/node-prune | sh && \
+    node-prune && \
+    rm -rf node_modules/next-runtime-env/node_modules/next && \
+    apt-get purge -y curl && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
 
 # Final smaller image with Alpine
 FROM oven/bun:1.2.5-alpine AS runner

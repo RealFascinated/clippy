@@ -13,8 +13,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils/utils";
-import { GifIcon } from "@heroicons/react/16/solid";
-import { SiGithub } from "@icons-pack/react-simple-icons";
 import {
   Bell,
   FolderOpen,
@@ -28,6 +26,8 @@ import {
   Settings,
   User,
   Video,
+  Github,
+  Sticker,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -81,7 +81,7 @@ const groups: Group[] = [
       {
         title: "GIFs",
         url: "/dashboard/files/gifs",
-        icon: <GifIcon />,
+        icon: <Sticker />,
       },
     ],
   },
@@ -131,7 +131,7 @@ const socials: Item[] = [
   {
     title: "GitHub",
     url: "https://github.com/ClippyCDN/clippy",
-    icon: <SiGithub />,
+    icon: <Github />,
   },
   {
     title: "Documentation",

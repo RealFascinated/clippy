@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { format } from "date-fns";
+import { formatDate } from "./utils/date";
 import { env } from "./env";
 
 export default class Logger {
@@ -36,63 +36,60 @@ export default class Logger {
   }
 
   /**
-   * Logs a message to the console.
+   * Logs a message at the specified level.
    *
-   * @param level the log level to use
+   * @param level the log level
    * @param message the message to log
-   * @param args the arguments to log
    */
-  public static log(
+  private static log(
     level: keyof typeof Logger.LogLevel,
-    message: unknown,
-    ...args: unknown[]
-  ) {
+    message: string
+  ): void {
     if (!Logger.shouldLog(level)) {
       return;
     }
 
-    const timestamp = chalk.gray(format(new Date(), "dd/MM/yyyy, HH:mm:ss"));
+    const color = Logger.LogColors[level];
     const symbol = Logger.LogSymbols[level];
-    const levelColor = Logger.LogColors[level];
-    const levelText = levelColor.bold(`[${level.toUpperCase()}]`);
-    const appName = chalk.cyan("[Clippy]");
-
-    if (typeof message === "object") {
-      message = JSON.stringify(message);
-    }
-
-    const prefix = `${timestamp} ${appName} ${levelText} ${symbol}`;
-    const formattedMessage = `${prefix} ${message}`;
-
-    switch (level) {
-      case "debug":
-        console.debug(formattedMessage, ...args);
-        break;
-      case "info":
-        console.info(formattedMessage, ...args);
-        break;
-      case "warn":
-        console.warn(formattedMessage, ...args);
-        break;
-      case "error":
-        console.error(formattedMessage, ...args);
-        break;
-    }
+    const timestamp = formatDate(new Date(), "HH:mm:ss");
+    console.log(
+      `${color(level.toUpperCase())} ${symbol} ${chalk.gray(timestamp)} ${message}`
+    );
   }
 
-  public static debug(message: unknown, ...args: unknown[]) {
-    Logger.log("debug", message, ...args);
+  /**
+   * Logs a debug message.
+   *
+   * @param message the message to log
+   */
+  public static debug(message: string): void {
+    Logger.log("debug", message);
   }
 
-  public static info(message: unknown, ...args: unknown[]) {
-    Logger.log("info", message, ...args);
+  /**
+   * Logs an info message.
+   *
+   * @param message the message to log
+   */
+  public static info(message: string): void {
+    Logger.log("info", message);
   }
 
-  public static warn(message: unknown, ...args: unknown[]) {
-    Logger.log("warn", message, ...args);
+  /**
+   * Logs a warning message.
+   *
+   * @param message the message to log
+   */
+  public static warn(message: string): void {
+    Logger.log("warn", message);
   }
 
-  public static error(message: unknown, ...args: unknown[]) {
-    Logger.log("error", message, ...args);
+  /**
+   * Logs an error message.
+   *
+   * @param message the message to log
+   */
+  public static error(message: string): void {
+    Logger.log("error", message);
   }
 }

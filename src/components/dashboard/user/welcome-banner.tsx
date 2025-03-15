@@ -1,6 +1,6 @@
 "use client";
 
-import { format } from "date-fns";
+import { formatDate, DATE_FORMATS } from "@/lib/utils/date";
 import { CalendarDays, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -45,11 +45,11 @@ export default function WelcomeBanner({ username }: WelcomeBannerProps) {
         <div className="flex items-center gap-6 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Clock className="size-4" />
-            <span>{format(currentTime, "h:mm a")}</span>
+            <span>{formatDate(currentTime, DATE_FORMATS.TIME)}</span>
           </div>
           <div className="flex items-center gap-2">
             <CalendarDays className="size-4" />
-            <span>{format(currentTime, "EEEE, MMMM d, yyyy")}</span>
+            <span>{formatDate(currentTime, DATE_FORMATS.FULL_DATE)}</span>
           </div>
         </div>
       </div>

@@ -3,10 +3,10 @@
 import GenericChart, {
   ChartDatasetConfig,
 } from "@/components/charts/generic-chart";
+import { formatDate, DATE_FORMATS } from "@/lib/utils/date";
 import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { formatBytes } from "@/lib/utils/utils";
 import { UserStatisticsResponse } from "@/type/api/user/graph-response";
-import { format } from "date-fns";
 import { TrendingUp } from "lucide-react";
 import { useMemo } from "react";
 
@@ -47,9 +47,11 @@ export default function StatisticHistoryGraph({
       previousDate.setDate(previousDate.getDate() - previous);
       const currentYear = new Date().getFullYear();
       const formatString =
-        previousDate.getFullYear() === currentYear ? "MMM dd" : "yyyy-MM-dd";
-      const displayLabel = format(previousDate, formatString);
-      const lookupLabel = format(previousDate, "yyyy-MM-dd");
+        previousDate.getFullYear() === currentYear
+          ? DATE_FORMATS.SHORT_DATE
+          : DATE_FORMATS.ISO_DATE;
+      const displayLabel = formatDate(previousDate, formatString);
+      const lookupLabel = formatDate(previousDate, DATE_FORMATS.ISO_DATE);
       labels.push(displayLabel);
       labelToLookup.set(displayLabel, lookupLabel);
     }
