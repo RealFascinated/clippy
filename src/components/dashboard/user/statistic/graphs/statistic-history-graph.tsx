@@ -24,10 +24,10 @@ const colors = {
     fill: "rgba(139, 92, 246, 0.08)",
   },
   dailyUploads: {
-    bar: "rgba(14, 165, 233, 0.7)", // Sky-500
+    bar: "rgba(3, 105, 161, 0.85)", // Sky-700
   },
   dailyViews: {
-    bar: "rgba(168, 85, 247, 0.7)", // Purple-500
+    bar: "rgba(126, 34, 206, 0.85)", // Purple-700
   },
 };
 
