@@ -15,6 +15,7 @@ FROM base AS prod-deps
 WORKDIR /app
 COPY package.json* bun.lock* ./
 RUN bun install --frozen-lockfile --production --quiet
+RUN curl -sf https://gobinaries.com/tj/node-prune | sh && node-prune
 
 # Final smaller image with Alpine
 FROM oven/bun:1.2.5-alpine AS runner
