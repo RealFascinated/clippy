@@ -49,6 +49,7 @@ interface AxisConfig {
   valueFormatter?: (value: number) => string;
   stack?: string;
   stackOrder?: number;
+  min?: number;
 }
 
 export interface ChartDatasetConfig<TData> {
@@ -129,15 +130,16 @@ export default function GenericChart<TData extends Record<string, unknown>>({
       },
     };
 
-    datasetConfigs.forEach(config => {
+    datasetConfigs.forEach((config) => {
       const hasData = labels.some(
-        label => getDataValue(data, config.field, label) !== null
+        (label) => getDataValue(data, config.field, label) !== null
       );
       if (hasData) {
         generatedAxes[config.axisId] = {
           type: "linear",
           position: config.axisConfig.position,
           display: config.axisConfig.display,
+          min: config.axisConfig.min,
           grid: {
             drawOnChartArea: config.axisId === "y",
             color: config.axisId === "y" ? "rgba(255, 255, 255, 0.05)" : "",
@@ -151,8 +153,9 @@ export default function GenericChart<TData extends Record<string, unknown>>({
             padding: 8,
             maxTicksLimit: 12,
             callback: (value: number) => {
+              if (typeof value !== "number" || isNaN(value)) return "";
               return config.axisConfig.valueFormatter
-                ? config.axisConfig.valueFormatter(value)
+                ? config.axisConfig.valueFormatter(Math.max(0, value))
                 : value.toString();
             },
           },
@@ -167,7 +170,7 @@ export default function GenericChart<TData extends Record<string, unknown>>({
     if (typeof window === "undefined") return;
 
     const newHiddenStates: Record<string, boolean> = {};
-    datasetConfigs.forEach(config => {
+    datasetConfigs.forEach((config) => {
       try {
         const savedState = localStorage.getItem(
           `chart-legend:${chartId}:${config.legendId}`
@@ -182,13 +185,13 @@ export default function GenericChart<TData extends Record<string, unknown>>({
 
   const datasets = useMemo(() => {
     return datasetConfigs
-      .map(config => {
+      .map((config) => {
         const hasData = labels.some(
-          label => getDataValue(data, config.field, label) !== null
+          (label) => getDataValue(data, config.field, label) !== null
         );
         if (hasData) {
           const isBar = config.type === "bar";
-          const dataPoints = labels.map(label => {
+          const dataPoints = labels.map((label) => {
             const value = getDataValue(data, config.field, label);
             return value;
           });
@@ -241,15 +244,15 @@ export default function GenericChart<TData extends Record<string, unknown>>({
         mode: "index",
         intersect: false,
       },
-      scales: datasetConfigs.some(config => config.type === "doughnut")
+      scales: datasetConfigs.some((config) => config.type === "doughnut")
         ? {}
         : axes,
       cutout:
-        datasetConfigs.find(config => config.type === "doughnut")
+        datasetConfigs.find((config) => config.type === "doughnut")
           ?.cutoutPercentage ?? "75%",
       plugins: {
         legend: {
-          position: datasetConfigs.some(config => config.type === "doughnut")
+          position: datasetConfigs.some((config) => config.type === "doughnut")
             ? "bottom"
             : "top",
           align: "center",
@@ -283,7 +286,7 @@ export default function GenericChart<TData extends Record<string, unknown>>({
                   `chart-legend:${chartId}:${legendId}`,
                   newHidden.toString()
                 );
-                setHiddenStates(prev => ({
+                setHiddenStates((prev) => ({
                   ...prev,
                   [legendId]: newHidden,
                 }));
@@ -305,12 +308,12 @@ export default function GenericChart<TData extends Record<string, unknown>>({
           callbacks: {
             beforeBody: function (tooltipItems) {
               const isDoughnut = datasetConfigs.some(
-                config => config.type === "doughnut"
+                (config) => config.type === "doughnut"
               );
               if (isDoughnut) return [];
 
               // If all values are null/undefined/NaN, show "No data"
-              const allMissing = tooltipItems.every(item => {
+              const allMissing = tooltipItems.every((item) => {
                 const value = item.parsed.y;
                 return (
                   value === null || value === undefined || Number.isNaN(value)
@@ -320,7 +323,7 @@ export default function GenericChart<TData extends Record<string, unknown>>({
             },
             label: function (context) {
               const isDoughnut = datasetConfigs.some(
-                config => config.type === "doughnut"
+                (config) => config.type === "doughnut"
               );
               const value = isDoughnut ? context.parsed : context.parsed.y;
 
@@ -333,7 +336,7 @@ export default function GenericChart<TData extends Record<string, unknown>>({
               }
 
               const config = datasetConfigs.find(
-                cfg => cfg.title === context.dataset.label
+                (cfg) => cfg.title === context.dataset.label
               );
               return config?.labelFormatter(config.title, value) ?? "";
             },
@@ -368,7 +371,7 @@ export default function GenericChart<TData extends Record<string, unknown>>({
           plugins={[
             {
               id: "legend-padding",
-              beforeInit: chart => {
+              beforeInit: (chart) => {
                 if (chart.legend) {
                   const originalFit = chart.legend.fit;
                   chart.legend.fit = function fit() {

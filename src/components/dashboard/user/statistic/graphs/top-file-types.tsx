@@ -82,15 +82,36 @@ export default function TopFileTypes({ userGraphData }: TopMimeTypesProps) {
     );
 
   return (
-    <GenericChart
-      data={mimeTypeDistribution}
-      labels={labels}
-      datasetConfigs={datasetConfigs}
-      title="Top File Types"
-      subtitle="Most common file types in your uploads"
-      icon={<BarChart2 className="size-4 text-primary" />}
-      chartId="top-file-types"
-      getDataValue={(data, _, label) => data[label] ?? null}
-    />
+    <div className="w-full h-[400px] flex flex-col">
+      <div className="px-6 py-4 border-b border-muted/10">
+        <div className="flex items-center gap-2">
+          <BarChart2 className="size-4 text-primary" />
+          <h2 className="text-lg font-semibold">Top File Types</h2>
+        </div>
+        <p className="text-sm text-muted-foreground mt-1">
+          Most common file types in your uploads
+        </p>
+      </div>
+
+      <div className="flex-1">
+        {labels.length > 0 ? (
+          <GenericChart
+            data={mimeTypeDistribution}
+            labels={labels}
+            datasetConfigs={datasetConfigs}
+            chartId="top-file-types"
+            getDataValue={(data, _, label) => data[label] ?? null}
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+            <BarChart2 className="size-12 mb-2 opacity-50" />
+            <p className="text-sm font-medium">No file type data</p>
+            <p className="text-xs">
+              Upload some files to see file type statistics
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

@@ -58,9 +58,15 @@ export function randomString(length: number): string {
  */
 export function formatBytes(bytes: number, decimalPlaces: number = 2): string {
   if (bytes === 0) return "0 Bytes";
+  if (bytes < 0) return "0 Bytes";
 
   const k = 1024;
   const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+  // Special case for values less than 1024 bytes
+  if (bytes < k) {
+    return `${bytes} Bytes`;
+  }
 
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
