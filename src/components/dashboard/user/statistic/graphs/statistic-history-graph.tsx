@@ -76,7 +76,6 @@ export default function StatisticHistoryGraph({
           reverse: false,
           display: true,
           position: "left",
-          min: 0,
           valueFormatter: formatBytes,
         },
         labelFormatter: (title, value) => `${title}: ${formatBytes(value)}`,
@@ -95,7 +94,6 @@ export default function StatisticHistoryGraph({
           reverse: false,
           display: false,
           position: "left",
-          min: 0,
         },
         labelFormatter: (title, value) =>
           `${title}: ${formatNumberWithCommas(value)}`,
@@ -114,7 +112,6 @@ export default function StatisticHistoryGraph({
           reverse: false,
           display: false,
           position: "left",
-          min: 0,
         },
         labelFormatter: (title, value) =>
           `${title}: ${formatNumberWithCommas(value)}`,
@@ -131,7 +128,6 @@ export default function StatisticHistoryGraph({
           reverse: false,
           display: false,
           position: "right",
-          min: 0,
         },
         labelFormatter: (title, value) =>
           `${title}: ${formatNumberWithCommas(value)}`,
@@ -148,7 +144,6 @@ export default function StatisticHistoryGraph({
           reverse: false,
           display: false,
           position: "right",
-          min: 0,
         },
         labelFormatter: (title, value) =>
           `${title}: ${formatNumberWithCommas(value)}`,
