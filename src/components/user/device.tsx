@@ -61,6 +61,7 @@ export default function Device({
               width={16}
               height={16}
               draggable={false}
+              unoptimized
             />
           </div>
         </SimpleTooltip>

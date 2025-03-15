@@ -217,7 +217,13 @@ function DownloadConfig({
             </>
           ) : (
             <>
-              <Image src={logoUrl} alt="Uploader Logo" width={16} height={16} />
+              <Image
+                src={logoUrl}
+                alt="Uploader Logo"
+                width={16}
+                height={16}
+                unoptimized
+              />
               Download {configName}
             </>
           )}

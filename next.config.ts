@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
   experimental: {
     reactCompiler: true,
   },
+  images: {
+    unoptimized: true, // Always use unoptimized images
+  },
 };
 
 export default nextConfig;
