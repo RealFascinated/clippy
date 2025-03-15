@@ -16,7 +16,7 @@ import { Download, ExternalLink, Link2, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { DATE_FORMATS, formatDate } from "@/lib/utils/date";
+import { DATE_FORMATS, formatDate, formatTimeAgo } from "@/lib/utils/date";
 
 export default function FilePreview({
   fileMeta,
@@ -105,7 +105,7 @@ export default function FilePreview({
                     @{user.username}
                   </span>
                   <span className="text-white/60 text-sm">
-                    {formatDate(fileMeta.createdAt, DATE_FORMATS.DATE_TIME)}
+                    {formatTimeAgo(fileMeta.createdAt)}
                   </span>
                 </div>
               </div>

@@ -21,7 +21,6 @@ export function getMidightAllignedDate(date: Date): Date {
  * - Less than 1 hour: "X minutes ago"
  * - Less than 24 hours: "X hour(s), Y minutes ago" (e.g. "1 hour, 30 minutes ago")
  * - Less than 7 days: "X days ago"
- * - Less than 30 days: Shows short date (e.g. "Mar 15")
  * - Older: Shows full date and time
  *
  * @param date The date to format
@@ -52,10 +51,6 @@ export function formatTimeAgo(date: Date): string {
 
   if (diffInDays < 7) {
     return then.fromNow(); // "X days ago"
-  }
-
-  if (diffInDays < 30) {
-    return then.format(DATE_FORMATS.SHORT_DATE);
   }
 
   return then.format(DATE_FORMATS.DATE_TIME);
