@@ -40,7 +40,7 @@
     "drizzle-orm": "^0.40.0",
     "input-otp": "^1.4.2",
     "isbot": "^5.1.23",
-    "lucide-react": "^0.479.0",
+    "lucide-react": "^0.483.0",
     "mime": "^4.0.6",
     "minio": "^8.0.5",
     "next": "15.2.2",
