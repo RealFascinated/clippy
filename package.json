@@ -37,7 +37,7 @@
     "commander": "^13.1.0",
     "dayjs": "^1.11.13",
     "drizzle-kit": "^0.30.5",
-    "drizzle-orm": "^0.40.0",
+    "drizzle-orm": "^0.41.0",
     "input-otp": "^1.4.2",
     "isbot": "^5.1.23",
     "lucide-react": "^0.479.0",
