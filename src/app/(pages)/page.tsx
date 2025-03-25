@@ -93,7 +93,7 @@ export default async function HomePage() {
                   {env.NEXT_PUBLIC_WEBSITE_NAME}
                 </h1>
                 <span className="text-xl text-muted-foreground max-w-2xl leading-relaxed">
-                  {env.NEXT_PUBLIC_WEBSITE_LANDING_DESCRIPTION}
+                  {env.NEXT_PUBLIC_WEBSITE_DESCRIPTION}
                 </span>
 
                 {/* Auth Buttons */}

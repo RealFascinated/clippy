@@ -18,7 +18,6 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_WEBSITE_NAME: z.string(),
     NEXT_PUBLIC_WEBSITE_DESCRIPTION: z.string(),
-    NEXT_PUBLIC_WEBSITE_LANDING_DESCRIPTION: z.string(),
     NEXT_PUBLIC_WEBSITE_LOGO: z.string(),
     NEXT_PUBLIC_WEBSITE_URL: z.string(),
     NEXT_PUBLIC_SHOW_METRICS: z.boolean().optional().default(true),
@@ -70,9 +69,7 @@ export const env = createEnv({
     NEXT_PUBLIC_WEBSITE_NAME:
       readVariable("NEXT_PUBLIC_WEBSITE_NAME", "Clippy"),
     NEXT_PUBLIC_WEBSITE_DESCRIPTION:
-      readVariable("NEXT_PUBLIC_WEBSITE_DESCRIPTION", "Open Source ShareX Uploader"),
-    NEXT_PUBLIC_WEBSITE_LANDING_DESCRIPTION:
-      readVariable("NEXT_PUBLIC_WEBSITE_LANDING_DESCRIPTION", "Secure ShareX image hosting with fast uploads and extensive embed customization capabilities."),
+      readVariable("NEXT_PUBLIC_WEBSITE_DESCRIPTION", "Secure ShareX image hosting with fast uploads and extensive embed customization capabilities."),
     NEXT_PUBLIC_WEBSITE_LOGO:
       readVariable("NEXT_PUBLIC_WEBSITE_LOGO", "/logo.png"),
     NEXT_PUBLIC_WEBSITE_URL:
