@@ -142,7 +142,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     }
 
     // Validate file types
-    if (!files.every(file => file instanceof File)) {
+    if (!files.every((file) => file instanceof File)) {
       throw new ApiError("Invalid file format", 400);
     }
 
@@ -161,7 +161,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     if (
       env.COMPRESS_IMAGES && // Compression is enabled
       file.type.startsWith("image/") && // Is an image
-      file.size > 51200 && // Larger than 50kb
+      file.size > 1024 * 100 && // Larger than 100KB
       !file.type.startsWith("image/gif") // ignore gifs
     ) {
       const before = Date.now();
