@@ -17,13 +17,6 @@ export default class Logger {
     error: chalk.red,
   };
 
-  private static readonly LogSymbols = {
-    debug: "🔍",
-    info: "ℹ️",
-    warn: "⚠️",
-    error: "❌",
-  };
-
   /**
    * Checks if a log level should be logged.
    *
@@ -51,10 +44,9 @@ export default class Logger {
     }
 
     const color = Logger.LogColors[level];
-    const symbol = Logger.LogSymbols[level];
     const timestamp = formatDate(new Date(), "HH:mm:ss");
     console.log(
-      `${color(level.toUpperCase())} ${symbol} ${chalk.gray(timestamp)} ${message}`,
+      `${color(level.toUpperCase())} ${chalk.gray(timestamp)} ${message}`,
       ...args
     );
   }
