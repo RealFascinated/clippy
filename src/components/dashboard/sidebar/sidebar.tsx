@@ -12,6 +12,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { config } from "@/config";
 import { cn } from "@/lib/utils/utils";
 import {
   Bell,
@@ -130,7 +131,7 @@ const groups: Group[] = [
 const socials: Item[] = [
   {
     title: "GitHub",
-    url: "https://github.com/ClippyCDN/clippy",
+    url: config.githubUrl,
     icon: <Github />,
   },
   {

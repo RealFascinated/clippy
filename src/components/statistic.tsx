@@ -22,12 +22,12 @@ export default function UserStatistic({
   tooltip,
 }: StatisticProps) {
   const base = (
-    <div className="p-6 flex-col gap-2 h-30 bg-muted bg-gradient-to-br from-background/90 to-background/70 hover:from-background/95 hover:to-background/75 transition-all duration-300 flex justify-between rounded-xl border border-muted/50 shadow-md hover:shadow-lg group">
-      <div className="flex justify-between items-start">
-        <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground/80 transition-colors">
+    <div className="flex flex-col gap-4 h-full bg-card rounded-xl p-6 border border-border/50 transition-all duration-300 hover:border-primary/20 hover:shadow-lg">
+      <div className="flex justify-between items-center">
+        <span className="text-sm font-medium text-muted-foreground">
           {name}
         </span>
-        <div className="text-muted-foreground group-hover:text-primary/80 transition-colors">
+        <div className="text-primary">
           {icon}
         </div>
       </div>
