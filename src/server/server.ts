@@ -29,7 +29,7 @@ app.prepare().then(() => {
     const timeInMs = (after - before).toFixed(2);
     const timeInMsNum = parseFloat(timeInMs);
 
-    if (isProduction()) {
+    if (isProduction() && !request.url?.startsWith("/_next")) {
       Logger.info(
         `${chalk.bold(request.method)} ${request.url} ${getStatusColor(response.statusCode)(response.statusCode)} in ${getResponseTimeColor(timeInMsNum)(timeInMs)}ms`
       );
