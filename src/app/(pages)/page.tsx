@@ -15,7 +15,7 @@ import {
   ServerIcon,
   Shield,
   Upload,
-  UserIcon
+  UserIcon,
 } from "lucide-react";
 import { Metadata } from "next";
 import Link from "next/link";
@@ -128,7 +128,9 @@ export default async function HomePage() {
                     <div className="p-1.5 md:p-2 rounded-lg bg-primary/10">
                       {feature.icon}
                     </div>
-                    <span className="text-xs md:text-sm font-medium">{feature.title}</span>
+                    <span className="text-xs md:text-sm font-medium">
+                      {feature.title}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -139,11 +141,16 @@ export default async function HomePage() {
           </div>
         </div>
 
+        {/* Divider */}
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-border/50 to-transparent mb-12" />
+
         <div className="flex flex-col gap-12 md:gap-16 w-full p-4 sm:p-8">
           {/* Features */}
           <div className="flex flex-col gap-8 md:gap-10 w-full">
             <div className="flex flex-col gap-2">
-              <h2 className="text-2xl md:text-3xl font-bold text-center">Features</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-center">
+                Features
+              </h2>
               <p className="text-sm md:text-base text-muted-foreground text-center max-w-2xl mx-auto">
                 Everything you need to host and share your media files.
               </p>
@@ -248,7 +255,9 @@ function FeatureCard({
         <div className="text-primary">{icon}</div>
         <h3 className="text-lg md:text-xl font-semibold">{title}</h3>
       </div>
-      <p className="text-sm md:text-base text-muted-foreground">{description}</p>
+      <p className="text-sm md:text-base text-muted-foreground">
+        {description}
+      </p>
     </div>
   );
 }

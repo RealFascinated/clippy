@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 // Initialize plugins
 dayjs.extend(relativeTime);

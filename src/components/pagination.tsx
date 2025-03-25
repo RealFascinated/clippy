@@ -1,7 +1,7 @@
 import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { cn } from "@/lib/utils/utils";
-import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import clsx from "clsx";
+import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -110,7 +110,7 @@ export default function Pagination({
                 min={1}
                 max={totalPages}
                 value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
+                onChange={e => setInputValue(e.target.value)}
                 placeholder={`Page (1-${totalPages})`}
                 className="w-full"
                 autoFocus
@@ -146,7 +146,7 @@ export default function Pagination({
     children: React.ReactNode;
   }) => (
     <button
-      onClick={(e) => handleLinkClick(page, e)}
+      onClick={e => handleLinkClick(page, e)}
       disabled={isLoading || page === currentPage}
       className={cn(
         "relative h-8 min-w-[2rem] px-2 flex items-center justify-center rounded-md text-sm transition-all cursor-pointer",
@@ -170,7 +170,7 @@ export default function Pagination({
     children: React.ReactNode;
   }) => (
     <button
-      onClick={(e) => handleLinkClick(page, e)}
+      onClick={e => handleLinkClick(page, e)}
       disabled={disabled || isLoading}
       className={cn(
         "relative flex h-8 w-8 items-center justify-center rounded-md transition-all cursor-pointer",

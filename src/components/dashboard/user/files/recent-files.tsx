@@ -2,12 +2,12 @@ import { RecentFilesResponse } from "@/app/api/user/[@me]/files/recent/route";
 import { UserType } from "@/lib/db/schemas/auth-schema";
 import { env } from "@/lib/env";
 import request from "@/lib/request";
+import { DATE_FORMATS, formatDate } from "@/lib/utils/date";
 import { getFileName } from "@/lib/utils/file";
 import { formatBytes } from "@/lib/utils/utils";
 import { Clock } from "lucide-react";
 import { headers } from "next/headers";
 import FilePreview from "./file-preview";
-import { DATE_FORMATS, formatDate } from "@/lib/utils/date";
 
 export default async function RecentFiles({ user }: { user: UserType }) {
   const files = await request.get<RecentFilesResponse>(
@@ -53,7 +53,7 @@ export default async function RecentFiles({ user }: { user: UserType }) {
 
             <div className="flex-1 overflow-y-auto min-h-0 px-4 h-full">
               <div className="space-y-1 py-2">
-                {files.files.map((file) => (
+                {files.files.map(file => (
                   <FilePreview fileMeta={file} user={user} key={file.id}>
                     <div
                       key={file.id}

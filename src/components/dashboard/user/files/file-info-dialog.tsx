@@ -6,7 +6,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { FileType } from "@/lib/db/schemas/file";
-import { formatDate, DATE_FORMATS } from "@/lib/utils/date";
+import { DATE_FORMATS, formatDate } from "@/lib/utils/date";
 import { getFileName } from "@/lib/utils/file";
 import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { formatBytes } from "@/lib/utils/utils";

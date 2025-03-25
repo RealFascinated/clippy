@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils/utils";
 import {
   Bell,
   FolderOpen,
+  Github,
   Heart,
   Home,
   ImageIcon,
@@ -25,10 +26,9 @@ import {
   NotebookText,
   Palette,
   Settings,
+  Sticker,
   User,
   Video,
-  Github,
-  Sticker,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

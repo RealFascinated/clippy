@@ -1,6 +1,6 @@
 "use client";
 
-import { formatDate, DATE_FORMATS } from "@/lib/utils/date";
+import { DATE_FORMATS, formatDate } from "@/lib/utils/date";
 import { CalendarDays, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
 

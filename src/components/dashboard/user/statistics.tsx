@@ -1,8 +1,7 @@
 import { UserMetricsType } from "@/lib/db/schemas/metrics";
-import { getValueFromKey } from "@/lib/utils/object";
-import { formatBytes } from "@/lib/utils/utils";
-import { UserStatisticsResponse } from "@/type/api/user/graph-response";
 import { getDateString } from "@/lib/utils/date";
+import { getValueFromKey } from "@/lib/utils/object";
+import { UserStatisticsResponse } from "@/type/api/user/graph-response";
 import { ClockIcon, EyeIcon, FileIcon, ServerIcon } from "lucide-react";
 import { ReactElement } from "react";
 import Statistic from "../../statistic";

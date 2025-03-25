@@ -2,21 +2,21 @@
 
 import { ReactNode, useEffect } from "react";
 
+import AvatarInitials from "@/components/avatar-initials";
 import FileVideoPlayer from "@/components/file/video-player";
 import SimpleTooltip from "@/components/simple-tooltip";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/loader";
 import { UserType } from "@/lib/db/schemas/auth-schema";
 import { FileType } from "@/lib/db/schemas/file";
 import { env } from "@/lib/env";
+import { formatTimeAgo } from "@/lib/utils/date";
 import { getFileName } from "@/lib/utils/file";
 import { cn, copyWithToast } from "@/lib/utils/utils";
 import { Download, ExternalLink, Link2, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { DATE_FORMATS, formatDate, formatTimeAgo } from "@/lib/utils/date";
 
 export default function FilePreview({
   fileMeta,
@@ -95,11 +95,11 @@ export default function FilePreview({
             <div className="fixed top-0 left-0 right-0 flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-b from-black/60 to-transparent z-[9999]">
               {/* User Info */}
               <div className="flex items-center gap-2 sm:gap-3">
-                <Avatar className="size-7 sm:size-8 border-2 border-white/20">
-                  <AvatarFallback>
-                    {user.name?.slice(0, 1).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+                <AvatarInitials
+                  className="size-8 bg-primary/10 text-primary"
+                  name={user.username ?? "Minion Bob"}
+                  size="sm"
+                />
                 <div className="flex flex-col">
                   <span className="text-white font-medium text-sm sm:text-base">
                     @{user.username}
@@ -186,7 +186,7 @@ export default function FilePreview({
                 />
               )}
               {isVideo && (
-                <div 
+                <div
                   onClick={(e: React.MouseEvent) => e.stopPropagation()}
                   className="w-full sm:w-auto"
                 >

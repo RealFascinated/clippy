@@ -1,11 +1,11 @@
 import { UserMetricsType } from "@/lib/db/schemas/metrics";
+import { DATE_FORMATS, formatDate } from "@/lib/utils/date";
 import { getValueFromKey } from "@/lib/utils/object";
 import { formatBytes } from "@/lib/utils/utils";
 import { UserStatisticsResponse } from "@/type/api/user/graph-response";
 import { ClockIcon, EyeIcon, FileIcon, ServerIcon } from "lucide-react";
 import { ReactElement } from "react";
 import Statistic from "../../../statistic";
-import { DATE_FORMATS, formatDate } from "@/lib/utils/date";
 
 type Format = "number" | "bytes";
 type Statistic = {
@@ -34,7 +34,7 @@ const statistics: Statistic[] = [
     name: "Storage Used",
     format: "bytes",
     icon: <ServerIcon className="size-5" />,
-    tooltip: (statistics) => {
+    tooltip: statistics => {
       if (!statistics.storageMetrics) {
         return undefined;
       }

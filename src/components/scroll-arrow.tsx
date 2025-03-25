@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { ArrowDown } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -12,14 +12,14 @@ export default function ScrollArrow() {
       setIsVisible(scrollPosition < 100);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToContent = () => {
     window.scrollTo({
       top: window.innerHeight - 100,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
   };
 
@@ -33,4 +33,4 @@ export default function ScrollArrow() {
       <ArrowDown className="w-6 h-6 text-muted-foreground/40 hover:text-muted-foreground animate-bounce transition-colors" />
     </button>
   );
-} 
+}

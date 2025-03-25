@@ -27,9 +27,7 @@ export default function UserStatistic({
         <span className="text-sm font-medium text-muted-foreground">
           {name}
         </span>
-        <div className="text-primary">
-          {icon}
-        </div>
+        <div className="text-primary">{icon}</div>
       </div>
       <span className="text-2xl font-bold tracking-tight">
         <CountUp

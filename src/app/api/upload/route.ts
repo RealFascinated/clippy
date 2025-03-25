@@ -142,7 +142,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     }
 
     // Validate file types
-    if (!files.every((file) => file instanceof File)) {
+    if (!files.every(file => file instanceof File)) {
       throw new ApiError("Invalid file format", 400);
     }
 
@@ -171,7 +171,8 @@ export async function POST(request: Request): Promise<NextResponse> {
       );
 
       // Check if the new file is significantly different in size (more than 10%)
-      const sizeDifference = Math.abs(compressedContent.length - file.size) / file.size;
+      const sizeDifference =
+        Math.abs(compressedContent.length - file.size) / file.size;
       if (sizeDifference < 0.1) {
         Logger.info(
           `Compressed file size difference is less than 10%, using original file. (${formatBytes(file.size)} vs ${formatBytes(compressedContent.length)}, difference: ${(sizeDifference * 100).toFixed(1)}%)`

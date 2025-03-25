@@ -190,7 +190,7 @@ export default function FilterableContainer<T>({
             <Input
               placeholder={searchPlaceholder}
               value={search}
-              onChange={(e) => handleSearch(e.target.value)}
+              onChange={e => handleSearch(e.target.value)}
               className="pl-9 pr-8 w-full"
             />
             {search && (
@@ -259,7 +259,7 @@ export default function FilterableContainer<T>({
                 totalItems={data.metadata.totalItems}
                 itemsPerPage={data.metadata.itemsPerPage}
                 loadingPage={isLoading || isRefetching ? page : undefined}
-                onPageChange={(newPage) => {
+                onPageChange={newPage => {
                   setPage(newPage);
                   onPageChange?.(newPage);
                 }}

@@ -41,11 +41,13 @@ bun cli --help
 ## Development
 
 1. Install dependencies:
+
    ```bash
    bun install
    ```
 
 2. Spin up a local postgres server:
+
    ```bash
    docker compose up db -d
    ```

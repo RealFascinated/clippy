@@ -71,7 +71,7 @@ export default function UserFiles({
           sortDirection: sort.direction,
         },
       }))!,
-    placeholderData: (data) => data,
+    placeholderData: data => data,
   });
 
   return (
@@ -88,12 +88,12 @@ export default function UserFiles({
       initialSearch={initialSearch}
       initialPage={initialPage}
       sortKey="userFiles"
-      onSortChange={(newSort) => setSort(newSort)}
+      onSortChange={newSort => setSort(newSort)}
       initialSort={sort}
-      onPageChange={(newPage) => setPage(newPage)}
+      onPageChange={newPage => setPage(newPage)}
     >
       <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4">
-        {files?.items.map((fileMeta) => (
+        {files?.items.map(fileMeta => (
           <UserFile
             user={user}
             key={fileMeta.id}

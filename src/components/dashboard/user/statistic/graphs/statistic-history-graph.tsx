@@ -3,7 +3,7 @@
 import GenericChart, {
   ChartDatasetConfig,
 } from "@/components/charts/generic-chart";
-import { formatDate, DATE_FORMATS } from "@/lib/utils/date";
+import { DATE_FORMATS, formatDate } from "@/lib/utils/date";
 import { formatNumberWithCommas } from "@/lib/utils/number-utils";
 import { formatBytes } from "@/lib/utils/utils";
 import { UserStatisticsResponse } from "@/type/api/user/graph-response";

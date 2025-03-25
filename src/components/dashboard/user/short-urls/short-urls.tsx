@@ -54,7 +54,7 @@ export default function UserShortLinks({
           },
         }
       ))!,
-    placeholderData: (data) => data,
+    placeholderData: data => data,
   });
 
   const gridCols =
@@ -74,9 +74,9 @@ export default function UserShortLinks({
       initialSearch={initialSearch}
       initialPage={initialPage}
       sortKey="shortLinks"
-      onSortChange={(newSort) => setSort(newSort)}
+      onSortChange={newSort => setSort(newSort)}
       initialSort={sort}
-      onPageChange={(newPage) => setPage(newPage)}
+      onPageChange={newPage => setPage(newPage)}
     >
       <div className="flex flex-col gap-2">
         <div className={cn("grid gap-2", gridCols)}>
@@ -90,7 +90,7 @@ export default function UserShortLinks({
           </span>
         </div>
         <ul className="flex flex-col gap-1">
-          {links?.items.map((link) => (
+          {links?.items.map(link => (
             <UserShortUrl
               key={link.id}
               link={link}
