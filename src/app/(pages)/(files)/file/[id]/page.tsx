@@ -57,11 +57,11 @@ export default async function FilePage({ params }: FilePageProps) {
           <img
             src={url}
             alt={`Image for ${getFileName(fileMeta)}`}
-            className="max-h-[70vh]"
+            className="max-h-[70dvh]"
           />
         )}
 
-        {isVideo && <FileVideoPlayer url={url} className="max-h-[70vh]" />}
+        {isVideo && <FileVideoPlayer url={url} className="max-h-[70dvh]" />}
       </div>
     </div>
   );

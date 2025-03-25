@@ -146,7 +146,7 @@ export default function AppSidebar() {
   const { isMobile, setOpenMobile } = useSidebar();
 
   return (
-    <div className="h-[90vh] overflow-hidden">
+    <div className="h-[90dvh] overflow-hidden">
       <Sidebar className="top-[var(--header-height)] select-none">
         {/* Groups */}
         <SidebarContent className="gap-0">
