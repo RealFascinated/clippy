@@ -178,7 +178,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         );
       } else if (compressedContent.length > file.size) {
         Logger.info(
-          `Compressed file is larger than original file, using original file. (${formatBytes(file.size)} vs ${formatBytes(content.length)})`
+          `Compressed file is larger than original file, using original file. (${formatBytes(file.size)} vs ${formatBytes(compressedContent.length)})`
         );
       } else {
         file.type = "image/webp";
