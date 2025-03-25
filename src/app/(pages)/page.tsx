@@ -114,7 +114,7 @@ export default async function HomePage() {
           </div>
 
           {/* Instance Metrics */}
-          <div className="flex flex-col gap-10 w-full">
+          {env.NEXT_PUBLIC_SHOW_METRICS && <div className="flex flex-col gap-10 w-full">
             <div className="flex flex-col gap-2">
               <h2 className="text-3xl font-bold text-center">
                 Trusted by the Community
@@ -144,7 +144,7 @@ export default async function HomePage() {
                 icon={<UserIcon className="w-6 h-6" />}
               />
             </div>
-          </div>
+          </div>}
 
           {/* Self Hosting */}
           <div className="flex flex-col gap-10 w-full">

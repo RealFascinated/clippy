@@ -9,9 +9,9 @@ declare global {
   }
 }
 
-const readVariable = (key: string) => {
-  if (typeof window === "undefined") return process.env[key];
-  return window.__ENV[key];
+const readVariable = (key: string, defaultValue?: string) => {
+  if (typeof window === "undefined") return process.env[key] ?? defaultValue;
+  return window.__ENV[key] ?? defaultValue;
 };
 
 export const env = createEnv({
@@ -21,6 +21,7 @@ export const env = createEnv({
     NEXT_PUBLIC_WEBSITE_LANDING_DESCRIPTION: z.string(),
     NEXT_PUBLIC_WEBSITE_LOGO: z.string(),
     NEXT_PUBLIC_WEBSITE_URL: z.string(),
+    NEXT_PUBLIC_SHOW_METRICS: z.boolean().optional().default(true),
   },
 
   shared: {
@@ -67,22 +68,22 @@ export const env = createEnv({
   runtimeEnv: {
     // Client
     NEXT_PUBLIC_WEBSITE_NAME:
-      readVariable("NEXT_PUBLIC_WEBSITE_NAME") ?? "Clippy",
-      NEXT_PUBLIC_WEBSITE_DESCRIPTION:
-      readVariable("NEXT_PUBLIC_WEBSITE_DESCRIPTION") ??
-      "Open Source ShareX Uploader",
+      readVariable("NEXT_PUBLIC_WEBSITE_NAME", "Clippy"),
+    NEXT_PUBLIC_WEBSITE_DESCRIPTION:
+      readVariable("NEXT_PUBLIC_WEBSITE_DESCRIPTION", "Open Source ShareX Uploader"),
     NEXT_PUBLIC_WEBSITE_LANDING_DESCRIPTION:
-      readVariable("NEXT_PUBLIC_WEBSITE_LANDING_DESCRIPTION") ??
-      "Secure ShareX image hosting with fast uploads and extensive embed customization capabilities.",
+      readVariable("NEXT_PUBLIC_WEBSITE_LANDING_DESCRIPTION", "Secure ShareX image hosting with fast uploads and extensive embed customization capabilities."),
     NEXT_PUBLIC_WEBSITE_LOGO:
-      readVariable("NEXT_PUBLIC_WEBSITE_LOGO") ?? "/logo.png",
+      readVariable("NEXT_PUBLIC_WEBSITE_LOGO", "/logo.png"),
     NEXT_PUBLIC_WEBSITE_URL:
-      readVariable("NEXT_PUBLIC_WEBSITE_URL") ?? "http://localhost:3000",
+      readVariable("NEXT_PUBLIC_WEBSITE_URL", "http://localhost:3000"),
+    NEXT_PUBLIC_SHOW_METRICS:
+      readVariable("NEXT_PUBLIC_SHOW_METRICS", "true") === "true",
 
     // Shared
     NEXT_PUBLIC_APP_ENV: readVariable("NEXT_PUBLIC_APP_ENV"),
     NEXT_PUBLIC_ALLOW_REGISTRATIONS:
-      readVariable("NEXT_PUBLIC_ALLOW_REGISTRATIONS") === "true",
+      readVariable("NEXT_PUBLIC_ALLOW_REGISTRATIONS", "true") === "true",
 
     // Server
     DATABASE_URL: process.env.DATABASE_URL,
