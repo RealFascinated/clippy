@@ -73,7 +73,7 @@ export default async function HomePage() {
         {/* Hero Section */}
         <div className="relative w-full min-h-[calc(100vh-var(--header-height))] overflow-hidden">
           {/* Content */}
-          <div className="relative h-full flex flex-col items-center justify-center mt-[-50px]">
+          <div className="relative h-full flex flex-col items-center justify-center mt-[calc(-1*var(--header-height))]">
             <div className="flex flex-col gap-6 md:gap-10 max-w-5xl w-full px-4 sm:px-0">
               {/* Main Content */}
               <div className="flex flex-col gap-6 md:gap-8">
