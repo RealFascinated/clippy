@@ -4,7 +4,7 @@ import { formatBytes } from "@/lib/utils/utils";
 import { UserStatisticsResponse } from "@/type/api/user/graph-response";
 import { ClockIcon, EyeIcon, FileIcon, ServerIcon } from "lucide-react";
 import { ReactElement } from "react";
-import UserStatistic from "./statistic";
+import Statistic from "../../../statistic";
 import { DATE_FORMATS, formatDate } from "@/lib/utils/date";
 
 type Format = "number" | "bytes";
@@ -80,7 +80,7 @@ export default function Statistics({ statisticsResponse }: StatisticsProps) {
         const value = getValueFromKey(statisticsToday, statistic.key);
 
         return (
-          <UserStatistic
+          <Statistic
             key={index}
             name={statistic.name}
             icon={statistic.icon}

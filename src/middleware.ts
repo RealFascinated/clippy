@@ -48,15 +48,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
-  if (pathname === "/") {
-    if (sessionCookie) {
-      // They are logged in
-      return NextResponse.redirect(new URL("/dashboard", request.url));
-    } else {
-      // Not logged in
-      return NextResponse.redirect(new URL("/auth/login", request.url));
-    }
-  }
+  // if (pathname === "/") {
+  //   if (sessionCookie) {
+  //     // They are logged in
+  //     return NextResponse.redirect(new URL("/dashboard", request.url));
+  //   } else {
+  //     // Not logged in
+  //     return NextResponse.redirect(new URL("/auth/login", request.url));
+  //   }
+  // }
 
   return NextResponse.next();
 }
