@@ -136,7 +136,7 @@ const socials: Item[] = [
   },
   {
     title: "Documentation",
-    url: "https://github.com/ClippyCDN/clippy/wiki",
+    url: config.documentationUrl,
     icon: <NotebookText />,
   },
 ];
