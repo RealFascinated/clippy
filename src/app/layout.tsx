@@ -21,6 +21,14 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: env.NEXT_PUBLIC_WEBSITE_LOGO }],
   openGraph: {
     siteName: env.NEXT_PUBLIC_WEBSITE_NAME,
+    images: [
+      {
+        url: env.NEXT_PUBLIC_WEBSITE_LOGO,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
   },
 };
 
