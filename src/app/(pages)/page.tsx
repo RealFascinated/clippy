@@ -1,16 +1,31 @@
 import Statistic from "@/components/statistic";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { config } from "@/config";
 import { env } from "@/lib/env";
 import { getServerMetrics } from "@/lib/utils/server-metrics";
 import NotSignedIn from "@/providers/auth/not-signed-in";
 import SignedIn from "@/providers/auth/signed-in";
-import { ImageIcon, UserIcon, Upload, Shield, Palette, ServerIcon, Github, Server, ArrowDown } from "lucide-react";
+import {
+  ImageIcon,
+  UserIcon,
+  Upload,
+  Shield,
+  Palette,
+  ServerIcon,
+  Github,
+  Server,
+  ArrowDown,
+  CheckCircle,
+} from "lucide-react";
 import Link from "next/link";
 import ScrollArrow from "@/components/scroll-arrow";
+import { Metadata } from "next";
 
 export const revalidate = 300; // 5 minutes
+
+export const metadata: Metadata = {
+  title: "Welcome",
+};
 
 const features = [
   {
@@ -20,7 +35,8 @@ const features = [
   },
   {
     title: "User Customization",
-    description: "Personalize your experience with custom settings and preferences.",
+    description:
+      "Personalize your experience with custom settings and preferences.",
     icon: <Palette className="w-6 h-6" />,
   },
   {
@@ -33,14 +49,16 @@ const features = [
 const selfHosting = [
   {
     title: "Open Source",
-    description: "Fully open source and available on GitHub. Contribute or fork to customize.",
+    description:
+      "Fully open source and available on GitHub. Contribute or fork to customize.",
     icon: <Github className="w-6 h-6" />,
     button: "View on GitHub",
     url: config.githubUrl,
   },
   {
     title: "Self Hosted",
-    description: "Deploy on your own infrastructure with Docker or manual installation.",
+    description:
+      "Deploy on your own infrastructure with Docker or manual installation.",
     icon: <Server className="w-6 h-6" />,
     button: "View Documentation",
     url: config.documentationUrl,
@@ -56,29 +74,47 @@ export default async function HomePage() {
         {/* Hero Section */}
         <div className="relative w-full min-h-[90vh] overflow-hidden">
           {/* Content */}
-          <div className="relative h-full flex flex-col items-center justify-center p-8 md:p-16">
-            <div className="flex flex-col gap-10 max-w-4xl w-full">
+          <div className="relative h-full flex flex-col items-center justify-center">
+            <div className="flex flex-col gap-10 max-w-5xl w-full">
               {/* Main Content */}
               <div className="flex flex-col gap-8">
+                {/* Header */}
+                <div className="flex items-center gap-2">
+                  <span className="text-primary text-sm uppercase font-medium">
+                    Reliable, Fast, and Secure
+                  </span>
+                  <span className="text-muted-foreground text-sm">
+                    <CheckCircle className="w-4 h-4" />
+                  </span>
+                </div>
+
+                {/* Title & Description */}
                 <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
                   {env.NEXT_PUBLIC_WEBSITE_NAME}
                 </h1>
-                <p className="text-xl text-muted-foreground max-w-2xl leading-relaxed">
+                <span className="text-xl text-muted-foreground max-w-2xl leading-relaxed">
                   {env.NEXT_PUBLIC_WEBSITE_LANDING_DESCRIPTION}
-                </p>
+                </span>
 
                 {/* Auth Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4">
                   <NotSignedIn>
                     <Link href="/auth/register" prefetch={false}>
-                      <Button size="lg" className="w-full sm:w-fit text-lg px-8 h-14">
+                      <Button
+                        size="lg"
+                        className="w-full sm:w-fit text-lg px-8 h-14"
+                      >
                         Get Started
                       </Button>
                     </Link>
                   </NotSignedIn>
                   <SignedIn>
                     <Link href="/dashboard" prefetch={false}>
-                      <Button size="lg" variant="outline" className="w-full sm:w-fit text-lg px-8 h-14">
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        className="w-full sm:w-fit text-lg px-8 h-14"
+                      >
                         Go to Dashboard
                       </Button>
                     </Link>
@@ -127,37 +163,39 @@ export default async function HomePage() {
           </div>
 
           {/* Instance Metrics */}
-          {env.NEXT_PUBLIC_SHOW_METRICS && <div className="flex flex-col gap-10 w-full">
-            <div className="flex flex-col gap-2">
-              <h2 className="text-3xl font-bold text-center">
-                Trusted by the Community
-              </h2>
-              <p className="text-muted-foreground text-center max-w-2xl mx-auto">
-                Join the users who trust us with their media files.
-              </p>
-            </div>
+          {env.NEXT_PUBLIC_SHOW_METRICS && (
+            <div className="flex flex-col gap-10 w-full">
+              <div className="flex flex-col gap-2">
+                <h2 className="text-3xl font-bold text-center">
+                  Trusted by the Community
+                </h2>
+                <p className="text-muted-foreground text-center max-w-2xl mx-auto">
+                  Join the users who trust us with their media files.
+                </p>
+              </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <Statistic
-                name="Total Images Uploaded"
-                value={metrics.totalFiles}
-                format="number"
-                icon={<ImageIcon className="w-6 h-6" />}
-              />
-              <Statistic
-                name="Total Storage Used"
-                value={metrics.totalStorage}
-                format="bytes"
-                icon={<ServerIcon className="w-6 h-6" />}
-              />
-              <Statistic
-                name="Total Users"
-                value={metrics.totalUsers}
-                format="number"
-                icon={<UserIcon className="w-6 h-6" />}
-              />
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <Statistic
+                  name="Total Images Uploaded"
+                  value={metrics.totalFiles}
+                  format="number"
+                  icon={<ImageIcon className="w-6 h-6" />}
+                />
+                <Statistic
+                  name="Total Storage Used"
+                  value={metrics.totalStorage}
+                  format="bytes"
+                  icon={<ServerIcon className="w-6 h-6" />}
+                />
+                <Statistic
+                  name="Total Users"
+                  value={metrics.totalUsers}
+                  format="number"
+                  icon={<UserIcon className="w-6 h-6" />}
+                />
+              </div>
             </div>
-          </div>}
+          )}
 
           {/* Self Hosting */}
           <div className="flex flex-col gap-10 w-full">
