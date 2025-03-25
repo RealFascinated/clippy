@@ -6,8 +6,9 @@ import { env } from "@/lib/env";
 import { getServerMetrics } from "@/lib/utils/server-metrics";
 import NotSignedIn from "@/providers/auth/not-signed-in";
 import SignedIn from "@/providers/auth/signed-in";
-import { ImageIcon, UserIcon, Upload, Shield, Palette, ServerIcon, Github, Server } from "lucide-react";
+import { ImageIcon, UserIcon, Upload, Shield, Palette, ServerIcon, Github, Server, ArrowDown } from "lucide-react";
 import Link from "next/link";
+import ScrollArrow from "@/components/scroll-arrow";
 
 export const revalidate = 300; // 5 minutes
 
@@ -51,47 +52,59 @@ export default async function HomePage() {
 
   return (
     <main className="flex w-full">
-      <div className="flex flex-col gap-8 w-full">
+      <div className="flex flex-col w-full">
         {/* Hero Section */}
-        <div className="relative w-full rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-background p-8">
-          <div className="flex flex-col gap-6">
-            {/* Logo and Name */}
-            <div className="flex items-center gap-2">
-              <ImageIcon className="w-5 h-5 text-primary" />
-              <span className="uppercase text-sm font-bold text-primary tracking-wider">
-                Reliable Image Hosting
-              </span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold">
-              {env.NEXT_PUBLIC_WEBSITE_NAME}
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl">
-              {env.NEXT_PUBLIC_WEBSITE_LANDING_DESCRIPTION}
-            </p>
+        <div className="relative w-full min-h-[90vh] overflow-hidden">
+          {/* Content */}
+          <div className="relative h-full flex flex-col items-center justify-center p-8 md:p-16">
+            <div className="flex flex-col gap-10 max-w-4xl w-full">
+              {/* Main Content */}
+              <div className="flex flex-col gap-8">
+                <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
+                  {env.NEXT_PUBLIC_WEBSITE_NAME}
+                </h1>
+                <p className="text-xl text-muted-foreground max-w-2xl leading-relaxed">
+                  {env.NEXT_PUBLIC_WEBSITE_LANDING_DESCRIPTION}
+                </p>
 
-            {/* Auth Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <NotSignedIn>
-                <Link href="/auth/register" prefetch={false}>
-                  <Button size="lg" className="w-full sm:w-fit">
-                    Get Started
-                  </Button>
-                </Link>
-              </NotSignedIn>
-              <SignedIn>
-                <Link href="/dashboard" prefetch={false}>
-                  <Button size="lg" variant="outline" className="w-full sm:w-fit">
-                    Go to Dashboard
-                  </Button>
-                </Link>
-              </SignedIn>
+                {/* Auth Buttons */}
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <NotSignedIn>
+                    <Link href="/auth/register" prefetch={false}>
+                      <Button size="lg" className="w-full sm:w-fit text-lg px-8 h-14">
+                        Get Started
+                      </Button>
+                    </Link>
+                  </NotSignedIn>
+                  <SignedIn>
+                    <Link href="/dashboard" prefetch={false}>
+                      <Button size="lg" variant="outline" className="w-full sm:w-fit text-lg px-8 h-14">
+                        Go to Dashboard
+                      </Button>
+                    </Link>
+                  </SignedIn>
+                </div>
+              </div>
+
+              {/* Features Preview */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8 border-t border-border/50">
+                {features.map((feature, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      {feature.icon}
+                    </div>
+                    <span className="text-sm font-medium">{feature.title}</span>
+                  </div>
+                ))}
+              </div>
             </div>
+
+            {/* Scroll Arrow */}
+            <ScrollArrow />
           </div>
         </div>
 
-        <Separator className="my-4" />
-
-        <div className="flex flex-col gap-16 w-full">
+        <div className="flex flex-col gap-16 w-full p-8">
           {/* Features */}
           <div className="flex flex-col gap-10 w-full">
             <div className="flex flex-col gap-2">
