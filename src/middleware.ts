@@ -1,7 +1,7 @@
 import { getSessionCookie } from "better-auth/cookies";
 import { NextRequest, NextResponse } from "next/server";
+import { env } from "./lib/env";
 import { applyRateLimitHeaders, RateLimiter } from "./lib/rate-limiter";
-
 const rateLimiters = [
   new RateLimiter({
     maxRequests: 15,
@@ -17,7 +17,9 @@ export async function middleware(request: NextRequest) {
   // Handle API rate limiting
   if (pathname.startsWith("/api/")) {
     // Find the first matching rate limiter
-    const rateLimiter = rateLimiters.find(limiter => limiter.matches(pathname));
+    const rateLimiter = rateLimiters.find((limiter) =>
+      limiter.matches(pathname)
+    );
 
     if (rateLimiter) {
       const ip = request.headers.get("x-forwarded-for") || "unknown";
@@ -43,21 +45,18 @@ export async function middleware(request: NextRequest) {
   // Handle authentication redirects
   const sessionCookie = getSessionCookie(request);
 
+  if (pathname === "/" && env.NEXT_PUBLIC_DISABLE_LANDING) {
+    return NextResponse.redirect(
+      new URL(sessionCookie ? "/dashboard" : "/auth/login", request.url)
+    );
+  }
+
   // Not logged in and on dashboard page
   if (pathname.startsWith("/dashboard") && !sessionCookie) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
-  // if (pathname === "/") {
-  //   if (sessionCookie) {
-  //     // They are logged in
-  //     return NextResponse.redirect(new URL("/dashboard", request.url));
-  //   } else {
-  //     // Not logged in
-  //     return NextResponse.redirect(new URL("/auth/login", request.url));
-  //   }
-  // }
-
+  // Continue the request
   return NextResponse.next();
 }
 

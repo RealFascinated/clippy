@@ -324,7 +324,7 @@ export async function getUser(cookieHeader?: string): Promise<UserType> {
 
   // This shouldn't happen
   if (!session) {
-    redirect("/");
+    redirect(env.NEXT_PUBLIC_DISABLE_LANDING ? "/auth/login" : "/");
   }
   return {
     ...(session.user as UserType),

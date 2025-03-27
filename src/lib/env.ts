@@ -21,6 +21,7 @@ export const env = createEnv({
     NEXT_PUBLIC_WEBSITE_LOGO: z.string(),
     NEXT_PUBLIC_WEBSITE_URL: z.string(),
     NEXT_PUBLIC_SHOW_METRICS: z.boolean().optional().default(true),
+    NEXT_PUBLIC_DISABLE_LANDING: z.boolean().optional().default(false),
   },
 
   shared: {
@@ -84,6 +85,8 @@ export const env = createEnv({
     ),
     NEXT_PUBLIC_SHOW_METRICS:
       readVariable("NEXT_PUBLIC_SHOW_METRICS", "true") === "true",
+    NEXT_PUBLIC_DISABLE_LANDING:
+      readVariable("NEXT_PUBLIC_DISABLE_LANDING", "false") === "true",
 
     // Shared
     NEXT_PUBLIC_APP_ENV: readVariable("NEXT_PUBLIC_APP_ENV"),
