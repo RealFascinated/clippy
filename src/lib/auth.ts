@@ -1,4 +1,4 @@
-import { betterAuth } from "better-auth";
+import { betterAuth, BetterAuthOptions } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { createAuthMiddleware, twoFactor } from "better-auth/plugins";
@@ -8,8 +8,13 @@ import { db } from "./db/drizzle";
 import * as schema from "./db/schemas/auth-schema";
 import { env } from "./env";
 
-export const auth = betterAuth({
+export type ExtendedBetterAuthOptions = BetterAuthOptions & {
+  authRedirect?: string;
+};
+
+export const auth = betterAuth<ExtendedBetterAuthOptions>({
   baseURL: env.NEXT_PUBLIC_WEBSITE_URL,
+  authRedirect: "/dashboard",
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
@@ -25,7 +30,7 @@ export const auth = betterAuth({
     username({
       minUsernameLength: 3,
       maxUsernameLength: 12,
-      usernameValidator: username => {
+      usernameValidator: (username) => {
         // Disallow admin
         if (username === "admin") {
           return false;
@@ -57,7 +62,7 @@ export const auth = betterAuth({
     },
   },
   hooks: {
-    before: createAuthMiddleware(async ctx => {
+    before: createAuthMiddleware(async (ctx) => {
       const allowRegistrations = env.NEXT_PUBLIC_ALLOW_REGISTRATIONS;
 
       switch (ctx.path) {
@@ -81,4 +86,24 @@ export const auth = betterAuth({
     }),
   },
 });
+
+export const toClientAuthOptions = (authOptions: BetterAuthOptions) => {
+  const options: BetterAuthOptions = JSON.parse(JSON.stringify(authOptions));
+
+  // Recursively remove any property that contains 'secret' from the entire object
+  const removeSecrets = (obj: any) => {
+    if (!obj || typeof obj !== "object") return;
+    for (const key of Object.keys(obj)) {
+      if (key.toLowerCase().includes("secret")) {
+        delete obj[key];
+      } else if (typeof obj[key] === "object") {
+        removeSecrets(obj[key]);
+      }
+    }
+  };
+
+  removeSecrets(options);
+  return options;
+};
+
 export type Session = typeof auth.$Infer.Session;

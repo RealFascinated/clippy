@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 import { env } from "../env";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -74,6 +76,14 @@ export function formatBytes(bytes: number, decimalPlaces: number = 2): string {
     parseFloat((bytes / Math.pow(k, i)).toFixed(decimalPlaces)) + " " + sizes[i]
   );
 }
+
+/**
+ * Check if the given email is valid.
+ *
+ * @param email the email to check
+ * @returns whether the email is valid
+ */
+export const isValidEmail = (email: string) => EMAIL_REGEX.test(email);
 
 /**
  * Copy text to clipboard.
