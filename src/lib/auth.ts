@@ -8,13 +8,8 @@ import { db } from "./db/drizzle";
 import * as schema from "./db/schemas/auth-schema";
 import { env } from "./env";
 
-export type ExtendedBetterAuthOptions = BetterAuthOptions & {
-  authRedirect?: string;
-};
-
-export const auth = betterAuth<ExtendedBetterAuthOptions>({
+export const auth = betterAuth({
   baseURL: env.NEXT_PUBLIC_WEBSITE_URL,
-  authRedirect: "/dashboard",
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {

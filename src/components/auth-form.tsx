@@ -7,11 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { ExtendedBetterAuthOptions } from "@/lib/auth";
 import { authClient } from "@/lib/client-auth";
 import { env } from "@/lib/env";
 import request from "@/lib/request";
 import { cn, isProduction, isValidEmail } from "@/lib/utils/utils";
+import { BetterAuthOptions } from "better-auth";
 import {
   ArrowLeftIcon,
   AtSign,
@@ -47,7 +47,7 @@ export type AuthFormProps = {
   /**
    * The BetterAuth options to use.
    */
-  authOptions: ExtendedBetterAuthOptions;
+  authOptions: BetterAuthOptions;
 
   /**
    * The type of auth form to render.
@@ -261,7 +261,7 @@ type RegistrationViewProps = {
   /**
    * The BetterAuth options to use.
    */
-  authOptions: ExtendedBetterAuthOptions;
+  authOptions: BetterAuthOptions;
 
   /**
    * The prefilled data to use.
@@ -313,7 +313,7 @@ const RegistrationView = ({
       toast.success(
         `Account created, welcome to ${env.NEXT_PUBLIC_WEBSITE_NAME} ${data?.user?.name}!`
       );
-      redirect(authOptions.authRedirect ?? "/app");
+      redirect("/dashboard");
     }
   };
 
@@ -370,7 +370,7 @@ type LoginViewProps = {
   /**
    * The BetterAuth options to use.
    */
-  authOptions: ExtendedBetterAuthOptions;
+  authOptions: BetterAuthOptions;
 
   /**
    * The type of auth form to render.
@@ -451,7 +451,7 @@ const LoginView = ({
       // Redirect the user once they login
       if (!error) {
         toast.success(`Logged in, welcome back ${data?.user?.name}!`);
-        redirect(authOptions.authRedirect ?? "/app");
+        redirect("/dashboard");
       }
     }
   };
@@ -499,7 +499,7 @@ const OAuthProviders = ({
   authOptions,
   setError,
 }: {
-  authOptions: ExtendedBetterAuthOptions;
+  authOptions: BetterAuthOptions;
   setError: (error: string | undefined) => void;
 }): ReactElement => {
   // Render the providers
@@ -512,7 +512,6 @@ const OAuthProviders = ({
           key={provider.id}
           provider={provider}
           showNames={showNames}
-          authOptions={authOptions}
           setError={setError}
         />
       ))}
@@ -523,12 +522,10 @@ const OAuthProviders = ({
 const OAuthProvider = ({
   provider,
   showNames,
-  authOptions,
   setError,
 }: {
   provider: any;
   showNames: boolean;
-  authOptions: ExtendedBetterAuthOptions;
   setError: (error: string | undefined) => void;
 }): ReactElement => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -537,7 +534,7 @@ const OAuthProvider = ({
     setLoading(true);
     const { error } = await authClient.signIn.social({
       provider: provider.id,
-      callbackURL: authOptions.authRedirect ?? "/app",
+      callbackURL: "/dashboard",
     });
     setLoading(false);
     setError(error?.message);
