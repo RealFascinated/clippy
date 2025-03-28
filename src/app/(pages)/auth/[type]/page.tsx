@@ -17,8 +17,6 @@ export default async function AuthPage({ params }: AuthPageProps) {
         authOptions={toClientAuthOptions(auth.options)}
         type={type}
         logo="/logo.png"
-        termsAndConditions="/legal/terms"
-        privacyPolicy="/legal/privacy"
       />
     </main>
   );
