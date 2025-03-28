@@ -45,11 +45,11 @@ export async function middleware(request: NextRequest) {
   // Handle authentication redirects
   const sessionCookie = getSessionCookie(request);
 
-  if (pathname === "/" && env.NEXT_PUBLIC_DISABLE_LANDING) {
-    return NextResponse.redirect(
-      new URL(sessionCookie ? "/dashboard" : "/auth/login", request.url)
-    );
-  }
+  // if (pathname === "/" && env.NEXT_PUBLIC_DISABLE_LANDING) {
+  //   return NextResponse.redirect(
+  //     new URL(sessionCookie ? "/dashboard" : "/auth/login", request.url)
+  //   );
+  // }
 
   // Not logged in and on dashboard page
   if (pathname.startsWith("/dashboard") && !sessionCookie) {
